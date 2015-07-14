@@ -1,0 +1,248 @@
+body {
+  background: #1e1e1e;
+  color: #ccc;
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", Helvetica, sans-serif;
+  line-height: 1.5;
+}
+a {
+  color: white;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: Oswald, Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  color: #f4f4f4;
+}
+#header {  
+  border-top: 5px solid #ff8300;
+  background: #000000 url(../images/logo.png) no-repeat 20px 20px;
+  height: 70px;
+  line-height: 70px;
+  padding-left: 70px;
+  font-family: Oswald, Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  font-size: 18px;
+  position: relative;
+  color: #f4f4f4;
+}
+#stepcount {
+  color: #757575;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  margin: 0;
+  padding: 0;
+}
+#stepcount li {
+  float: left;
+  padding: 0 15px;
+  color: #737373;
+  line-height: 35px;
+  font-size: 14px;
+  border-bottom: 5px solid #737373;
+  position: relative;
+  list-style: none;
+}
+#stepcount li.active {
+  border-color: #ff8300;
+  color: #ff8300;
+}
+#stepcount li.past {
+  border-color: #f4f4f4;
+  color: #f4f4f4;
+}
+#stepcount li:before,
+#stepcount li:after {
+  position: absolute;
+  content: '';
+  width: 3px;
+  height: 5px;
+  background: url(../images/crumb-begin.png);
+  bottom: -5px;
+  left: 0;
+}
+#stepcount li:after {
+  left: auto;
+  right: 0;
+  background: url(../images/crumb-end.png);
+}
+.page {
+  width: 960px;
+  margin: auto;
+}
+.page h1 {
+  font-size: 32px;
+  margin: 30px 0 20px;
+}
+.page h2 {
+  font-size: 24px;
+  margin: 20px 0 10px;
+}
+.page label {
+  display: block;
+  margin: 5px 0;
+  font-size: 16px;
+  line-height: 18px;
+  padding-bottom: 4px;
+}
+.page label>input {
+  display: inline-block;
+  margin-right: 10px;
+  position: relative;
+  top: -2px;
+}
+.page p {
+  background-color: #252525;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+#chatops-tabs p {
+  background-color: #1e1e1e;
+}
+input[type=text] {
+  width: 458px;
+  height: 30px;
+  padding: 0 0 0 10px;
+  color: #fff;
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.5) rgba(64, 64, 64, 0.3) rgba(108, 108, 108, 0.5);
+  border-radius: 4px;
+  outline: 0;
+  background-color: #2e2e2e;
+  margin-bottom: 10px;
+}
+textarea {
+  width: 458px;
+  height: 150px;
+  padding: 0 0 0 10px;
+  color: #fff;
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.5) rgba(64, 64, 64, 0.3) rgba(108, 108, 108, 0.5);
+  border-radius: 4px;
+  outline: 0;
+  background-color: #2e2e2e;
+  resize: none;
+  margin-bottom: 10px;
+}
+.page fieldset#ssl div {
+  float: left;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+.page fieldset#ssl div:last-child {
+  margin-right: 0;
+}
+#chatops-navigation {
+  list-style: none;
+  height: 103px;
+  background: #000000;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 5px solid #ff8300;
+}
+#chatops-navigation li {
+  float: left;
+}
+#chatops-navigation li a {
+  position: relative;
+  display: block;
+  width: 60px;
+  text-align: center;
+  font-family: Oswald, Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  color: #737373;
+  font-size: 13px;
+  text-decoration: none;
+  padding: 55px 10px 6px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  margin: 10px;
+}
+#chatops-navigation li a:hover {
+  color: #ff8300;
+}
+#chatops-navigation li a.active {
+  color: #ff8300;
+  border-color: #333;
+  background-color: #292929;
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+#chatops-tabs {
+  list-style: none;
+}
+#chatops-tabs p:first-child+label {
+  margin-bottom: 20px;
+}
+#chatops-tabs li {
+  background: #252525;
+  border-radius: 0 0 8px 8px;
+  padding: 20px;
+}
+#chatops-tabs input[type=text] {
+  width: 438px;
+}
+
+.page {display:none;}
+#chatops-tabs li {display:none;}
+.page.active {display:block;}
+#chatops-tabs li.active {display:block;}
+
+#next-button {
+  height: 50px;
+  width: 960px;
+  margin: 20px auto;
+}
+#next-button p {
+  float: right;
+  clear: right;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-family: Oswald;
+  font-weight: 200;
+}
+#next-button button {
+  float: right;
+  font-family: Oswald;
+  font-weight: 200;
+  font-size: 14px;
+  position: relative;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  outline: 0;
+  background-color: #ff8300;
+  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+#ssl {
+  display: none;
+}
+input+p.hint,
+#chatops-tabs input+p.hint {
+  margin-bottom: 10px;
+  margin-top: -5px;
+  color: #888;
+  background: transparent;
+  width: 460px;
+  font-size: 12px;
+  padding: 0;
+}
+#chatops-navigation li a i {
+  width: 100%;
+  display: block;
+  position: absolute;
+  bottom: 30px;
+  left: 0px;
+  font-size: 40px;
+}
+#chatops-navigation li a i.fa-comments-o {
+  bottom: 32px;
+}
