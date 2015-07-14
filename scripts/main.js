@@ -96,11 +96,6 @@ var installer = {
       if (username.val().trim().length==0) {
         installer.append_error(username, i18n.required);
       }
-      
-      var userkey = $('#textarea-integrationacct');
-      if (userkey.val().trim().length==0) {
-        installer.append_error(userkey, i18n.required);
-      }
 
     } else if (installer.page == 2) {
 
