@@ -52,9 +52,10 @@
         <p>The default WebUI account is secured with the "admin" user. Please enter a password to secure this account.</p>
         <fieldset>
           <label for="text-password-1">Password</label>
-          <input type="text" id="text-password-1" name="password-1" />
+          <input type="password" id="text-password-1" name="password-1" />
+          <p class="hint">8–20 alphanumeric characters, at least one digit and one letter is required.</p>
           <label for="text-password-2">Confirm</label>
-          <input type="text" id="text-password-2" name="password-2" />
+          <input type="password" id="text-password-2" name="password-2" />
         </fieldset>
         <h2>Configure integration account</h2>
         <p>StackStorm uses SSH to log into remote systems to perform remote actions. This account should already be configured in your environment.</p>
@@ -93,7 +94,7 @@
             <label for="text-hipchat-jid">HipChat JID</label>
             <input type="text" id="text-hipchat-jid" name="hipchat-jid">
             <label for="text-hipchat-password">HipChat password</label>
-            <input type="text" id="text-hipchat-password" name="hipchat-password">
+            <input type="password" id="text-hipchat-password" name="hipchat-password">
             <label for="text-hipchat-domain">HipChat Server domain</label>
             <input type="text" id="text-hipchat-domain" name="text-hipchat-domain">
             <p class="hint">Only if using self-hosted HipChat Server.</p>
@@ -104,7 +105,7 @@
             <label for="text-xmpp-username">Username</label>
             <input type="text" id="text-xmpp-username" name="xmpp-username">
             <label for="text-xmpp-password">Password</label>
-            <input type="text" id="text-xmpp-password" name="xmpp-password">
+            <input type="password" id="text-xmpp-password" name="xmpp-password">
             <label for="text-xmpp-rooms">Rooms</label>
             <input type="text" id="text-xmpp-rooms" name="xmpp-rooms">
             <p class="hint">A comma-separated list.</p>
@@ -132,12 +133,13 @@
             <label for="text-flowdock-email">Login e-mail</label>
             <input type="text" id="text-flowdock-email" name="flowdock-email">
             <label for="text-flowdock-password">Password</label>
-            <input type="text" id="text-flowdock-password" name="flowdock-password">
+            <input type="password" id="text-flowdock-password" name="flowdock-password">
           </li>
         </ul>
       </div>
       <div id="next-button">
-        <button id="step-next">Next</button>
+        <a href="#" id="step-next">Next</a>
+        <a href="#" id="step-back">Back</a>
         <p>Step <span id="current-step"></span> of <span id="total-steps"></span></p>
       </div>
     </form>
