@@ -176,9 +176,6 @@ textarea {
 #chatops-tabs {
   list-style: none;
 }
-#chatops-tabs p:first-child+label {
-  margin-bottom: 20px;
-}
 #chatops-tabs li {
   background: #252525;
   border-radius: 0 0 8px 8px;
@@ -270,8 +267,14 @@ p.hint,
   float: none;
   margin-top: -5px;
 }
-#chatops-tabs label+p.error {
+#chatops-tabs p+p.error {
   float: none;
-  margin-top: -20px;
+  margin-top: -5px;
   margin-bottom: 15px;
+}
+label.required:after {
+  content: '*';
+  color: #ff8300;
+  position: relative;
+  left: 2px;
 }

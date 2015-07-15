@@ -45,6 +45,7 @@ var installer = {
     }
   },
   switch_chatops: function(tab) {
+    installer.chatops = tab;
     $('#chatops-tabs li')
       .removeClass('active')
       .eq(tab)
@@ -53,6 +54,7 @@ var installer = {
       .removeClass('active')
       .eq(tab)
         .addClass('active');
+    $('#chatops-flag').val($('#chatops-navigation li a').eq(tab).attr('href').slice(5));
   },
   append_error: function(el, error) {
     installer.errors += 1;
@@ -99,41 +101,38 @@ var installer = {
 
     } else if (installer.page == 2) {
 
-      if ($('#checkbox-flowdock-enable').is(':checked')) {
-        if ($('#text-flowdock-token').val().trim().length==0 ||
-            $('#text-flowdock-email').val().trim().length==0 ||
-            $('#text-flowdock-password').val().trim().length==0) {
-          installer.append_error($('label[for=checkbox-flowdock-enable]'), i18n.flowdock);
-          installer.switch_chatops(5);
-        }
-      }
-      if ($('#checkbox-irc-enable').is(':checked')) {
-        if ($('#text-irc-server').val().trim().length==0 ||
-            $('#text-irc-rooms').val().trim().length==0) {
-          installer.append_error($('label[for=checkbox-irc-enable]'), i18n.irc);
-          installer.switch_chatops(4);
-        }
-      }
-      if ($('#checkbox-xmpp-enable').is(':checked')) {
-        if ($('#text-xmpp-rooms').val().trim().length==0 ||
-            $('#text-xmpp-username').val().trim().length==0 ||
-            $('#text-xmpp-password').val().trim().length==0) {
-          installer.append_error($('label[for=checkbox-xmpp-enable]'), i18n.xmpp);
-          installer.switch_chatops(3);
-        }
-      }
-      if ($('#checkbox-hipchat-enable').is(':checked')) {
-        if ($('#text-hipchat-jid').val().trim().length==0 ||
-            $('#text-hipchat-password').val().trim().length==0) {
-          installer.append_error($('label[for=checkbox-hipchat-enable]'), i18n.hipchat);
-          installer.switch_chatops(2);
-        }
-      }
-      if ($('#checkbox-slack-enable').is(':checked')) {
-        if ($('#text-slack-token').val().trim().length==0) {
-          installer.append_error($('label[for=checkbox-slack-enable]'), i18n.slack);
-          installer.switch_chatops(1);
-        }
+      switch(installer.chatops) {
+        case 1:
+          if ($('#text-slack-token').val().trim().length==0) {
+            installer.append_error($('#tab-slack p:first-child'), i18n.slack);
+          }
+          break;
+        case 2:
+          if ($('#text-hipchat-jid').val().trim().length==0 ||
+              $('#text-hipchat-password').val().trim().length==0) {
+            installer.append_error($('#tab-hipchat p:first-child'), i18n.hipchat);
+          }
+          break;
+        case 3:
+          if ($('#text-xmpp-rooms').val().trim().length==0 ||
+              $('#text-xmpp-username').val().trim().length==0 ||
+              $('#text-xmpp-password').val().trim().length==0) {
+            installer.append_error($('#tab-xmpp p:first-child'), i18n.xmpp);
+          }
+          break;
+        case 4:
+          if ($('#text-irc-server').val().trim().length==0 ||
+              $('#text-irc-rooms').val().trim().length==0) {
+            installer.append_error($('#tab-irc p:first-child'), i18n.irc);
+          }
+          break;
+        case 5:
+          if ($('#text-flowdock-token').val().trim().length==0 ||
+              $('#text-flowdock-email').val().trim().length==0 ||
+              $('#text-flowdock-password').val().trim().length==0) {
+            installer.append_error($('#tab-flowdock p:first-child'), i18n.flowdock);
+          }
+          break;
       }
 
     }

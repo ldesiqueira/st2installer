@@ -23,7 +23,7 @@
       <div class="page" id="page-hostname">
         <h1>Configure Hostname and SSL</h1>
         
-          <label for="text-hostname">Hostname</label>
+          <label for="text-hostname" class="required">Hostname</label>
           <input type="text" id="text-hostname" name="hostname" />
           <p class="hint">FQDN of host.</p>
         
@@ -36,11 +36,11 @@
           </fieldset>
           <fieldset id="ssl">
             <div>
-              <label for="textarea-public">Public key</label>
+              <label for="textarea-public" class="required">Public key</label>
               <textarea name="public" id="textarea-public" cols="30" rows="10"></textarea>
             </div>
             <div>
-              <label for="textarea-private">Private key</label>
+              <label for="textarea-private" class="required">Private key</label>
               <textarea name="private" id="textarea-private" cols="30" rows="10"></textarea>
             </div>
           </fieldset>
@@ -51,16 +51,16 @@
         <h2>Secure admin account</h2>
         <p>The default WebUI account is secured with the "admin" user. Please enter a password to secure this account.</p>
         <fieldset>
-          <label for="text-password-1">Password</label>
+          <label for="text-password-1" class="required">Password</label>
           <input type="password" id="text-password-1" name="password-1" />
           <p class="hint">8–20 alphanumeric characters, at least one digit and one letter is required.</p>
-          <label for="text-password-2">Confirm</label>
+          <label for="text-password-2" class="required">Confirm</label>
           <input type="password" id="text-password-2" name="password-2" />
         </fieldset>
         <h2>Configure integration account</h2>
         <p>StackStorm uses SSH to log into remote systems to perform remote actions. This account should already be configured in your environment.</p>
         <fieldset>
-          <label for="text-username">Username</label>
+          <label for="text-username" class="required">Username</label>
           <input type="text" id="text-username" name="username" value="stanley" />
           <label for="textarea-integrationacct">SSH key</label>
           <textarea name="integrationacct" id="textarea-integrationacct" cols="30" rows="10"></textarea>
@@ -68,7 +68,7 @@
       </div>
       <div class="page" id="page-chatops">
         <h1>Configure ChatOps</h1>
-        <p>ChatOps integration is a core feature of StackStorm, allowing users to collaborate and work more effectively by executing actions in a chat room. StackStorm can either connect to an existing chat service or set up a test service for you.</p>
+        <p>ChatOps integration is a core feature of StackStorm, allowing users to collaborate and work more effectively by executing actions in a chat room. Pick a service below: StackStorm can either connect to an existing chat service or set up a test service for you.</p>
         <ul id="chatops-navigation">
           <li><a href="#tab-example">Local IRC</a></li>
           <li><a href="#tab-slack"><i class="fa fa-slack"></i> Slack</a></li>
@@ -77,20 +77,18 @@
           <li><a href="#tab-irc">IRC</a></li>
           <li><a href="#tab-flowdock">Flowdock</a></li>
         </ul>
+        <input type="hidden" id="chatops-flag" name="chatops" value="" />
         <ul id="chatops-tabs">
           <li id="tab-example">
-            <p>Local IRC server set up for working with ChatOps. You'll be able to connect with this server's FQDN and #stackstorm as the name of the channel.</p>
-            <label for="checkbox-example-enable"><input type="checkbox" id="checkbox-example-enable" name="example-enable" value="1">Enable sample IRC server</label>
+            <p>Local IRC server set up for working with ChatOps. You'll be able to connect with this server's FQDN and #stackstorm as the name of the channel. No configuration necessary.</p>
           </li>
           <li id="tab-slack">
             <p>Integration with an existing <a href="http://slack.com" target="_blank">Slack</a> team.</p>
-            <label for="checkbox-slack-enable"><input type="checkbox" id="checkbox-slack-enable" name="slack-enable" value="1">Enable Slack integration</label>
-            <label for="text-slack-token">Slack API token</label>
+            <label for="text-slack-token" class="required">Slack API token</label>
             <input type="text" id="text-slack-token" name="slack-token" />
           </li>
           <li id="tab-hipchat">
             <p>Integration with an existing <a href="https://www.hipchat.com" target="_blank">HipChat</a> team (including HipChat Server).</p>
-            <label for="checkbox-hipchat-enable"><input type="checkbox" id="checkbox-hipchat-enable" name="hipchat-enable" value="1">Enable HipChat integration</label>
             <label for="text-hipchat-jid">HipChat JID</label>
             <input type="text" id="text-hipchat-jid" name="hipchat-jid">
             <label for="text-hipchat-password">HipChat password</label>
@@ -101,7 +99,6 @@
           </li>
           <li id="tab-xmpp">
             <p>Connect to a room or multiple rooms of an XMPP server.</p>
-            <label for="checkbox-xmpp-enable"><input type="checkbox" id="checkbox-xmpp-enable" name="xmpp-enable" value="1"> Enable XMPP integration</label>
             <label for="text-xmpp-username">Username</label>
             <input type="text" id="text-xmpp-username" name="xmpp-username">
             <label for="text-xmpp-password">Password</label>
@@ -118,7 +115,6 @@
           </li>
           <li id="tab-irc">
             <p>Connect to a room or multiple rooms of an IRC server.</p>
-            <label for="checkbox-irc-enable"><input type="checkbox" id="checkbox-irc-enable" name="irc-enable"> Enable IRC integration</label>
             <label for="text-irc-server">Server</label>
             <input type="text" id="text-irc-server" name="irc-server">
             <label for="text-irc-rooms">Rooms</label>
@@ -127,7 +123,6 @@
           </li>
           <li id="tab-flowdock">
             <p>Integration with an existing <a href="https://www.flowdock.com" target="_blank">Flowdock</a> team.</p>
-            <label for="checkbox-flowdock-enable"><input type="checkbox" id="checkbox-flowdock-enable" name="flowdock-enable"> Enable Flowdock integration</label>
             <label for="text-flowdock-token">API token</label>
             <input type="text" id="text-flowdock-token" name="flowdock-token">
             <label for="text-flowdock-email">Login e-mail</label>
