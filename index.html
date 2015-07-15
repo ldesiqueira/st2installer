@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="stylesheets/reset.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,300">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="stylesheets/main.css">
   </head>
   <body>
@@ -19,7 +18,7 @@
         <li>ChatOps</li>
       </ul>
     </div>
-    <form id="installer" method="POST" action=".">
+    <form id="installer" method="POST" action="." enctype="multipart/form-data">
       <div class="page" id="page-hostname">
         <h1>Configure Hostname and SSL</h1>
         
@@ -37,11 +36,11 @@
           <fieldset id="ssl">
             <div>
               <label for="textarea-public" class="required">Public key</label>
-              <textarea name="public" id="textarea-public" cols="30" rows="10"></textarea>
+              <input type="file" name="file-publickey" id="file-publickey" />
             </div>
             <div>
               <label for="textarea-private" class="required">Private key</label>
-              <textarea name="private" id="textarea-private" cols="30" rows="10"></textarea>
+              <input type="file" name="file-privatekey" id="file-privatekey" />
             </div>
           </fieldset>
 
@@ -70,12 +69,12 @@
         <h1>Configure ChatOps</h1>
         <p>ChatOps integration is a core feature of StackStorm, allowing users to collaborate and work more effectively by executing actions in a chat room. Pick a service below: StackStorm can either connect to an existing chat service or set up a test service for you.</p>
         <ul id="chatops-navigation">
-          <li><a href="#tab-example">Local IRC</a></li>
-          <li><a href="#tab-slack"><i class="fa fa-slack"></i> Slack</a></li>
-          <li><a href="#tab-hipchat"><i class="fa fa-comments-o"></i> HipChat</a></li>
-          <li><a href="#tab-xmpp">XMPP</a></li>
-          <li><a href="#tab-irc">IRC</a></li>
-          <li><a href="#tab-flowdock">Flowdock</a></li>
+          <li><a href="#tab-example"><i class="irc">#st2</i>Local IRC</a></li>
+          <li><a href="#tab-slack"><i class="icon-slack"></i> Slack</a></li>
+          <li><a href="#tab-hipchat"><i class="icon-hipchat"></i> HipChat</a></li>
+          <li><a href="#tab-xmpp"><i class="icon-xmpp"></i>XMPP</a></li>
+          <li><a href="#tab-irc"><i class="irc">#irc</i>IRC</a></li>
+          <li><a href="#tab-flowdock"><i class="icon-flowdock"></i>Flowdock</a></li>
         </ul>
         <input type="hidden" id="chatops-flag" name="chatops" value="" />
         <ul id="chatops-tabs">
@@ -89,9 +88,9 @@
           </li>
           <li id="tab-hipchat">
             <p>Integration with an existing <a href="https://www.hipchat.com" target="_blank">HipChat</a> team (including HipChat Server).</p>
-            <label for="text-hipchat-jid">HipChat JID</label>
+            <label for="text-hipchat-jid" class="required">HipChat JID</label>
             <input type="text" id="text-hipchat-jid" name="hipchat-jid">
-            <label for="text-hipchat-password">HipChat password</label>
+            <label for="text-hipchat-password" class="required">HipChat password</label>
             <input type="password" id="text-hipchat-password" name="hipchat-password">
             <label for="text-hipchat-domain">HipChat Server domain</label>
             <input type="text" id="text-hipchat-domain" name="text-hipchat-domain">
@@ -99,11 +98,11 @@
           </li>
           <li id="tab-xmpp">
             <p>Connect to a room or multiple rooms of an XMPP server.</p>
-            <label for="text-xmpp-username">Username</label>
+            <label for="text-xmpp-username" class="required">Username</label>
             <input type="text" id="text-xmpp-username" name="xmpp-username">
-            <label for="text-xmpp-password">Password</label>
+            <label for="text-xmpp-password" class="required">Password</label>
             <input type="password" id="text-xmpp-password" name="xmpp-password">
-            <label for="text-xmpp-rooms">Rooms</label>
+            <label for="text-xmpp-rooms" class="required">Rooms</label>
             <input type="text" id="text-xmpp-rooms" name="xmpp-rooms">
             <p class="hint">A comma-separated list.</p>
             <label for="text-xmpp-host">Host</label>
@@ -115,19 +114,19 @@
           </li>
           <li id="tab-irc">
             <p>Connect to a room or multiple rooms of an IRC server.</p>
-            <label for="text-irc-server">Server</label>
+            <label for="text-irc-server" class="required">Server</label>
             <input type="text" id="text-irc-server" name="irc-server">
-            <label for="text-irc-rooms">Rooms</label>
+            <label for="text-irc-rooms" class="required">Rooms</label>
             <input type="text" id="text-irc-rooms" name="irc-rooms">
             <p class="hint">A comma-separated list.</p>
           </li>
           <li id="tab-flowdock">
             <p>Integration with an existing <a href="https://www.flowdock.com" target="_blank">Flowdock</a> team.</p>
-            <label for="text-flowdock-token">API token</label>
+            <label for="text-flowdock-token" class="required">API token</label>
             <input type="text" id="text-flowdock-token" name="flowdock-token">
-            <label for="text-flowdock-email">Login e-mail</label>
+            <label for="text-flowdock-email" class="required">Login e-mail</label>
             <input type="text" id="text-flowdock-email" name="flowdock-email">
-            <label for="text-flowdock-password">Password</label>
+            <label for="text-flowdock-password" class="required">Password</label>
             <input type="password" id="text-flowdock-password" name="flowdock-password">
           </li>
         </ul>

@@ -1,3 +1,57 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "chatops";
+  src:url("../fonts/chatops.eot");
+  src:url("../fonts/chatops.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/chatops.woff") format("woff"),
+    url("../fonts/chatops.ttf") format("truetype"),
+    url("../fonts/chatops.svg#chatops") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "chatops" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "chatops" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-slack:before {
+  content: "b";
+}
+.icon-hipchat:before {
+  content: "d";
+}
+.icon-flowdock:before {
+  content: "c";
+}
+.icon-xmpp:before {
+  content: "a";
+}
+
+
 body {
   background: #1e1e1e;
   color: #ccc;
@@ -133,6 +187,7 @@ textarea {
   float: left;
   margin-right: 20px;
   margin-top: 10px;
+  width: 470px;
 }
 .page fieldset#ssl div:last-child {
   margin-right: 0;
@@ -245,12 +300,28 @@ p.hint,
   width: 100%;
   display: block;
   position: absolute;
-  bottom: 30px;
+  bottom: 20px;
   left: 0px;
   font-size: 40px;
 }
-#chatops-navigation li a i.fa-comments-o {
-  bottom: 32px;
+#chatops-navigation li a i.icon-slack {
+  bottom: 18px;
+}
+#chatops-navigation li a i.icon-xmpp {
+  bottom: 25px;
+}
+#chatops-navigation li a i.icon-flowdock {
+  bottom: 23px;
+  left: -10px;
+}
+#chatops-navigation li a i.irc {
+  bottom: 30px;
+  margin-left: -2px;
+  font-family: "Courier New", Arial, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -2px;
 }
 .page p.error,
 #chatops-tabs p.error {
@@ -265,7 +336,7 @@ p.hint,
 }
 #ssl+p.error {
   float: none;
-  margin-top: -5px;
+  margin-top: 10px;
 }
 #chatops-tabs p+p.error {
   float: none;
@@ -277,4 +348,7 @@ label.required:after {
   color: #ff8300;
   position: relative;
   left: 2px;
+}
+.page input[type=file] {
+
 }

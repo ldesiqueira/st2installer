@@ -75,8 +75,8 @@ var installer = {
       }
 
       if ($('#radio-selfsigned-false').is(':checked') && 
-          ($('#textarea-public').val().trim().length==0 ||
-           $('#textarea-private').val().trim().length==0)) {
+          ($('#file-publickey').val().trim().length==0 ||
+           $('#file-privatekey').val().trim().length==0)) {
         installer.append_error($('#ssl'), i18n.ssl_required);  
       }
 
