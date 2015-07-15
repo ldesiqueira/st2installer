@@ -352,3 +352,6 @@ label.required:after {
 .page input[type=file] {
 
 }
+.page#page-final {
+  display: block;
+}

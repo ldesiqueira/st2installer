@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>StackStorm installer</title>
+    <link rel="stylesheet" href="stylesheets/reset.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,300">
+    <link rel="stylesheet" href="stylesheets/main.css">
+  </head>
+  <body>
+    <div id="header">
+      Install StackStorm
+      <%block name="stepcount">
+        <ul id="stepcount">
+          <li>Hostname and SSL</li>
+          <li>User accounts</li>
+          <li>ChatOps</li>
+        </ul>
+      </%block>
+    </div>
+    
+    ${self.body()}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="scripts/main.js"></script>
+  </body>
+</html>

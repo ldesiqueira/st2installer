@@ -1,0 +1,13 @@
+<%inherit file="layout.html"/>
+
+<%block name="stepcount"/>
+
+<div class="page" id="page-final">
+  <h1>Installation complete</h1>
+  <p>You've succesfully installed and configured StackStorm! Thanks and whatnot.</p>
+
+  % if keyfallback == True:
+    <p>SSH keys are not valid, reverting to a self-signed certificate.</p>
+  % endif
+  
+</div>

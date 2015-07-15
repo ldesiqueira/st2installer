@@ -186,5 +186,7 @@ var installer = {
 }
 
 $(function() {
-  installer.init();
+  if ($('#installer').length) {
+    installer.init();
+  }
 });
