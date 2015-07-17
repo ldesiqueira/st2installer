@@ -112,16 +112,18 @@ var puppet = {
   },
   complete: function() {
     $('#page-puppet').removeClass('progress');
-    $('#puppet-done').show();
+    $('#puppet-done').show(); 
   },
   init: function() {
     $('#page-puppet').addClass('progress');
     $('#progress-bar').addClass('started');
-    $('#show-important').on("change", function() {
-      if ($(this).is(':checked')) {
+    $('#filtering input').on("change", function() {
+      $('#output').removeClass('important-only');
+      $('#output').removeClass('errors-only');
+      if ($('#filtering input[value=important]').is(':checked')) {
         $('#output').addClass('important-only');
-      } else {
-        $('#output').removeClass('important-only');
+      } else if ($('#filtering input[value=errors]').is(':checked')) {
+        $('#output').addClass('errors-only');
       }
     });
     puppet.set_progress(10); // So that the user could notice the progress bar from the beginning.

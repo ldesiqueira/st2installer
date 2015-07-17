@@ -8,10 +8,14 @@
   % if keyfallback == True:
     <p>SSH keys are not valid, reverting to a self-signed certificate.</p>
   % endif
-  <p id="warning-count">
+  <div id="warning-count">
     <span id="warnings">0</span> warning<span id="warnings-plural">s</span>, <span id="errors">0</span> error<span id="errors-plural">s</span>.
-    <label for="show-important" id="show-important-label"><input type="checkbox" id="show-important"> Important messages only</label>
-  </p>
+    <div id="filtering">
+      <label><input type="radio" name="output-filter" value="all" checked="checked"> Full output</label>
+      <label><input type="radio" name="output-filter" value="important"> Important messages</label>
+      <label><input type="radio" name="output-filter" value="errors"> Errors only</label>
+    </div>
+  </div>
   <div id="progressbar">
     <span><span></span></span>
   </div>

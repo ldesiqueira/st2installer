@@ -369,14 +369,22 @@ label.required:after {
   margin-bottom: 0px;
   border-radius: 5px 5px 0 0;
   font-size: 14px;
+  padding: 10px;
+  clear: both;
 }
-#show-important-label {
+#filtering {
   float: right;
   font-size: 14px;
-  margin-top: 2px;
+  margin-top: -3px;
 }
-#show-important-label input {
-  top: -1px;
+#filtering label {
+  display: inline-block;
+  margin-left: 15px;
+  font-size: 14px;
+}
+#filtering input {
+  top: -2px;
+  margin-right: 3px;
 }
 #output-content {
   font-family: "Courier New", "Courier", sans-serif;
@@ -395,6 +403,11 @@ label.required:after {
   color: #33aa33;
 }
 .important-only p.message {
+  display: none;
+}
+.errors-only p.message,
+.errors-only p.output-warning,
+.errors-only p.output-important {
   display: none;
 }
 #output-content p {
