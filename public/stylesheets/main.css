@@ -430,11 +430,11 @@ label.required:after {
   top: 0; left: 0; bottom: 0; right: 0;
   background-image: linear-gradient(
     -45deg, 
-    rgba(255, 255, 255, .05) 25%, 
+    rgba(255, 255, 255, .1) 25%, 
     transparent 25%, 
     transparent 50%, 
-    rgba(255, 255, 255, .05) 50%, 
-    rgba(255, 255, 255, .05) 75%, 
+    rgba(255, 255, 255, .1) 50%, 
+    rgba(255, 255, 255, .1) 75%, 
     transparent 75%, 
     transparent
   );
