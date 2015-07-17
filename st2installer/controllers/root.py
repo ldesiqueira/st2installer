@@ -1,5 +1,6 @@
-from pecan import expose, request
+from pecan import expose, request, Response
 from webob.exc import status_map
+from shelljob import proc
 import random, string, os, json
 
 def istext(file):
@@ -17,6 +18,18 @@ def istext(file):
     return True
 
 class RootController(object):
+
+  @expose(content_type='text/event-stream')
+  def puppet(self):
+    g = proc.Group()
+    p = g.run(["python", "-u", "test/output.py"])
+    def read_process():
+      while g.is_pending():
+        lines = g.readlines()
+        for proc, line in lines:
+          yield line 
+    return Response(content_type='text/event-stream',
+                    app_iter=read_process())
 
   @expose(generic=True, template='index.html')
   def index(self):
