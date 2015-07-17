@@ -25,7 +25,7 @@ class RootController(object):
     proc = Popen('python -u test/output.py', stdout=PIPE, shell=True)
     def read_process():
       while proc.poll() is None:
-        yield proc.stdout.readline()
+        yield 'data:'+proc.stdout.readline()+'\n\n'
 
     return Response(content_type='text/event-stream',
                     app_iter=read_process())
