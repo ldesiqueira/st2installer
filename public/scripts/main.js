@@ -14,24 +14,118 @@ var i18n = {
   flowdock: "All fields are required for Flowdock integration."
 };
 var puppet = {
-  warning: /a/,
-  error: /a/,
-  progress: [
-    [/a/, 10],
-    [/b/, 50],
-    [/c/, 100]
+  warning: [ 
+    /^WARNING:/ 
   ],
-  completion: /^DONE$/,
+  error: [ 
+    /^ERROR:/
+  ],
+  important: [
+    /^disruptive/
+  ],
+  checkpoints: [
+    [/^PROGRESS: 20$/, 20],
+    [/^PROGRESS: 40$/, 40],
+    [/^PROGRESS: 60$/, 60],
+    [/^PROGRESS: 80$/, 80],
+  ],
+  progress: 0,
   errors: 0,
   warnings: 0,
-  init: function() {
-    var puppet_stream = new EventSource('/puppet');
-    puppet_stream.onmessage = function (e) {
-      data = e.data.trim();
-      if (data) {
-        $('#output-content').append(data+'<br />');
-      }
+  line: 0,
+  interval: 700,
+  url: '/puppet',
+  set_progress: function(p) {
+    puppet.progress = p;
+    $('#progressbar>span').width(p+'%');
+    if (p == 100) {
+      puppet.complete();
     }
+  },
+  add_error: function() {
+    puppet.errors += 1;
+    $('#errors').text(puppet.errors);
+    if (puppet.errors == 1) {
+      $('#errors-plural').hide();
+    } else {
+      $('#errors-plural').show();
+    }
+  },
+  add_warning: function() {
+    puppet.warnings += 1;
+    $('#warnings').text(puppet.warnings);
+    if (puppet.warnings == 1) {
+      $('#warnings-plural').hide();
+    } else {
+      $('#warnings-plural').show();
+    }
+  },
+  read: function() {
+    var stream = $.get(puppet.url, {line: puppet.line}, function(data) {
+      if (data != '--idle--') {
+        lines = data.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          line = lines[i];
+          if (i == lines.length-1 && line == '--terminate--') {
+            puppet.set_progress(100);
+          } else if (line.trim()) {
+            puppet.line += 1;
+            p_class = 'message';
+
+            for (var ii = 0; ii < puppet.important.length; ii++) {
+              if (puppet.important[ii].test(line)) {
+                p_class = 'output-important';
+              }
+            }
+            for (var ii = 0; ii < puppet.warning.length; ii++) {
+              if (puppet.warning[ii].test(line)) {
+                p_class = 'output-warning';
+                puppet.add_warning();
+              }
+            }
+            for (var ii = 0; ii < puppet.error.length; ii++) {
+              if (puppet.error[ii].test(line)) {
+                p_class = 'output-error';
+                puppet.add_error();
+              }
+            }
+            for (var ii = 0; ii < puppet.checkpoints.length; ii++) {
+              if (puppet.checkpoints[ii][0].test(line)) {
+                p_class = 'output-important';
+                puppet.set_progress(puppet.checkpoints[ii][1]);
+              }
+            }
+
+            scroll = $('#output')[0].scrollHeight - $('#output')[0].scrollTop === $('#output')[0].clientHeight;
+            $('#output-content').append('<p class="'+p_class+'">'+line+'</p>');
+            if (scroll) {
+              $('#output')[0].scrollTop = $('#output')[0].scrollHeight;
+              puppet.scroll_disabled = 0;
+            };
+          }
+        }
+      }
+      if (puppet.progress < 100) {
+        setTimeout(puppet.read, puppet.interval);
+      }
+    });
+  },
+  complete: function() {
+    $('#page-puppet').removeClass('progress');
+    $('#puppet-done').show();
+  },
+  init: function() {
+    $('#page-puppet').addClass('progress');
+    $('#progress-bar').addClass('started');
+    $('#show-important').on("change", function() {
+      if ($(this).is(':checked')) {
+        $('#output').addClass('important-only');
+      } else {
+        $('#output').removeClass('important-only');
+      }
+    });
+    puppet.set_progress(10); // So that the user could notice the progress bar from the beginning.
+    puppet.read();
   }
 
 }

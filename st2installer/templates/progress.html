@@ -4,21 +4,32 @@
 
 <div class="page" id="page-puppet">
   <h1>Installation</h1>
-  <p>You've succesfully configured StackStorm! Installation will take just a few more minutes.</p>
+  <p>StackStorm is preparing for the first launch! Installation will take a few more minutes.</p>
   % if keyfallback == True:
     <p>SSH keys are not valid, reverting to a self-signed certificate.</p>
   % endif
-
-  <div id="progressbar">
-    <span class="progress"></span>
-    <span class="bar"></span>
-  </div>
   <p id="warning-count">
-    <span id="warnings">0</span> warnings, <span id="errors">0</span> errors.
-    <label for="show-important" id="show-important-label"><input type="checkbox" id="show-important"> Important messages only</label></p>
+    <span id="warnings">0</span> warning<span id="warnings-plural">s</span>, <span id="errors">0</span> error<span id="errors-plural">s</span>.
+    <label for="show-important" id="show-important-label"><input type="checkbox" id="show-important"> Important messages only</label>
+  </p>
+  <div id="progressbar">
+    <span><span></span></span>
+  </div>
   <div id="output">
     <div id="output-content">
       
+    </div>
+  </div>
+  <div id="puppet-done">
+    <p>Installation completed; StackStorm is ready to launch! Review the documentation before you start:</p>
+    <ul>
+      <li><a href="http://stackstorm.com" target="_blank">Main website</a></li>
+      <li><a href="https://github.com/StackStorm" target="_blank">Github</a></li>
+      <li><a href="https://www.youtube.com/channel/UCColc5CuBJ8-1SnALnkDz8Q" target="_blank">YouTube channel</a></li>
+      <li><a href="http://stackstorm.com/blog" target="_blank">Blog</a></li>
+    </ul>
+    <div id="next-button">
+      <a href="http://google.com" id="step-next">Open StackStorm</a>
     </div>
   </div>
 </div>

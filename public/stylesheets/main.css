@@ -360,18 +360,111 @@ label.required:after {
   border-radius: 0 0 5px 5px;
   height: 300px;
   overflow: scroll;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   background: #252525;
+  padding: 10px;
 }
 #warning-count {
   background: black;
   margin-bottom: 0px;
-  border-bottom: #ff8300 5px solid;
   border-radius: 5px 5px 0 0;
+  font-size: 14px;
 }
 #show-important-label {
   float: right;
+  font-size: 14px;
+  margin-top: 2px;
+}
+#show-important-label input {
+  top: -1px;
 }
 #output-content {
   font-family: "Courier New", "Courier", sans-serif;
+  font-size: 13px;
+}
+#show-important {
+  margin-right: 3px;
+}
+#output-content p.output-warning {
+  color: #aaaa33;
+}
+#output-content p.output-error {
+  color: #aa3333;
+}
+#output-content p.done {
+  color: #33aa33;
+}
+.important-only p.message {
+  display: none;
+}
+#output-content p {
+  margin: 0;
+  padding: 0;
+}
+#progressbar {
+  background: white;
+  height: 5px;
+  position: relative;
+}
+#progressbar>span {
+  height: 5px;
+  background: #ff8300;
+  display: block;
+  transition: width 0.25s;
+  -webkit-transition: width 0.25s;
+  -moz-transition: width 0.25s;
+  width: 0px;
+}
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 15px 15px;
+  }
+}
+#page-puppet.progress #progressbar>span:after,
+#page-puppet.progress #progressbar>span>span {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background-image: linear-gradient(
+    -45deg, 
+    rgba(255, 255, 255, .05) 25%, 
+    transparent 25%, 
+    transparent 50%, 
+    rgba(255, 255, 255, .05) 50%, 
+    rgba(255, 255, 255, .05) 75%, 
+    transparent 75%, 
+    transparent
+  );
+  z-index: 1;
+  background-size: 15px 15px;
+  animation: move 1s linear infinite;
+  overflow: hidden;
+}
+#puppet-done {
+  background-color: #252525;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  clear: both;
+  background: none;
+  display: none;
+}
+#puppet-done p {
+  padding: 0;
+  margin-bottom: 10px;
+  background: none;
+}
+#puppet-done ul {
+  margin-left: 20px;
+}
+#puppet-done #next-button {
+  text-align: center;
+  margin-bottom: 0;
+}
+#puppet-done #next-button a {
+  float: none;
+  margin: 0 auto;
 }

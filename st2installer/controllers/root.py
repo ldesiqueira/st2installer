@@ -2,7 +2,6 @@ from pecan import expose, request, Response, redirect
 import random, string, os, json
 from gevent.subprocess import Popen, PIPE
 
-
 def istext(file):
     s=file.read(512)
     file.seek(0)
@@ -19,16 +18,30 @@ def istext(file):
 
 class RootController(object):
 
-  @expose(content_type='text/event-stream')
-  def puppet(self):
+  proc = None
+  command = 'python -u test/output.py'
+  output = 'test/output.log'
 
-    proc = Popen('python -u test/output.py', stdout=PIPE, shell=True)
-    def read_process():
-      while proc.poll() is None:
-        yield 'data:'+proc.stdout.readline()+'\n\n'
+  @expose(content_type='text/plain')
+  def puppet(self, line):
+    if not self.proc:
+      open(self.output, 'w').close()
+      self.proc = Popen("%s > %s 2>&1" % (self.command, self.output), shell=True)
 
-    return Response(content_type='text/event-stream',
-                    app_iter=read_process())
+    data = ''
+    logfile = open(self.output, 'r')
+    for i, logline in enumerate(logfile):
+      if i>=int(line):
+        data += logline.strip()+'\n'
+    logfile.close()
+
+    if self.proc.poll() is not None:
+      data += '--terminate--'
+
+    if not data:
+      return '--idle--'
+
+    return data
 
   @expose(generic=True, template='index.html')
   def index(self):
