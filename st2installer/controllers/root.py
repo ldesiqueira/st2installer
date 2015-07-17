@@ -1,6 +1,6 @@
 from pecan import expose, request, Response, redirect
 import random, string, os, json
-from gevent.subprocess import Popen, PIPE
+from subprocess import Popen, PIPE
 
 def istext(file):
     s=file.read(512)
