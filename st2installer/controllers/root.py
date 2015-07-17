@@ -1,7 +1,7 @@
-from pecan import expose, request, Response
-from webob.exc import status_map
-from shelljob import proc
+from pecan import expose, request, Response, redirect
 import random, string, os, json
+from gevent.subprocess import Popen, PIPE
+
 
 def istext(file):
     s=file.read(512)
@@ -21,13 +21,12 @@ class RootController(object):
 
   @expose(content_type='text/event-stream')
   def puppet(self):
-    g = proc.Group()
-    p = g.run(["python", "-u", "test/output.py"])
+
+    proc = Popen('python -u test/output.py', stdout=PIPE, shell=True)
     def read_process():
-      while g.is_pending():
-        lines = g.readlines()
-        for proc, line in lines:
-          yield line 
+      while proc.poll() is None:
+        yield proc.stdout.readline()
+
     return Response(content_type='text/event-stream',
                     app_iter=read_process())
 
@@ -35,7 +34,7 @@ class RootController(object):
   def index(self):
     return dict()
 
-  @index.when(method='POST', template='final.html')
+  @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
 
     temp = dict(keyfallback = False, kwargs=kwargs) 
@@ -157,3 +156,7 @@ class RootController(object):
       workroom.write(json.dumps(config))
 
     return temp
+
+  @expose(generic=True, template='final.html')
+  def done(self):
+    return dict()

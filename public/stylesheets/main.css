@@ -149,7 +149,7 @@ h1, h2, h3, h4, h5, h6 {
 .page p {
   background-color: #252525;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 5px;
   margin-bottom: 20px;
   clear: both;
 }
@@ -196,7 +196,7 @@ textarea {
   list-style: none;
   height: 103px;
   background: #000000;
-  border-radius: 8px 8px 0 0;
+  border-radius: 5px 5px 0 0;
   border-bottom: 5px solid #ff8300;
 }
 #chatops-navigation li {
@@ -233,7 +233,7 @@ textarea {
 }
 #chatops-tabs li {
   background: #252525;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 5px 5px;
   padding: 20px;
 }
 #chatops-tabs input[type=text],
@@ -352,6 +352,26 @@ label.required:after {
 .page input[type=file] {
 
 }
-.page#page-final {
+.page#page-final,
+.page#page-puppet {
   display: block;
+}
+#output {
+  border-radius: 0 0 5px 5px;
+  height: 300px;
+  overflow: scroll;
+  margin-bottom: 50px;
+  background: #252525;
+}
+#warning-count {
+  background: black;
+  margin-bottom: 0px;
+  border-bottom: #ff8300 5px solid;
+  border-radius: 5px 5px 0 0;
+}
+#show-important-label {
+  float: right;
+}
+#output-content {
+  font-family: "Courier New", "Courier", sans-serif;
 }

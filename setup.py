@@ -14,7 +14,9 @@ setup(
     author_email='',
     install_requires=[
         "pecan",
-        "shelljob"
+        "shelljob",
+	"gunicorn",
+	"gevent"
     ],
     test_suite='st2installer',
     zip_safe=False,

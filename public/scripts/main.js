@@ -13,6 +13,28 @@ var i18n = {
   irc: "Server and at least one room are required for IRC integration.",
   flowdock: "All fields are required for Flowdock integration."
 };
+var puppet = {
+  warning: /a/,
+  error: /a/,
+  progress: [
+    [/a/, 10],
+    [/b/, 50],
+    [/c/, 100]
+  ],
+  completion: /^DONE$/,
+  errors: 0,
+  warnings: 0,
+  init: function() {
+    var puppet_stream = new EventSource('/puppet');
+    puppet_stream.onmessage = function (e) {
+      data = e.data.trim();
+      if (data) {
+        $('#output-content').append(data+'<br />');
+      }
+    }
+  }
+
+}
 var installer = {
   page: 0, 
   chatops: 0,
@@ -188,5 +210,8 @@ var installer = {
 $(function() {
   if ($('#installer').length) {
     installer.init();
+  }
+  if ($('#page-puppet').length) {
+    puppet.init();
   }
 });

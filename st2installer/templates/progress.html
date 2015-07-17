@@ -1,0 +1,24 @@
+<%inherit file="layout.html"/>
+
+<%block name="stepcount"/>
+
+<div class="page" id="page-puppet">
+  <h1>Installation</h1>
+  <p>You've succesfully configured StackStorm! Installation will take just a few more minutes.</p>
+  % if keyfallback == True:
+    <p>SSH keys are not valid, reverting to a self-signed certificate.</p>
+  % endif
+
+  <div id="progressbar">
+    <span class="progress"></span>
+    <span class="bar"></span>
+  </div>
+  <p id="warning-count">
+    <span id="warnings">0</span> warnings, <span id="errors">0</span> errors.
+    <label for="show-important" id="show-important-label"><input type="checkbox" id="show-important"> Important messages only</label></p>
+  <div id="output">
+    <div id="output-content">
+      
+    </div>
+  </div>
+</div>
