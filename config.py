@@ -14,9 +14,9 @@ app = {
 logging = {
     'root': {'level': 'INFO', 'handlers': ['console']},
     'loggers': {
-        'st2installer': {'level': 'DEBUG', 'handlers': ['console', 'logfile']},
-        'pecan': {'level': 'DEBUG', 'handlers': ['console', 'logfile']},
-        'py.warnings': {'handlers': ['console', 'logfile']},
+        'st2installer': {'level': 'DEBUG', 'handlers': ['console']},
+        'pecan': {'level': 'DEBUG', 'handlers': ['console']},
+        'py.warnings': {'handlers': ['console']},
         '__force_dict__': True
     },
     'handlers': {
