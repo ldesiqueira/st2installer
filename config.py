@@ -1,9 +1,3 @@
-# Server Specific Configurations
-server = {
-    'port': '8081',
-    'host': '127.0.0.1'
-}
-
 # Pecan Application Configurations
 app = {
     'root': 'st2installer.controllers.root.RootController',
@@ -31,12 +25,6 @@ logging = {
             'class': 'logging.StreamHandler',
             'formatter': 'color'
         },
-	'logfile': {
-	    'level': 'DEBUG',
-	    'class': 'logging.FileHandler',
-	    'filename': 'access.log',
-	    'formatter': 'messageonly'
-	}
     },
     'formatters': {
         'simple': {
