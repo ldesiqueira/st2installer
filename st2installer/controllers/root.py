@@ -89,13 +89,13 @@ class RootController(object):
           "password": password,
           "shell": "/bin/bash",
           "uid": "1000",
-          "gid": "1000",
-        }
+          "gid": "6000",
+        },
         "admin": {
           "password": kwargs['password-1'],
           "shell": "/bin/bash",
           "uid": "1001",
-          "gid": "1001",
+          "gid": "6002",
           "admin": True,
         }
       },
