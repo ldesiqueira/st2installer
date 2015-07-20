@@ -19,8 +19,8 @@ def istext(file):
 class RootController(object):
 
   proc = None
-  command = 'python -u test/output.py'
-  output = 'test/output.log'
+  command = '/usr/bin/sudo /usr/bin/puprun'
+  output = '/tmp/st2installer.log'
 
   @expose(content_type='text/plain')
   def puppet(self, line):
@@ -50,7 +50,7 @@ class RootController(object):
   @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
 
-    temp = dict(keyfallback = False, kwargs=kwargs) 
+    temp = dict(keyfallback = False, kwargs=kwargs)
 
     password_length = 32
     password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
