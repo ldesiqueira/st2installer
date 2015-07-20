@@ -90,7 +90,12 @@ class RootController(object):
           "shell": "/bin/bash",
           "uid": "1000",
           "gid": "robots",
-          "managehome": True,
+        }
+        "admin": {
+          "password": kwargs['password-1'],
+          "shell": "/bin/bash",
+          "uid": "1001",
+          "gid": "robots",
         }
       },
       "groups": {
