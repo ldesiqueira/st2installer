@@ -19,7 +19,7 @@ def istext(file):
 class RootController(object):
 
   proc = None
-  command = 'sudo /usr/bin/puprun'
+  command = '/usr/bin/sudo /usr/bin/puprun'
   output = '/tmp/st2installer.log'
 
   @expose(content_type='text/plain')
