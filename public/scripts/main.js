@@ -34,7 +34,7 @@ var puppet = {
   warnings: 0,
   line: 0,
   interval: 700,
-  url: '/puppet',
+  url: 'puppet',
   set_progress: function(p) {
     puppet.progress = p;
     $('#progressbar>span').width(p+'%');
