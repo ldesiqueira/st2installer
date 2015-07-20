@@ -102,7 +102,8 @@ var puppet = {
               }
 
               scroll = $('#output')[0].scrollHeight - $('#output')[0].scrollTop === $('#output')[0].clientHeight;
-              $('#output-content').append('<p class="'+p_class+'">'+line+'</p>');
+              content = $('<p class="'+p_class+'"/>').text(line);
+              $('#output-content').append(content);
               if (scroll) {
                 $('#output')[0].scrollTop = $('#output')[0].scrollHeight;
                 puppet.scroll_disabled = 0;
