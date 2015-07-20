@@ -1,5 +1,5 @@
 from pecan import expose, request, Response, redirect
-import random, string, os, json
+import random, string, os, yaml
 from subprocess import Popen, PIPE
 
 def istext(file):
@@ -56,7 +56,7 @@ class RootController(object):
     password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
     password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
     path = "/opt/puppet/hieradata/"
-    filename = "workroom.json"
+    filename = "workroom.yaml"
 
     config = {
       "system::hostname":               kwargs['hostname'],
@@ -166,7 +166,7 @@ class RootController(object):
       os.makedirs(path)
 
     with open(path+filename, 'w') as workroom:
-      workroom.write(json.dumps(config))
+      workroom.write(yaml.dump(config))
 
     return temp
 
