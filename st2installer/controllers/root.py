@@ -19,8 +19,8 @@ def istext(file):
 class RootController(object):
 
   proc = None
-  command = 'python -u test/output.py'
-  output = 'test/output.log'
+  command = 'puprun'
+  output = '/tmp/st2installer.log'
 
   @expose(content_type='text/plain')
   def puppet(self, line):
