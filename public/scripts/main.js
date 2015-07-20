@@ -61,52 +61,58 @@ var puppet = {
     }
   },
   read: function() {
-    var stream = $.get(puppet.url, {line: puppet.line}, function(data) {
-      if (data != '--idle--') {
-        lines = data.split('\n');
-        for (var i = 0; i < lines.length; i++) {
-          line = lines[i];
-          if (i == lines.length-1 && line == '--terminate--') {
-            puppet.set_progress(100);
-          } else if (line.trim()) {
-            puppet.line += 1;
-            p_class = 'message';
+    var stream = $.ajax({
+      url: puppet.url, 
+      data: {line: puppet.line}, 
+      timeout: 500,
+      complete: function(data, status) {
+        data = String(data.responseText);
+        if (data != '--idle--' && status != 'timeout') {
+          lines = data.split('\n');
+          for (var i = 0; i < lines.length; i++) {
+            line = lines[i];
+            if (i == lines.length-1 && line == '--terminate--') {
+              puppet.set_progress(100);
+            } else if (line.trim()) {
+              puppet.line += 1;
+              p_class = 'message';
 
-            for (var ii = 0; ii < puppet.important.length; ii++) {
-              if (puppet.important[ii].test(line)) {
-                p_class = 'output-important';
+              for (var ii = 0; ii < puppet.important.length; ii++) {
+                if (puppet.important[ii].test(line)) {
+                  p_class = 'output-important';
+                }
               }
-            }
-            for (var ii = 0; ii < puppet.warning.length; ii++) {
-              if (puppet.warning[ii].test(line)) {
-                p_class = 'output-warning';
-                puppet.add_warning();
+              for (var ii = 0; ii < puppet.warning.length; ii++) {
+                if (puppet.warning[ii].test(line)) {
+                  p_class = 'output-warning';
+                  puppet.add_warning();
+                }
               }
-            }
-            for (var ii = 0; ii < puppet.error.length; ii++) {
-              if (puppet.error[ii].test(line)) {
-                p_class = 'output-error';
-                puppet.add_error();
+              for (var ii = 0; ii < puppet.error.length; ii++) {
+                if (puppet.error[ii].test(line)) {
+                  p_class = 'output-error';
+                  puppet.add_error();
+                }
               }
-            }
-            for (var ii = 0; ii < puppet.checkpoints.length; ii++) {
-              if (puppet.checkpoints[ii][0].test(line)) {
-                p_class = 'output-important';
-                puppet.set_progress(puppet.checkpoints[ii][1]);
+              for (var ii = 0; ii < puppet.checkpoints.length; ii++) {
+                if (puppet.checkpoints[ii][0].test(line)) {
+                  p_class = 'output-important';
+                  puppet.set_progress(puppet.checkpoints[ii][1]);
+                }
               }
-            }
 
-            scroll = $('#output')[0].scrollHeight - $('#output')[0].scrollTop === $('#output')[0].clientHeight;
-            $('#output-content').append('<p class="'+p_class+'">'+line+'</p>');
-            if (scroll) {
-              $('#output')[0].scrollTop = $('#output')[0].scrollHeight;
-              puppet.scroll_disabled = 0;
-            };
+              scroll = $('#output')[0].scrollHeight - $('#output')[0].scrollTop === $('#output')[0].clientHeight;
+              $('#output-content').append('<p class="'+p_class+'">'+line+'</p>');
+              if (scroll) {
+                $('#output')[0].scrollTop = $('#output')[0].scrollHeight;
+                puppet.scroll_disabled = 0;
+              };
+            }
           }
         }
-      }
-      if (puppet.progress < 100) {
-        setTimeout(puppet.read, puppet.interval);
+        if (puppet.progress < 100) {
+          setTimeout(puppet.read, puppet.interval);
+        }
       }
     });
   },
