@@ -60,7 +60,6 @@ class RootController(object):
 
     config = {
       "system::hostname":               kwargs['hostname'],
-      "st2::auth":                      True,
       "st2::installer_run":             True,
       "st2::api_url":                   "https://%s:9101" % kwargs['hostname'],
       "st2::auth_url":                  "https://%s:9100" % kwargs['hostname'],
