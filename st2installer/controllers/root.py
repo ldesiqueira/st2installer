@@ -60,21 +60,17 @@ class RootController(object):
 
     config = {
       "system::hostname":               kwargs['hostname'],
-      "st2::auth":                      True,
       "st2::api_url":                   "https://%s:9101" % kwargs['hostname'],
       "st2::auth_url":                  "https://%s:9100" % kwargs['hostname'],
       "st2::cli_api_url":               "https://%s:9101" % kwargs['hostname'],
       "st2::cli_auth_url":              "https://%s:9100" % kwargs['hostname'],
-      "st2::cli_username":              "admin",
-      "st2::cli_password":              kwargs['password-1'],
       "st2::stanley::username":         kwargs['username'],
-      "st2::stanley::password":         password,
       "st2::stanley::ssh_private_key":  kwargs['integrationacct'],
 
       "hubot::chat_alias": "!",
       "hubot::env_export": {
         "HUBOT_LOG_LEVEL":   "debug",
-        "ST2_AUTH_USERNAME": kwargs['username'],
+        "ST2_AUTH_USERNAME": "chatops_bot",
         "ST2_AUTH_PASSWORD": password
       },
       "hubot::external_scripts": ["hubot-stackstorm"],
@@ -86,17 +82,15 @@ class RootController(object):
 
       "users": {
         kwargs['username']: {
-          "password": password,
           "shell": "/bin/bash",
-          "uid": "1000",
-          "gid": "6000",
         },
         "admin": {
           "password": kwargs['password-1'],
-          "shell": "/bin/bash",
-          "uid": "1001",
-          "gid": "6002",
           "admin": True,
+        },
+        "chatops_bot": {
+          "password": password,
+          "shell": "/bin/false"
         }
       },
       "groups": {
