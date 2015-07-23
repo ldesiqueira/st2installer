@@ -1,5 +1,5 @@
 from pecan import expose, request, Response, redirect
-import random, string, os, json
+import random, string, os, yaml
 from subprocess import Popen, PIPE
 
 def istext(file):
@@ -19,7 +19,7 @@ def istext(file):
 class RootController(object):
 
   proc = None
-  command = '/usr/bin/sudo /usr/bin/puprun'
+  command = '/usr/bin/sudo nocolor=1 /usr/bin/puprun'
   output = '/tmp/st2installer.log'
 
   @expose(content_type='text/plain')
@@ -56,25 +56,22 @@ class RootController(object):
     password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
     password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
     path = "/opt/puppet/hieradata/"
-    filename = "workroom.json"
+    filename = "workroom.yaml"
 
     config = {
       "system::hostname":               kwargs['hostname'],
-      "st2::auth":                      True,
+      "st2::installer_run":             True,
       "st2::api_url":                   "https://%s:9101" % kwargs['hostname'],
       "st2::auth_url":                  "https://%s:9100" % kwargs['hostname'],
       "st2::cli_api_url":               "https://%s:9101" % kwargs['hostname'],
       "st2::cli_auth_url":              "https://%s:9100" % kwargs['hostname'],
-      "st2::cli_username":              "admin",
-      "st2::cli_password":              kwargs['password-1'],
       "st2::stanley::username":         kwargs['username'],
-      "st2::stanley::password":         password,
       "st2::stanley::ssh_private_key":  kwargs['integrationacct'],
 
       "hubot::chat_alias": "!",
       "hubot::env_export": {
         "HUBOT_LOG_LEVEL":   "debug",
-        "ST2_AUTH_USERNAME": kwargs['username'],
+        "ST2_AUTH_USERNAME": "chatops_bot",
         "ST2_AUTH_PASSWORD": password
       },
       "hubot::external_scripts": ["hubot-stackstorm"],
@@ -85,12 +82,13 @@ class RootController(object):
       },
 
       "users": {
-        kwargs['username']: {
+        "admin": {
+          "password": kwargs['password-1'],
+          "admin": True,
+        },
+        "chatops_bot": {
           "password": password,
-          "shell": "/bin/bash",
-          "uid": "1000",
-          "gid": "robots",
-          "managehome": True,
+          "shell": "/bin/false"
         }
       },
       "groups": {
@@ -166,7 +164,7 @@ class RootController(object):
       os.makedirs(path)
 
     with open(path+filename, 'w') as workroom:
-      workroom.write(json.dumps(config))
+      workroom.write(yaml.dump(config))
 
     return temp
 
