@@ -45,12 +45,17 @@ class RootController(object):
 
   @expose(generic=True, template='index.html')
   def index(self):
+    if self.proc:
+      redirect('/install', internal=True)
     return dict()
 
-  @index.when(method='POST', template='progress.html')
+  @index.when(method='POST')
   def index_post(self, **kwargs):
 
-    temp = dict(keyfallback = False, kwargs=kwargs)
+    if self.proc:
+      redirect('/install', internal=True)
+
+    keyfallback = False
 
     password_length = 32
     password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
@@ -104,7 +109,7 @@ class RootController(object):
         config["st2::ssl_public_key"] = request.POST['file-publickey'].file.read()
         config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
       else:
-        temp['keyfallback'] = True
+        keyfallback = True
 
     if kwargs["chatops"] == "example":
       config["hubot::adapter"] = "irc"
@@ -166,8 +171,8 @@ class RootController(object):
     with open(path+filename, 'w') as workroom:
       workroom.write(yaml.dump(config))
 
-    return temp
+    redirect('/install%s' % ('?key=fallback' if keyfallback else ''), internal=True)
 
-  @expose(generic=True, template='final.html')
-  def done(self):
-    return dict()
+  @expose(generic=True, template='progress.html')
+  def install(self):
+    return dict(keyfallback = request.GET.get('key'))
