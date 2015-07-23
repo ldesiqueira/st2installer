@@ -23,6 +23,11 @@ class RootController(object):
   output = '/tmp/st2installer.log'
 
   @expose(content_type='text/plain')
+  def cleanup(self):
+    Popen("/bin/echo whee!", shell=True)
+    return "done"
+
+  @expose(content_type='text/plain')
   def puppet(self, line):
     if not self.proc:
       open(self.output, 'w').close()
