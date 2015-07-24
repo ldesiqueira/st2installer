@@ -13,7 +13,7 @@ setup(
     author='',
     author_email='',
     install_requires=[
-        "pecan"
+        "pecan", "pyyaml"
     ],
     test_suite='st2installer',
     zip_safe=False,
