@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys, random, time
 
 # A sample app for UI testing that just throws some output to stdout and stderr.
@@ -33,5 +31,4 @@ for line in range(total_lines):
   if line>0 and not (line % (total_lines/5)):
     sys.stdout.write("PROGRESS: %i\n" % (100/float(total_lines)*line))
   sys.stdout.write("%s\n" % sb)
-  sys.stdout.flush()
   time.sleep(line_pause)

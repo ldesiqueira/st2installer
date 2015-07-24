@@ -23,11 +23,6 @@ class RootController(object):
   output = '/tmp/st2installer.log'
 
   @expose(content_type='text/plain')
-  def cleanup(self):
-    Popen("/bin/echo whee!", shell=True)
-    return "done"
-
-  @expose(content_type='text/plain')
   def puppet(self, line):
     if not self.proc:
       open(self.output, 'w').close()
@@ -50,17 +45,12 @@ class RootController(object):
 
   @expose(generic=True, template='index.html')
   def index(self):
-    if self.proc:
-      redirect('/install', internal=True)
     return dict()
 
-  @index.when(method='POST')
+  @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
 
-    if self.proc:
-      redirect('/install', internal=True)
-
-    keyfallback = False
+    temp = dict(keyfallback = False, kwargs=kwargs)
 
     password_length = 32
     password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
@@ -114,7 +104,7 @@ class RootController(object):
         config["st2::ssl_public_key"] = request.POST['file-publickey'].file.read()
         config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
       else:
-        keyfallback = True
+        temp['keyfallback'] = True
 
     if kwargs["chatops"] == "example":
       config["hubot::adapter"] = "irc"
@@ -176,8 +166,8 @@ class RootController(object):
     with open(path+filename, 'w') as workroom:
       workroom.write(yaml.dump(config))
 
-    redirect('/install%s' % ('?key=fallback' if keyfallback else ''), internal=True)
+    return temp
 
-  @expose(generic=True, template='progress.html')
-  def install(self):
-    return dict(keyfallback = request.GET.get('key'))
+  @expose(generic=True, template='final.html')
+  def done(self):
+    return dict()
