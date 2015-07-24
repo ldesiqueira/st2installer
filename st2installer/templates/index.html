@@ -3,28 +3,28 @@
 <form id="installer" method="POST" action="." enctype="multipart/form-data">
   <div class="page" id="page-hostname">
     <h1>Configure Hostname and SSL</h1>
-    
-      <label for="text-hostname" class="required">Hostname</label>
-      <input type="text" id="text-hostname" name="hostname" />
-      <p class="hint">FQDN of host.</p>
-    
-    
-      <h2>SSL keys</h2>
-      <p>By default, StackStorm installs with a self-signed SSL certificate. If you would like to provide your own certificate, you can upload it here.</p>
-      <fieldset id="ssl-enable">
-        <label for="radio-selfsigned-true"><input id="radio-selfsigned-true" type="radio" name="selfsigned" value="1" checked="checked">Continue with self-signed</label>
-        <label for="radio-selfsigned-false"><input id="radio-selfsigned-false" type="radio" name="selfsigned" value="0">Upload SSL certificate</label>
-      </fieldset>
-      <fieldset id="ssl">
-        <div>
-          <label for="textarea-public" class="required">Public key</label>
-          <input type="file" name="file-publickey" id="file-publickey" />
-        </div>
-        <div>
-          <label for="textarea-private" class="required">Private key</label>
-          <input type="file" name="file-privatekey" id="file-privatekey" />
-        </div>
-      </fieldset>
+  
+    <label for="text-hostname" class="required">Hostname</label>
+    <input type="text" id="text-hostname" name="hostname" />
+    <p class="hint">FQDN of host.</p>
+  
+  
+    <h2>SSL keys</h2>
+    <p>By default, StackStorm installs with a self-signed SSL certificate. If you would like to provide your own certificate, you can upload it here.</p>
+    <fieldset id="ssl-enable">
+      <label for="radio-selfsigned-true"><input id="radio-selfsigned-true" type="radio" name="selfsigned" value="1" checked="checked">Continue with self-signed</label>
+      <label for="radio-selfsigned-false"><input id="radio-selfsigned-false" type="radio" name="selfsigned" value="0">Upload SSL certificate</label>
+    </fieldset>
+    <fieldset id="ssl">
+      <div>
+        <label for="file-publickey" class="required">Public key</label>
+        <input type="file" name="file-publickey" id="file-publickey" />
+      </div>
+      <div>
+        <label for="file-privatekey" class="required">Private key</label>
+        <input type="file" name="file-privatekey" id="file-privatekey" />
+      </div>
+    </fieldset>
 
   </div>
   <div class="page" id="page-accounts">
@@ -34,7 +34,7 @@
     <fieldset>
       <label for="text-password-1" class="required">Password</label>
       <input type="password" id="text-password-1" name="password-1" />
-      <p class="hint">8–20 alphanumeric characters, at least one digit and one letter is required.</p>
+      <p class="hint">8+ alphanumeric characters, at least one digit and one letter is required.</p>
       <label for="text-password-2" class="required">Confirm</label>
       <input type="password" id="text-password-2" name="password-2" />
     </fieldset>
@@ -43,9 +43,21 @@
     <fieldset>
       <label for="text-username" class="required">Username</label>
       <input type="text" id="text-username" name="username" value="stanley" />
-      <label for="textarea-integrationacct">SSH key</label>
-      <textarea name="integrationacct" id="textarea-integrationacct" cols="30" rows="10"></textarea>
     </fieldset>
+    <fieldset id="ssh-enable">
+        <label for="radio-sshgen-true"><input id="radio-sshgen-true" type="radio" name="sshgen" value="1" checked="checked">Generate a new SSH key pair for the account</label>
+        <label for="radio-sshgen-false"><input id="radio-sshgen-false" type="radio" name="sshgen" value="0">Use an existing key pair</label>
+      </fieldset>
+      <fieldset id="ssh">
+        <div>
+          <label for="file-ssh-publickey" class="required">Public key</label>
+          <input type="file" name="file-ssh-publickey" id="file-ssh-publickey" />
+        </div>
+        <div>
+          <label for="file-ssh-privatekey" class="required">Private key</label>
+          <input type="file" name="file-ssh-privatekey" id="file-ssh-privatekey" />
+        </div>
+      </fieldset>
   </div>
   <div class="page" id="page-chatops">
     <h1>Configure ChatOps</h1>
@@ -118,4 +130,6 @@
     <a href="#" id="step-back">Back</a>
     <p>Step <span id="current-step"></span> of <span id="total-steps"></span></p>
   </div>
+  <input type="hidden" name="comparison" id="hidden-comparison" value=""/>
 </form>
+<iframe style="display:none" id="keypair-frame" name="keypair-frame"></iframe>

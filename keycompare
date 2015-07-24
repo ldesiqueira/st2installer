@@ -1,0 +1,15 @@
+#!/bin/bash
+PRIVKEY=/tmp/testkey
+TESTKEY=/tmp/testkey-pub
+if test ! -r /tmp/testkey || test ! -r /tmp/testkey
+then
+  echo "1"
+  exit
+fi
+chmod 600 "$PRIVKEY"
+chmod 600 "$TESTKEY"
+diff -q <( ssh-keygen -y -e -f "$PRIVKEY" -P "" ) <( ssh-keygen -y -e -f "$TESTKEY" -P "" )
+STATUS=$?
+rm -f "$PRIVKEY"
+rm -f "$TESTKEY"
+echo "$STATUS"

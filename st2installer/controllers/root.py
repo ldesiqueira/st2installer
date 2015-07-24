@@ -1,26 +1,14 @@
-from pecan import expose, request, Response, redirect
+from pecan import expose, request, Response, redirect, abort
+from subprocess import Popen, PIPE, call
+from keypair import KeypairController
 import random, string, os, yaml
-from subprocess import Popen, PIPE
-
-def istext(file):
-    s=file.read(512)
-    file.seek(0)
-    text_characters = "".join(map(chr, range(32, 127)) + list("\n\r\t\b"))
-    _null_trans = string.maketrans("", "")
-    if not s:
-        return True
-    if "\0" in s:
-        return False
-    t = s.translate(_null_trans, text_characters)
-    if float(len(t))/float(len(s)) > 0.10:
-        return False
-    return True
 
 class RootController(object):
 
   proc = None
   command = '/usr/bin/sudo nocolor=1 /usr/bin/puprun'
   output = '/tmp/st2installer.log'
+  keypair = KeypairController()
 
   @expose(content_type='text/plain')
   def cleanup(self):
@@ -60,8 +48,6 @@ class RootController(object):
     if self.proc:
       redirect('/install', internal=True)
 
-    keyfallback = False
-
     password_length = 32
     password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
     password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
@@ -76,7 +62,6 @@ class RootController(object):
       "st2::cli_api_url":               "https://%s:9101" % kwargs['hostname'],
       "st2::cli_auth_url":              "https://%s:9100" % kwargs['hostname'],
       "st2::stanley::username":         kwargs['username'],
-      "st2::stanley::ssh_private_key":  kwargs['integrationacct'],
 
       "hubot::chat_alias": "!",
       "hubot::env_export": {
@@ -110,11 +95,15 @@ class RootController(object):
 
     # TODO: a better than "isn't a binary" key validation
     if kwargs["selfsigned"] == "0":
-      if istext(request.POST['file-publickey'].file) and istext(request.POST['file-privatekey'].file):
-        config["st2::ssl_public_key"] = request.POST['file-publickey'].file.read()
-        config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
-      else:
-        keyfallback = True
+      config["st2::ssl_public_key"] = request.POST['file-publickey'].file.read()
+      config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
+
+    if kwargs["sshgen"] == "0":
+      config["st2::ssh_public_key"] = request.POST['file-publickey'].file.read()
+      config["st2::ssh_private_key"] = request.POST['file-privatekey'].file.read()
+    else:
+      config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
+      config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
 
     if kwargs["chatops"] == "example":
       config["hubot::adapter"] = "irc"
@@ -176,8 +165,8 @@ class RootController(object):
     with open(path+filename, 'w') as workroom:
       workroom.write(yaml.dump(config))
 
-    redirect('/install%s' % ('?key=fallback' if keyfallback else ''), internal=True)
+    redirect('/install', internal=True)
 
   @expose(generic=True, template='progress.html')
   def install(self):
-    return dict(keyfallback = request.GET.get('key'))
+    return dict()

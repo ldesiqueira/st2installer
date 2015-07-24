@@ -4,14 +4,32 @@ var i18n = {
   last: "Get started!",
   required: "Required field.",
   fqdn: "Should be an IP address or a FQDN.",
-  ssl_required: "Both keys are required if not using a self-signed certificate.",
+  ssl_required: "Both keys are required if not using a generated pair.",
   complexity: "Complexity requirements are not met.",
   confirmation: "Passwords do not match.",
   slack: "API token is required for Slack integration.",
   hipchat: "JID and password are required for HipChat integration.",
   xmpp: "Username, password and at least one room are required for XMPP integration.",
   irc: "Server and at least one room are required for IRC integration.",
-  flowdock: "All fields are required for Flowdock integration."
+  flowdock: "All fields are required for Flowdock integration.",
+  ssh: {
+    'header': "Whoa. The keys do not match!",
+    'text': "It appears you've uploaded a key pair that either does not match or isn't really a key pair at all! \
+              You can upload another set of keys or we can just generate a new key pair for you, no problem.",
+    'buttons': [
+      ['Generate', '#generate'],
+      ['Re-upload', '#back']
+    ]
+  },
+  ssl: {
+    'header': "Certificate error",
+    'text': "It appears you've uploaded a key pair that either does not match or isn't really a key pair at all! \
+              You can upload another certificate or we can just generate a self-signed one for you, no problem.",
+    'buttons': [
+      ['Generate', '#generate'],
+      ['Re-upload', '#back']
+    ]
+  }
 };
 var puppet = {
   warning: [ 
@@ -144,8 +162,9 @@ var installer = {
   page: 0, 
   chatops: 0,
   errors: 0,
+  key_validator: 'keypair/',
   switch_page: function(page) {
-    if (page <= installer.page || installer.validate(installer.page)) {
+    var perform_switch = function() {
       installer.page = page;
       $('.page')
         .removeClass('active')
@@ -170,6 +189,12 @@ var installer = {
         $('#step-back').show();
       }
     }
+    if (page <= installer.page) {
+      perform_switch();
+    } else {
+      installer.validate(installer.page, perform_switch);
+    }
+    return false;
   },
   switch_chatops: function(tab) {
     installer.chatops = tab;
@@ -187,8 +212,54 @@ var installer = {
     installer.errors += 1;
     el.after('<p class="error">'+error+'</p>');
   },
-  validate: function(page) {
+  modal: $(
+    '<div id="modal-overflow">' +
+      '<div id="modal">' +
+        '<h3></h3>' +
+        '<p></p>' +
+        '<div id="keypair">' +
+          '<label for="keypair-public">Your public key</label>' +
+          '<textarea id="keypair-public"></textarea>' +
+          '<label for="keypair-private">Your private key</label>' +
+          '<textarea id="keypair-private"></textarea>' +
+        '</div>' +
+        '<div id="modal-buttons">' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  ),
+  raise_modal: function(template) {
+    
+    $('#modal-overflow').remove();
+    modal = installer.modal;
+    modal.find('h3').text(i18n[template].header);
+    modal.find('p').text(i18n[template].text);
+    modal.find('#modal-buttons').empty();
+    for (var i = 0; i < i18n[template].buttons.length; i++) {
+      modal.find('#modal-buttons').append('<a href="'+i18n[template].buttons[i][1]+'">'+i18n[template].buttons[i][0]+'</a>');
+    }
+    modal.appendTo('#installer').show();
+    modal.find('#modal').css('margin-top', -modal.find('#modal').height()/2);
 
+  },
+  modal_back: function () {
+    $('#modal-overflow').remove();
+    return false;
+  },
+  modal_generate: function () {
+    $('#modal-overflow').remove();
+    if (installer.page == 0) {
+      $('#radio-selfsigned-true').click();
+      installer.switch_page(1);
+    } else if (installer.page == 1) {
+      $('#radio-sshgen-true').click();
+      installer.switch_page(2);
+    }
+    return false;
+  },
+  validate: function(page, callback) {
+
+    var framewait = false;
     installer.errors = 0;
     $('p.error').remove();
 
@@ -204,7 +275,18 @@ var installer = {
       if ($('#radio-selfsigned-false').is(':checked') && 
           ($('#file-publickey').val().trim().length==0 ||
            $('#file-privatekey').val().trim().length==0)) {
-        installer.append_error($('#ssl'), i18n.ssl_required);  
+        installer.append_error($('#ssl'), i18n.ssl_required);
+      } 
+
+      if ($('#radio-selfsigned-false').is(':checked') &&
+          installer.errors == 0) {
+
+        $('#hidden-comparison').val('ssl');
+        $('#installer').attr("target", "keypair-frame");
+        $('#installer').attr("action", installer.key_validator);
+        $('#installer').submit();
+        framewait = true;
+
       }
 
     } else if (installer.page == 1) {
@@ -212,7 +294,7 @@ var installer = {
       var password = $('#text-password-1');
       if (password.val().trim().length == 0) {
         installer.append_error(password, i18n.required);
-      } else if (!/^(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9]{8,20})$/.test(password.val())) {
+      } else if (!/^(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9!=@#\$%\\\^&\*\(\)_\'\"]{8,})$/.test(password.val())) {
         installer.append_error(password, i18n.complexity);
       }
 
@@ -226,34 +308,51 @@ var installer = {
         installer.append_error(username, i18n.required);
       }
 
+      if ($('#radio-sshgen-false').is(':checked') && 
+          ($('#file-ssh-publickey').val().trim().length==0 ||
+           $('#file-ssh-privatekey').val().trim().length==0)) {
+        installer.append_error($('#ssh'), i18n.ssl_required);  
+      }
+
+      if ($('#radio-sshgen-false').is(':checked') &&
+          installer.errors == 0) {
+
+        $('#hidden-comparison').val('ssh');
+        $('#installer').attr("target", "keypair-frame");
+        $('#installer').attr("action", installer.key_validator);
+        $('#installer').submit();
+        framewait = true;
+
+      }
+
     } else if (installer.page == 2) {
 
       switch(installer.chatops) {
-        case 1:
+        case 0:
           if ($('#text-slack-token').val().trim().length==0) {
             installer.append_error($('#tab-slack p:first-child'), i18n.slack);
           }
           break;
-        case 2:
+        case 1:
           if ($('#text-hipchat-jid').val().trim().length==0 ||
               $('#text-hipchat-password').val().trim().length==0) {
             installer.append_error($('#tab-hipchat p:first-child'), i18n.hipchat);
           }
           break;
-        case 3:
+        case 2:
           if ($('#text-xmpp-rooms').val().trim().length==0 ||
               $('#text-xmpp-username').val().trim().length==0 ||
               $('#text-xmpp-password').val().trim().length==0) {
             installer.append_error($('#tab-xmpp p:first-child'), i18n.xmpp);
           }
           break;
-        case 4:
+        case 3:
           if ($('#text-irc-server').val().trim().length==0 ||
               $('#text-irc-rooms').val().trim().length==0) {
             installer.append_error($('#tab-irc p:first-child'), i18n.irc);
           }
           break;
-        case 5:
+        case 4:
           if ($('#text-flowdock-token').val().trim().length==0 ||
               $('#text-flowdock-email').val().trim().length==0 ||
               $('#text-flowdock-password').val().trim().length==0) {
@@ -264,34 +363,46 @@ var installer = {
 
     }
 
-    if (installer.errors > 0) {
-      return false;
+    if (installer.errors == 0) {
+      if (framewait) {
+        $('#keypair-frame').off('load');
+        $('#keypair-frame').on('load', function() {
+          if ($('#keypair-frame').contents().text().trim() != "0") {
+            installer.errors += 1;
+            installer.raise_modal($('#hidden-comparison').val());
+          } else {
+            callback();
+          }
+        });
+      } else {
+        callback();
+      }
     }
-    return true;
 
+  },
+  submit: function() {
+    if (installer.page == $('.page').length-1) {
+      installer.validate(installer.page, function() {
+        $('#installer').submit();
+      });
+    } else {
+      installer.switch_page(installer.page+1);
+    }
   },
   init: function() {
     installer.switch_page(0);
     installer.switch_chatops(0);
-
-    $('#installer').submit(function(e) {
-      if (installer.page == $('.page').length-1 && installer.validate(installer.page)) {
-        return;
-      } else {
-        installer.switch_page(installer.page+1);
-      } 
-      e.preventDefault();
-      return false;
-    });
     $('#step-back').click(function() {
       installer.switch_page(installer.page-1);
+      return false;
     });
     $('#step-next').click(function() {
       if (installer.page == $('.page').length-1) {
-        $('#installer').submit();
+        installer.submit();
       } else {
         installer.switch_page(installer.page+1);
       }
+      return false;
     });
 
     $('#total-steps').text($('.page').length);
@@ -302,6 +413,14 @@ var installer = {
 
     $('#radio-selfsigned-true').on('change', function() {
       $('#ssl').hide()
+    });
+
+    $('#radio-sshgen-false').on('change', function() {
+      $('#ssh').show()
+    });
+
+    $('#radio-sshgen-true').on('change', function() {
+      $('#ssh').hide()
     });
 
     $('#chatops-navigation li a').on('click', function() {
@@ -319,4 +438,6 @@ $(function() {
   if ($('#page-puppet').length) {
     puppet.init();
   }
+  $('#installer').on('click', '#modal a[href=#back]', installer.modal_back);
+  $('#installer').on('click', '#modal a[href=#generate]', installer.modal_generate);
 });
