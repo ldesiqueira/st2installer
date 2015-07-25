@@ -10,6 +10,11 @@ class RootController(object):
   output = '/tmp/st2installer.log'
   keypair = KeypairController()
 
+  def lock(self):
+    open('/tmp/st2installer_lock', 'w').close()
+  def is_locked(self):
+    return os.path.isfile('/tmp/st2installer_lock')
+
   @expose(content_type='text/plain')
   def cleanup(self):
     Popen("/bin/echo whee!", shell=True)
@@ -20,6 +25,7 @@ class RootController(object):
     if not self.proc:
       open(self.output, 'w').close()
       self.proc = Popen("%s > %s 2>&1" % (self.command, self.output), shell=True)
+      self.lock()
 
     data = ''
     logfile = open(self.output, 'r')
@@ -38,14 +44,14 @@ class RootController(object):
 
   @expose(generic=True, template='index.html')
   def index(self):
-    if self.proc:
+    if self.is_locked():
       redirect('/install', internal=True)
     return dict()
 
   @index.when(method='POST')
   def index_post(self, **kwargs):
 
-    if self.proc:
+    if self.is_locked():
       redirect('/install', internal=True)
 
     password_length = 32

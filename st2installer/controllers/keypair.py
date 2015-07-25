@@ -38,5 +38,5 @@ class KeypairController(object):
     private = RSA.generate(1024, os.urandom)
     return {
       'private': private.exportKey('PEM'),
-      'public': private.publickey().exportKey('OpenSSH')
+      'public': private.publickey().exportKey('OpenSSH')[8:]
     }

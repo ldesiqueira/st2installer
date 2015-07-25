@@ -434,6 +434,7 @@ var installer = {
     $('#installer').on('click', '#modal a[href=#next]', function() {
       installer.switch_page(installer.page+1);
       $('#modal-overflow').remove();
+      return false;
     });
 
     $('#total-steps').text($('.page').length);
