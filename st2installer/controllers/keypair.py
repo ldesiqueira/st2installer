@@ -1,6 +1,7 @@
 from pecan import expose, request, Response, redirect, abort
 from subprocess import call
-import random, string, os, rsa
+import random, string, os
+from Crypto.PublicKey import RSA
 
 class KeypairController(object):
 
@@ -34,8 +35,8 @@ class KeypairController(object):
 
   @expose('json')
   def keygen(self):
-    (public, private) = rsa.newkeys(1024)
+    private = RSA.generate(1024, os.urandom)
     return {
-      'private': private.save_pkcs1(format='PEM'),
-      'public': public.save_pkcs1(format='PEM')
+      'private': private.exportKey('PEM'),
+      'public': private.publickey().exportKey('OpenSSH')
     }
