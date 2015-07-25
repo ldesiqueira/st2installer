@@ -60,7 +60,6 @@ var puppet = {
   line: 0,
   interval: 700,
   url: 'puppet',
-  cleanup: 'cleanup',
   set_progress: function(p) {
     puppet.progress = p;
     $('#progressbar>span').width(p+'%');
@@ -146,7 +145,6 @@ var puppet = {
   complete: function() {
     $('#page-puppet').removeClass('progress');
     $('#puppet-done').show(); 
-    $.get(puppet.cleanup);
   },
   init: function() {
     $('#page-puppet').addClass('progress');

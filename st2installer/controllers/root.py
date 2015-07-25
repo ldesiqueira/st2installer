@@ -16,11 +16,6 @@ class RootController(object):
     return os.path.isfile('/tmp/st2installer_lock')
 
   @expose(content_type='text/plain')
-  def cleanup(self):
-    Popen("/bin/echo whee!", shell=True)
-    return "done"
-
-  @expose(content_type='text/plain')
   def puppet(self, line):
     if not self.proc:
       open(self.output, 'w').close()
@@ -48,7 +43,7 @@ class RootController(object):
       redirect('/install', internal=True)
     return dict()
 
-  @index.when(method='POST')
+  @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
 
     if self.is_locked():
