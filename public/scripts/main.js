@@ -405,6 +405,8 @@ var installer = {
   submit: function() {
     if (installer.page == $('.page').length-1) {
       installer.validate(installer.page, function() {
+        $('#installer').removeAttr("target");
+        $('#installer').removeAttr("action");
         $('#installer').submit();
       });
     } else {
