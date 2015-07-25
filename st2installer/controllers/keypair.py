@@ -7,7 +7,7 @@ class KeypairController(object):
 
   private = '/tmp/testkey'
   public = '/tmp/testkey-pub'
-  diff = '/usr/bin/keycompare'
+  diff = '/etc/st2installer/keycompare'
   diff_output = '/tmp/keycompare.log'
 
   @expose(generic=True, content_type='text/plain')
