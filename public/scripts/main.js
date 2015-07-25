@@ -29,6 +29,13 @@ var i18n = {
       ['Generate', '#generate'],
       ['Re-upload', '#back']
     ]
+  },
+  keypair: {
+    'header': "Your SSH key pair",
+    'text': "There's a new pair of SSH keys generated just for you! Be sure to save them and keep them very safe.",
+    'buttons': [
+      ['Got it!', '#next']
+    ]
   }
 };
 var puppet = {
@@ -163,6 +170,7 @@ var installer = {
   chatops: 0,
   errors: 0,
   key_validator: 'keypair/',
+  key_generator: 'keypair/keygen',
   switch_page: function(page) {
     var perform_switch = function() {
       installer.page = page;
@@ -237,6 +245,11 @@ var installer = {
     modal.find('#modal-buttons').empty();
     for (var i = 0; i < i18n[template].buttons.length; i++) {
       modal.find('#modal-buttons').append('<a href="'+i18n[template].buttons[i][1]+'">'+i18n[template].buttons[i][0]+'</a>');
+    }
+    if (template == 'keypair') {
+      modal.find('#keypair').show();
+      modal.find('#keypair-public').val($('#gen-public').val());
+      modal.find('#keypair-private').val($('#gen-private').val());
     }
     modal.appendTo('#installer').show();
     modal.find('#modal').css('margin-top', -modal.find('#modal').height()/2);
@@ -365,6 +378,7 @@ var installer = {
 
     if (installer.errors == 0) {
       if (framewait) {
+        framewait = false;
         $('#keypair-frame').off('load');
         $('#keypair-frame').on('load', function() {
           if ($('#keypair-frame').contents().text().trim() != "0") {
@@ -373,6 +387,14 @@ var installer = {
           } else {
             callback();
           }
+        });
+      } else if (installer.page == 1 &&
+                 $('#radio-sshgen-true').is(':checked') && 
+                 $('#gen-private').val() == '') {
+        $.get(installer.key_generator).always(function(keypair) {
+          $('#gen-private').val(keypair.private);
+          $('#gen-public').val(keypair.public);
+          installer.raise_modal('keypair');
         });
       } else {
         callback();
@@ -403,6 +425,13 @@ var installer = {
         installer.switch_page(installer.page+1);
       }
       return false;
+    });
+
+    $('#installer').on('click', '#modal a[href=#back]', installer.modal_back);
+    $('#installer').on('click', '#modal a[href=#generate]', installer.modal_generate);
+    $('#installer').on('click', '#modal a[href=#next]', function() {
+      installer.switch_page(installer.page+1);
+      $('#modal-overflow').remove();
     });
 
     $('#total-steps').text($('.page').length);
@@ -438,6 +467,4 @@ $(function() {
   if ($('#page-puppet').length) {
     puppet.init();
   }
-  $('#installer').on('click', '#modal a[href=#back]', installer.modal_back);
-  $('#installer').on('click', '#modal a[href=#generate]', installer.modal_generate);
 });

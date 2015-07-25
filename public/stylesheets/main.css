@@ -525,6 +525,8 @@ label.required:after {
 }
 #modal textarea {
   height: 100px;
+  padding: 5px;
+  width: 458px;
 }
 
 #modal-buttons {

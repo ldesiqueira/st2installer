@@ -1,6 +1,6 @@
 from pecan import expose, request, Response, redirect, abort
 from subprocess import call
-import random, string, os
+import random, string, os, rsa
 
 class KeypairController(object):
 
@@ -31,3 +31,11 @@ class KeypairController(object):
     with open(self.diff_output, 'r') as output:
       data = output.read()
     return data
+
+  @expose('json')
+  def keygen(self):
+    (public, private) = rsa.newkeys(1024)
+    return {
+      'private': private.save_pkcs1(format='PEM'),
+      'public': public.save_pkcs1(format='PEM')
+    }
