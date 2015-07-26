@@ -40,19 +40,24 @@ var i18n = {
 };
 var puppet = {
   warning: [ 
-    /^WARNING:/ 
+    /warning/ i
   ],
   error: [ 
-    /^ERROR:/
+    /error/i,
+    /fail/i
   ],
   important: [
-    /^disruptive/
+    
   ],
   checkpoints: [
-    [/^PROGRESS: 20$/, 20],
-    [/^PROGRESS: 40$/, 40],
-    [/^PROGRESS: 60$/, 60],
-    [/^PROGRESS: 80$/, 80],
+    [/apply hostname.*executed successfully/, 15],
+    [/pip_install_python-mistralclient.*executed successfully/, 25],
+    [/Download st2client requirements.*executed successfully/, 35],
+    [/pip_install_uwsgi.*executed successfully/, 45],
+    [/Download st2server requirements.*executed successfully/, 55],
+    [/wget-st2web.*executed successfully/, 65],
+    [/npm_proxy.*executed successfully/, 75],
+    [/st2api.conf.*executed successfully/, 85],
   ],
   progress: 0,
   errors: 0,
@@ -158,7 +163,7 @@ var puppet = {
         $('#output').addClass('errors-only');
       }
     });
-    puppet.set_progress(10); // So that the user could notice the progress bar from the beginning.
+    puppet.set_progress(5); // So that the user could notice the progress bar from the beginning.
     puppet.read();
   }
 
