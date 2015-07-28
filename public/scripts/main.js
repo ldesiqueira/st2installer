@@ -40,7 +40,7 @@ var i18n = {
 };
 var puppet = {
   warning: [ 
-    /warning/i
+    /warn/i
   ],
   error: [ 
     /error/i,

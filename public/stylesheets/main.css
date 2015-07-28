@@ -369,6 +369,7 @@ label.required:after {
   border-radius: 0 0 5px 5px;
   height: 300px;
   overflow: scroll;
+  overflow-y: hidden;
   margin-bottom: 30px;
   background: #252525;
   padding: 10px;
