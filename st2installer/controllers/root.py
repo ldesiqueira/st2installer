@@ -9,12 +9,20 @@ class RootController(object):
   command = '/usr/bin/sudo nocolor=1 /usr/bin/puprun'
   output = '/tmp/st2installer.log'
   keypair = KeypairController()
+  path = "/opt/puppet/hieradata/"
+  configname = "workroom.yaml"
+  removal = "/bin/rm %s%s" % (path, configname)
 
   def lock(self):
     open('/tmp/st2installer_lock', 'w').close()
   def is_locked(self):
     return os.path.isfile('/tmp/st2installer_lock')
 
+  @expose(content_type='text/plain')
+  def cleanup(self):
+     Popen(self.removal, shell=True)
+     return "done"
+ 
   @expose(content_type='text/plain')
   def puppet(self, line):
     if not self.proc:
@@ -52,8 +60,6 @@ class RootController(object):
     password_length = 32
     password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
     password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
-    path = "/opt/puppet/hieradata/"
-    filename = "workroom.yaml"
 
     config = {
       "system::hostname":               kwargs['hostname'],
@@ -94,7 +100,6 @@ class RootController(object):
       }
     }
 
-    # TODO: a better than "isn't a binary" key validation
     if kwargs["selfsigned"] == "0":
       config["st2::ssl_public_key"] = request.POST['file-publickey'].file.read()
       config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
@@ -160,10 +165,10 @@ class RootController(object):
         config["hubot::env_export"]["HUBOT_XMPP_PORT"] = kwargs["xmpp-port"]
       config["hubot::dependencies"]["hubot-xmpp"] = ">=0.1.16 < 1.0.0"
 
-    if not os.path.exists(path):
-      os.makedirs(path)
+    if not os.path.exists(self.path):
+      os.makedirs(self.path)
 
-    with open(path+filename, 'w') as workroom:
+    with open(self.path+self.configname, 'w') as workroom:
       workroom.write(yaml.dump(config))
 
     redirect('/install', internal=True)

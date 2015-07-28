@@ -23,7 +23,8 @@ var i18n = {
   },
   ssl: {
     'header': "Certificate error",
-    'text': "It appears you've uploaded a key pair that either does not match or isn't really a key pair at all! \
+    'text': "It appears you've uploaded a certificate and a private key that either do not match or aren't in the right format! \
+              You need to upload a PEM certificate and a private key without a passphrase. \
               You can upload another certificate or we can just generate a self-signed one for you, no problem.",
     'buttons': [
       ['Generate', '#generate'],
@@ -65,6 +66,7 @@ var puppet = {
   line: 0,
   interval: 700,
   url: 'puppet',
+  cleanup: 'cleanup',
   set_progress: function(p) {
     puppet.progress = p;
     $('#progressbar>span').width(p+'%');
@@ -150,6 +152,7 @@ var puppet = {
   complete: function() {
     $('#page-puppet').removeClass('progress');
     $('#puppet-done').show(); 
+    $.get(puppet.cleanup);
   },
   init: function() {
     $('#page-puppet').addClass('progress');
