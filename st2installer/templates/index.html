@@ -3,14 +3,14 @@
 <form id="installer" method="POST" action="." enctype="multipart/form-data">
   <div class="page" id="page-hostname">
     <h1>Configure Hostname and SSL</h1>
-  
+
     <label for="text-hostname" class="required">Hostname</label>
     <input type="text" id="text-hostname" name="hostname" />
     <p class="hint">FQDN of host.</p>
-  
-  
+
+
     <h2>SSL keys</h2>
-    <p>By default, StackStorm installs with a self-signed SSL certificate. If you would like to provide your own certificate, you can upload it here.</p>
+    <p>StackStorm has generated and configured a self-signed SSL certificate for use. If you would like to provide your own certificate, you can upload it here.</p>
     <fieldset id="ssl-enable">
       <label for="radio-selfsigned-true"><input id="radio-selfsigned-true" type="radio" name="selfsigned" value="1" checked="checked">Continue with self-signed</label>
       <label for="radio-selfsigned-false"><input id="radio-selfsigned-false" type="radio" name="selfsigned" value="0">Upload SSL certificate</label>
@@ -29,8 +29,8 @@
   </div>
   <div class="page" id="page-accounts">
     <h1>Setup user accounts</h1>
-    <h2>Secure admin account</h2>
-    <p>The default WebUI account is secured with the "admin" user. Please enter a password to secure this account.</p>
+    <h2>Setup admin account</h2>
+    <p>This installer will create a new user, admin, to be used as the Administrator account. This account will be used to remotely log in via SSH, and to log in via the WebUI. Enter a password below for this account.</p>
     <fieldset>
       <label for="text-password-1" class="required">Password</label>
       <input type="password" id="text-password-1" name="password-1" />
@@ -38,8 +38,8 @@
       <label for="text-password-2" class="required">Confirm</label>
       <input type="password" id="text-password-2" name="password-2" />
     </fieldset>
-    <h2>Configure integration account</h2>
-    <p>StackStorm uses SSH to log into remote systems to perform remote actions. This account should already be configured in your environment.</p>
+    <h2>Configure SSH account</h2>
+    <p>StackStorm utilizes a SSH runner to log into remote systems to perform remote actions. Enter the username for this account. This account should be configured in your environment, and optionally have "sudo" access. In addition, you can supply SSH keys, or we'll automatically generate a keypair for you.</p>
     <fieldset>
       <label for="text-username" class="required">Username</label>
       <input type="text" id="text-username" name="username" value="stanley" />
