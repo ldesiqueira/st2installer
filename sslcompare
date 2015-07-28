@@ -1,0 +1,21 @@
+#!/bin/bash
+PRIVKEY=/tmp/testkey
+TESTKEY=/tmp/testkey-pub
+PRIVTEST=$(openssl rsa -passin pass: -noout -modulus -in "$PRIVKEY")
+PRIVTEST_CODE=$?
+PUBTEST=$(openssl x509 -passin pass: -noout -modulus -in "$TESTKEY")
+PUBTEST_CODE=$?
+
+if test ! -r /tmp/testkey-pub || test ! -r /tmp/testkey || [ "$PRIVTEST_CODE" -ne "0" ] || [ "$PUBTEST_CODE" -ne "0" ]
+then
+  echo "1"
+  exit
+fi
+
+chmod 600 "$PRIVKEY"
+chmod 600 "$TESTKEY"
+diff -q <( "$PRIVTEST" ) <( "$PUBTEST")
+STATUS=$?
+rm -f "$PRIVKEY"
+rm -f "$TESTKEY"
+echo "$STATUS"
