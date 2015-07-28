@@ -11,7 +11,7 @@ class RootController(object):
   keypair = KeypairController()
   path = "/opt/puppet/hieradata/"
   configname = "workroom.yaml"
-  removal = "/bin/rm %s.%s" % (path, configname)
+  removal = "/bin/rm %s%s" % (path, configname)
 
   def lock(self):
     open('/tmp/st2installer_lock', 'w').close()
