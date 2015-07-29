@@ -74,13 +74,16 @@ class RootController(object):
       "hubot::env_export": {
         "HUBOT_LOG_LEVEL":   "debug",
         "ST2_AUTH_USERNAME": "chatops_bot",
-        "ST2_AUTH_PASSWORD": password
+        "ST2_AUTH_PASSWORD": password,
+        "ST2_API": "https://%s:9101" % kwargs['hostname'],
+        "ST2_WEBUI_URL": "https://%s" % kwargs['hostname'],
+        "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname']
       },
       "hubot::external_scripts": ["hubot-stackstorm"],
       "hubot::dependencies": {
         "hubot": ">= 2.6.0 < 3.0.0",
         "hubot-scripts": ">= 2.5.0 < 3.0.0",
-        "hubot-stackstorm": ">= 0.1.0 < 0.2.0"
+        "hubot-stackstorm": ">= 0.2.0 < 0.3.0"
       },
 
       "users": {
