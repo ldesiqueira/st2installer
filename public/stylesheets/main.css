@@ -368,8 +368,8 @@ label.required:after {
 #output {
   border-radius: 0 0 5px 5px;
   height: 300px;
-  overflow: scroll;
-  overflow-y: hidden;
+  overflow-x: auto;
+  overflow-y: scroll;
   margin-bottom: 30px;
   background: #252525;
   padding: 10px;
