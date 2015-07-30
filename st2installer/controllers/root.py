@@ -11,7 +11,14 @@ class RootController(object):
   keypair = KeypairController()
   path = "/opt/puppet/hieradata/"
   configname = "workroom.yaml"
-  removal = "/bin/rm %s%s" % (path, configname)
+  password_length = 32
+  password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
+  hostname = ""
+  password = ""
+
+  cleanup_chain = [
+    "/bin/rm %s%s" % (path, configname)
+  ]
 
   def lock(self):
     open('/tmp/st2installer_lock', 'w').close()
@@ -20,8 +27,9 @@ class RootController(object):
 
   @expose(content_type='text/plain')
   def cleanup(self):
-     Popen(self.removal, shell=True)
-     return "done"
+    for command in self.cleanup_chain:
+      Popen(command, shell=True)
+    return "done"
  
   @expose(content_type='text/plain')
   def puppet(self, line):
@@ -47,9 +55,13 @@ class RootController(object):
 
   @expose(generic=True, template='index.html')
   def index(self):
+    
     if self.is_locked():
       redirect('/install', internal=True)
-    return dict()
+
+    password = ''.join([random.choice(self.password_chars) for n in xrange(self.password_length)])
+
+    return { "hubotpassword": password }
 
   @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
@@ -57,9 +69,7 @@ class RootController(object):
     if self.is_locked():
       redirect('/install', internal=True)
 
-    password_length = 32
-    password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
-    password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
+    password = kwargs['hubot-password']
 
     config = {
       "system::hostname":               kwargs['hostname'],
@@ -69,22 +79,6 @@ class RootController(object):
       "st2::cli_api_url":               "https://%s:9101" % kwargs['hostname'],
       "st2::cli_auth_url":              "https://%s:9100" % kwargs['hostname'],
       "st2::stanley::username":         kwargs['username'],
-
-      "hubot::chat_alias": "!",
-      "hubot::env_export": {
-        "HUBOT_LOG_LEVEL":   "debug",
-        "ST2_AUTH_USERNAME": "chatops_bot",
-        "ST2_AUTH_PASSWORD": password,
-        "ST2_API": "https://%s:9101" % kwargs['hostname'],
-        "ST2_WEBUI_URL": "https://%s" % kwargs['hostname'],
-        "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname']
-      },
-      "hubot::external_scripts": ["hubot-stackstorm"],
-      "hubot::dependencies": {
-        "hubot": ">= 2.6.0 < 3.0.0",
-        "hubot-scripts": ">= 2.5.0 < 3.0.0",
-        "hubot-stackstorm": ">= 0.2.0 < 0.3.0"
-      },
 
       "users": {
         "admin": {
@@ -114,59 +108,79 @@ class RootController(object):
       config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
       config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
 
-    if kwargs["chatops"] == "example":
-      config["hubot::adapter"] = "irc"
-      config["hubot::env_export"].update({
-        "HUBOT_IRC_SERVER":   "localhost",
-        "HUBOT_IRC_ROOMS":    "#stackstorm",
-        "HUBOT_IRC_NICK":     kwargs['username'],
-        "HUBOT_IRC_UNFLOOD":  True
+    if kwargs["check-chatops"] == "1":
+
+      config.update({
+        "hubot::chat_alias": "!",
+        "hubot::env_export": {
+          "HUBOT_LOG_LEVEL":   "debug",
+          "ST2_AUTH_USERNAME": "chatops_bot",
+          "ST2_AUTH_PASSWORD": password,
+          "ST2_API": "https://%s:9101" % kwargs['hostname'],
+          "ST2_WEBUI_URL": "https://%s" % kwargs['hostname'],
+          "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname']
+        },
+        "hubot::external_scripts": ["hubot-stackstorm"],
+        "hubot::dependencies": {
+          "hubot": ">= 2.6.0 < 3.0.0",
+          "hubot-scripts": ">= 2.5.0 < 3.0.0",
+          "hubot-stackstorm": ">= 0.2.0 < 0.3.0"
+        },
       })
-      config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
-    elif kwargs["chatops"] == "irc":
-      config["hubot::adapter"] = "irc"
-      config["hubot::env_export"].update({
-        "HUBOT_IRC_SERVER":   kwargs["irc-server"],
-        "HUBOT_IRC_ROOMS":    kwargs["irc-rooms"],
-        "HUBOT_IRC_NICK":     kwargs['username'],
-        "HUBOT_IRC_UNFLOOD":  True
-      })
-      config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
-    elif kwargs["chatops"] == "flowdock":
-      config["hubot::adapter"] = "flowdock"
-      config["hubot::env_export"].update({
-        "HUBOT_FLOWDOCK_API_TOKEN":       kwargs["flowdock-token"],
-        "HUBOT_FLOWDOCK_LOGIN_EMAIL":     kwargs["flowdock-email"],
-        "HUBOT_FLOWDOCK_LOGIN_PASSWORD":  kwargs['flowdock-password']
-      })
-      config["hubot::dependencies"]["hubot-flowdock"] = ">=0.7.6 < 1.0.0"
-    elif kwargs["chatops"] == "slack":
-      config["hubot::adapter"] = "slack"
-      config["hubot::env_export"].update({
-        "HUBOT_SLACK_TOKEN": kwargs["slack-token"]
-      })
-      config["hubot::dependencies"]["hubot-slack"] = ">=3.3.0 < 4.0.0"
-    elif kwargs["chatops"] == "hipchat":
-      config["hubot::adapter"] = "hipchat"
-      config["hubot::env_export"].update({
-        "HUBOT_HIPCHAT_JID": kwargs["hipchat-jid"],
-        "HUBOT_HIPCHAT_PASSWORD": kwargs["hipchat-password"]
-      })
-      if kwargs["text-hipchat-domain"] != "":
-        config["hubot::env_export"]["HUBOT_XMPP_DOMAIN"] = kwargs["text-hipchat-domain"]
-      config["hubot::dependencies"]["hubot-hipchat"] = ">=2.12.0 < 3.0.0"
-    elif kwargs["chatops"] == "xmpp":
-      config["hubot::adapter"] = "xmpp"
-      config["hubot::env_export"].update({
-        "HUBOT_XMPP_USERNAME": kwargs["xmpp-username"],
-        "HUBOT_XMPP_PASSWORD": kwargs["xmpp-password"],
-        "HUBOT_XMPP_ROOMS": kwargs["xmpp-rooms"]
-      })
-      if kwargs["xmpp-host"] != "":
-        config["hubot::env_export"]["HUBOT_XMPP_HOST"] = kwargs["xmpp-host"]
-      if kwargs["xmpp-port"] != "":
-        config["hubot::env_export"]["HUBOT_XMPP_PORT"] = kwargs["xmpp-port"]
-      config["hubot::dependencies"]["hubot-xmpp"] = ">=0.1.16 < 1.0.0"
+
+      if kwargs["chatops"] == "example":
+        config["hubot::adapter"] = "irc"
+        config["hubot::env_export"].update({
+          "HUBOT_IRC_SERVER":   "localhost",
+          "HUBOT_IRC_ROOMS":    "#stackstorm",
+          "HUBOT_IRC_NICK":     kwargs['username'],
+          "HUBOT_IRC_UNFLOOD":  True
+        })
+        config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
+      elif kwargs["chatops"] == "irc":
+        config["hubot::adapter"] = "irc"
+        config["hubot::env_export"].update({
+          "HUBOT_IRC_SERVER":   kwargs["irc-server"],
+          "HUBOT_IRC_ROOMS":    kwargs["irc-rooms"],
+          "HUBOT_IRC_NICK":     kwargs['username'],
+          "HUBOT_IRC_UNFLOOD":  True
+        })
+        config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
+      elif kwargs["chatops"] == "flowdock":
+        config["hubot::adapter"] = "flowdock"
+        config["hubot::env_export"].update({
+          "HUBOT_FLOWDOCK_API_TOKEN":       kwargs["flowdock-token"],
+          "HUBOT_FLOWDOCK_LOGIN_EMAIL":     kwargs["flowdock-email"],
+          "HUBOT_FLOWDOCK_LOGIN_PASSWORD":  kwargs['flowdock-password']
+        })
+        config["hubot::dependencies"]["hubot-flowdock"] = ">=0.7.6 < 1.0.0"
+      elif kwargs["chatops"] == "slack":
+        config["hubot::adapter"] = "slack"
+        config["hubot::env_export"].update({
+          "HUBOT_SLACK_TOKEN": kwargs["slack-token"]
+        })
+        config["hubot::dependencies"]["hubot-slack"] = ">=3.3.0 < 4.0.0"
+      elif kwargs["chatops"] == "hipchat":
+        config["hubot::adapter"] = "hipchat"
+        config["hubot::env_export"].update({
+          "HUBOT_HIPCHAT_JID": kwargs["hipchat-jid"],
+          "HUBOT_HIPCHAT_PASSWORD": kwargs["hipchat-password"]
+        })
+        if kwargs["text-hipchat-domain"] != "":
+          config["hubot::env_export"]["HUBOT_XMPP_DOMAIN"] = kwargs["text-hipchat-domain"]
+        config["hubot::dependencies"]["hubot-hipchat"] = ">=2.12.0 < 3.0.0"
+      elif kwargs["chatops"] == "xmpp":
+        config["hubot::adapter"] = "xmpp"
+        config["hubot::env_export"].update({
+          "HUBOT_XMPP_USERNAME": kwargs["xmpp-username"],
+          "HUBOT_XMPP_PASSWORD": kwargs["xmpp-password"],
+          "HUBOT_XMPP_ROOMS": kwargs["xmpp-rooms"]
+        })
+        if kwargs["xmpp-host"] != "":
+          config["hubot::env_export"]["HUBOT_XMPP_HOST"] = kwargs["xmpp-host"]
+        if kwargs["xmpp-port"] != "":
+          config["hubot::env_export"]["HUBOT_XMPP_PORT"] = kwargs["xmpp-port"]
+        config["hubot::dependencies"]["hubot-xmpp"] = ">=0.1.16 < 1.0.0"
 
     if not os.path.exists(self.path):
       os.makedirs(self.path)
@@ -176,6 +190,19 @@ class RootController(object):
 
     redirect('/install', internal=True)
 
+  @expose(generic=True)
+  def data_save(self, hostname, password):
+    self.hostname = hostname
+    self.password = password
+
   @expose(generic=True, template='progress.html')
   def install(self):
+    return {"hostname": self.hostname}
+
+  @expose(generic=True, template='privacy.html')
+  def privacy(self):
     return dict()
+
+  @expose(generic=True, template='byob.html')
+  def byob(self):
+    return {"hostname": self.hostname, "password": self.password}
