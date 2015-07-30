@@ -205,4 +205,4 @@ class RootController(object):
 
   @expose(generic=True, template='byob.html')
   def byob(self):
-    return {"hostname": self.hostname, "password": self.password}
+    return {"hostname": (self.hostname or "&lt;hostname&gt;"), "password": self.password or "&lt;password&gt;"}

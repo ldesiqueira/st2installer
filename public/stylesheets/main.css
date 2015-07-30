@@ -567,3 +567,18 @@ label[for="check-chatops"] {
 #header a {
   text-decoration: none;
 }
+
+#page-static.page-byob span {
+  padding: 3px 8px;
+  font-family: monospace;
+  background: #252525;
+  border-radius: 5px;
+}
+#page-static.page-byob pre {
+  font-family: monospace;
+  background: #252525;
+  border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
