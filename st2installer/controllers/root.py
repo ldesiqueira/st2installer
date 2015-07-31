@@ -77,13 +77,14 @@ class RootController(object):
         "ST2_AUTH_PASSWORD": password,
         "ST2_API": "https://%s:9101" % kwargs['hostname'],
         "ST2_WEBUI_URL": "https://%s" % kwargs['hostname'],
-        "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname']
+        "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname'],
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
       },
       "hubot::external_scripts": ["hubot-stackstorm"],
       "hubot::dependencies": {
         "hubot": ">= 2.6.0 < 3.0.0",
         "hubot-scripts": ">= 2.5.0 < 3.0.0",
-        "hubot-stackstorm": ">= 0.2.1 < 0.3.0"
+        "hubot-stackstorm": ">= 0.2.2 < 0.3.0"
       },
 
       "users": {
