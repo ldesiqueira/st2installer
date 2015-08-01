@@ -1,6 +1,7 @@
 from pecan import expose, request, Response, redirect, abort
 from subprocess import Popen, PIPE, call
 from keypair import KeypairController
+from uuid import uuid1
 import random, string, os, yaml
 
 class RootController(object):
@@ -94,6 +95,10 @@ class RootController(object):
         "robots": {
           "gid": "6000",
         }
+      },
+      "st2::kvs": {
+        "st2::install_uuid": uuid1(),
+        "st2::collect_anonymous_data": (kwargs["anon-data"] or "0")
       }
     }
 
