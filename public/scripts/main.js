@@ -298,7 +298,7 @@ var installer = {
       }
 
       if (installer.errors == 0) {
-        $.get("/data_save", { hostname: hostname.val(), password: $('#hubot-password').val() });
+        $.get("data_save", { hostname: hostname.val(), password: $('#hubot-password').val() });
         if ($('#radio-selfsigned-false').is(':checked')) {
           $('#hidden-comparison').val('ssl');
           $('#installer').attr("target", "keypair-frame");
