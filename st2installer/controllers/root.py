@@ -200,10 +200,6 @@ class RootController(object):
   def install(self):
     return {"hostname": self.hostname}
 
-  @expose(generic=True, template='privacy.html')
-  def privacy(self):
-    return dict()
-
   @expose(generic=True, template='byob.html')
   def byob(self):
     return {"hostname": (self.hostname or "&lt;hostname&gt;"), "password": self.password or "&lt;password&gt;"}
