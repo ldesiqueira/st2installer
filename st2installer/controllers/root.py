@@ -18,7 +18,8 @@ class RootController(object):
   password = ""
 
   cleanup_chain = [
-    "/bin/rm %s%s" % (path, configname)
+    "/bin/rm %s%s" % (path, configname),
+    "/usr/bin/sudo /usr/bin/st2 run st2.send_anonymous_install_data"
   ]
 
   def lock(self):
