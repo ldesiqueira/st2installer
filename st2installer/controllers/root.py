@@ -71,6 +71,8 @@ class RootController(object):
       redirect('/install', internal=True)
 
     password = kwargs['hubot-password']
+    collect_anonymous_data = True if kwargs["anon-data"] else False
+    uuid = str(uuid1())
 
     config = {
       "system::hostname":               kwargs['hostname'],
@@ -96,8 +98,8 @@ class RootController(object):
         }
       },
       "st2::kvs": {
-        "st2::install_uuid": uuid1(),
-        "st2::collect_anonymous_data": (kwargs["anon-data"] or "0")
+        "st2::install_uuid": uuid,
+        "st2::collect_anonymous_data": collect_anonymous_data
       }
     }
 
