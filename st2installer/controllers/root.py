@@ -17,9 +17,13 @@ class RootController(object):
   hostname = ""
   password = ""
 
+  # Note, any command added here needs to be added to the workroom sudoers entry.
+  # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
   cleanup_chain = [
     "/bin/rm %s%s" % (path, configname),
-    "/usr/bin/sudo /usr/bin/st2 run st2.send_anonymous_install_data"
+    "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
+    "/usr/bin/sudo /usr/bin/st2ctl reload",
+    "/usr/bin/sudo /usr/bin/st2 run hubot.refresh_aliases",
   ]
 
   def lock(self):
