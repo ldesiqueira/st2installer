@@ -99,8 +99,12 @@ class RootController(object):
         }
       },
       "st2::kvs": {
-        "st2::server_uuid": uuid,
-        "st2::collect_anonymous_data": collect_anonymous_data
+        "st2::server_uuid": {
+          "value": uuid,
+        },
+        "st2::collect_anonymous_data": {
+          "value": collect_anonymous_data
+        }
       }
     }
 
