@@ -362,9 +362,22 @@ label.required:after {
 
 }
 .page#page-final,
-.page#page-puppet {
+.page#page-puppet,
+.page#page-static {
   display: block;
 }
+
+.page#page-static ul {
+  margin-left: 30px;
+  margin-bottom: 20px;
+}
+
+.page#page-static p {
+  background: none;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 #output {
   border-radius: 0 0 5px 5px;
   height: 300px;
@@ -483,11 +496,13 @@ label.required:after {
 #puppet-done ul {
   margin-left: 20px;
 }
-#puppet-done #next-button {
+#puppet-done #next-button,
+#page-static #next-button {
   text-align: center;
-  margin-bottom: 0;
+  margin-bottom: 20px;
 }
-#puppet-done #next-button a {
+#puppet-done #next-button a,
+#page-static #next-button a {
   float: none;
   margin: 0 auto;
 }
@@ -541,4 +556,29 @@ label.required:after {
   display: inline-block;
   float: none;
   margin: 0 10px;
+}
+
+label[for="check-anon-data"] {
+  margin-top: 20px;
+}
+label[for="check-chatops"] {
+  margin: 30px 0 20px;
+}
+#header a {
+  text-decoration: none;
+}
+
+#page-static.page-byob span {
+  padding: 3px 8px;
+  font-family: monospace;
+  background: #252525;
+  border-radius: 5px;
+}
+#page-static.page-byob pre {
+  font-family: monospace;
+  background: #252525;
+  border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
 }

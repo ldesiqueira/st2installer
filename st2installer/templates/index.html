@@ -4,10 +4,14 @@
   <div class="page" id="page-hostname">
     <h1>Configure Hostname and SSL</h1>
 
+    <input type="hidden" name="hubot-password" id="hubot-password" value="${hubotpassword}" />
+
     <label for="text-hostname" class="required">Hostname</label>
     <input type="text" id="text-hostname" name="hostname" />
     <p class="hint">FQDN of host.</p>
 
+    <label for="check-anon-data"><input id="check-anon-data" type="checkbox" name="anon-data" value="1" checked="checked">Allow sending anonymous usage reports</label>
+    <p class="hint">Sending usage data from your instance will help StackStorm grow into a better product. All reports are fully anonymous and conform to our strict <a href="http://stackstorm.com/privacy-policy/" target="_blank">privacy policy</a>.</p>
 
     <h2>SSL keys</h2>
     <p>StackStorm has generated and configured a self-signed SSL certificate for use. If you would like to provide your own certificate, you can upload it here.</p>
@@ -62,6 +66,11 @@
   <div class="page" id="page-chatops">
     <h1>Configure ChatOps</h1>
     <p>ChatOps integration is a core feature of StackStorm, allowing users to collaborate and work more effectively by executing actions in a chat room. Pick a service below: StackStorm can either connect to an existing chat service or set up a test service for you.</p>
+    
+    <p>You can also <a id="byob-link" href="./byob" target="_blank">configure your existing Hubot instance</a> to work with StackStorm.</p>
+
+    <label for="check-chatops"><input id="check-chatops" type="checkbox" name="check-chatops" value="1" checked="checked">Enable ChatOps</label>
+
     <ul id="chatops-navigation">
       <li><a href="#tab-slack"><i class="icon-slack"></i> Slack</a></li>
       <li><a href="#tab-hipchat"><i class="icon-hipchat"></i> HipChat</a></li>
