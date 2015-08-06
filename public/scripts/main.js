@@ -295,17 +295,17 @@ var installer = {
           ($('#file-publickey').val().trim().length==0 ||
            $('#file-privatekey').val().trim().length==0)) {
         installer.append_error($('#ssl'), i18n.ssl_required);
-      } 
+      }
 
-      if ($('#radio-selfsigned-false').is(':checked') &&
-          installer.errors == 0) {
-
-        $('#hidden-comparison').val('ssl');
-        $('#installer').attr("target", "keypair-frame");
-        $('#installer').attr("action", installer.key_validator);
-        $('#installer').submit();
-        framewait = true;
-
+      if (installer.errors == 0) {
+        $.get("data_save", { hostname: hostname.val(), password: $('#hubot-password').val() });
+        if ($('#radio-selfsigned-false').is(':checked')) {
+          $('#hidden-comparison').val('ssl');
+          $('#installer').attr("target", "keypair-frame");
+          $('#installer').attr("action", installer.key_validator);
+          $('#installer').submit();
+          framewait = true;
+        }
       }
 
     } else if (installer.page == 1) {
