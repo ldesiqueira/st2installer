@@ -22,7 +22,7 @@ class RootController(object):
   cleanup_chain = [
     "/bin/rm %s%s" % (path, configname),
     "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
-    "/usr/bin/sudo /usr/bin/st2ctl reload",
+    "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
     "/usr/bin/sudo /usr/bin/st2 run hubot.refresh_aliases",
   ]
 
@@ -108,6 +108,9 @@ class RootController(object):
         },
         "st2::collect_anonymous_data": {
           "value": collect_anonymous_data
+        },
+        "st2::user_data": {
+          "value": "{}"
         }
       }
     }
