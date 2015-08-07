@@ -177,9 +177,9 @@ class RootController(object):
           config["hubot::env_export"]["HUBOT_IRC_NICKSERV_PASSWORD"] = kwargs["irc-nickserv-password"]
         if kwargs["irc-nickserv-username"] != "":
           config["hubot::env_export"]["HUBOT_IRC_NICKSERV_USERNAME"] = kwargs["irc-nickserv-username"]
-        if kwargs["irc-server-fake-ssl"]:
+        if "irc-server-fake-ssl" in kwargs:
           config["hubot::env_export"]["HUBOT_IRC_SERVER_FAKE_SSL"] = kwargs["irc-server-fake-ssl"]
-        if kwargs["irc-usessl"]:
+        if "irc-usessl" in kwargs:
           config["hubot::env_export"]["HUBOT_IRC_USESSL"] = kwargs["irc-usessl"]
 
         config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
