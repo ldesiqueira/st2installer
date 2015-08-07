@@ -24,6 +24,7 @@ class RootController(object):
     "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
     "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
     "/usr/bin/sudo /usr/sbin/service hubot restart",
+    "/usr/bin/sudo /usr/sbin/service nginx restart",
   ]
 
   def lock(self):
@@ -36,7 +37,7 @@ class RootController(object):
     for command in self.cleanup_chain:
       Popen(command, shell=True)
     return "done"
- 
+
   @expose(content_type='text/plain')
   def puppet(self, line):
     if not self.proc:
@@ -61,7 +62,7 @@ class RootController(object):
 
   @expose(generic=True, template='index.html')
   def index(self):
-    
+
     if self.is_locked():
       redirect('/install', internal=True)
 
@@ -139,7 +140,8 @@ class RootController(object):
           "ST2_API": "https://%s:9101" % kwargs['hostname'],
           "ST2_WEBUI_URL": "https://%s" % kwargs['hostname'],
           "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname'],
-          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+          "NODE_TLS_REJECT_UNAUTHORIZED": "0",
+          "EXPRESS_PORT": "8081"
         },
         "hubot::external_scripts": ["hubot-stackstorm"],
         "hubot::dependencies": {
