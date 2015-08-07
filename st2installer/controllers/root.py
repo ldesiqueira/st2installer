@@ -156,7 +156,6 @@ class RootController(object):
           "HUBOT_IRC_SERVER":   "localhost",
           "HUBOT_IRC_ROOMS":    "#stackstorm",
           "HUBOT_IRC_NICK":     kwargs['username'],
-          "HUBOT_IRC_UNFLOOD":  True
         })
         config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
       elif kwargs["chatops"] == "irc":
@@ -165,7 +164,6 @@ class RootController(object):
           "HUBOT_IRC_SERVER":   kwargs["irc-server"],
           "HUBOT_IRC_ROOMS":    kwargs["irc-rooms"],
           "HUBOT_IRC_NICK":     kwargs['irc-nick'],
-          "HUBOT_IRC_UNFLOOD":  True
         })
 
         # Optional arguments
@@ -181,6 +179,8 @@ class RootController(object):
           config["hubot::env_export"]["HUBOT_IRC_SERVER_FAKE_SSL"] = kwargs["irc-server-fake-ssl"]
         if "irc-usessl" in kwargs:
           config["hubot::env_export"]["HUBOT_IRC_USESSL"] = kwargs["irc-usessl"]
+        if "irc-unflood" in kwargs:
+          config["hubot::env_export"]["HUBOT_IRC_UNFLOOD"] = kwargs["irc-unflood"]
 
         config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
       elif kwargs["chatops"] == "flowdock":
