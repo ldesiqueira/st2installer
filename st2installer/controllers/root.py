@@ -11,7 +11,7 @@ class RootController(object):
   output = '/tmp/st2installer.log'
   keypair = KeypairController()
   path = "/opt/puppet/hieradata/"
-  configname = "workroom.yaml"
+  configname = "answers.yaml"
   password_length = 32
   password_chars = string.ascii_letters + string.digits
   hostname = ""
