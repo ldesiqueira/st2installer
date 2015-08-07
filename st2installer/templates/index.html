@@ -66,8 +66,10 @@
   <div class="page" id="page-chatops">
     <h1>Configure ChatOps</h1>
     <p>ChatOps integration is a core feature of StackStorm, allowing users to collaborate and work more effectively by executing actions in a chat room. Pick a service below: StackStorm can either connect to an existing chat service or set up a test service for you.</p>
-    
+
     <p>You can also <a id="byob-link" href="./byob" target="_blank">configure your existing Hubot instance</a> to work with StackStorm.</p>
+
+    <p>Is your chat provider/protocol not listed here, and you'd like to see it? Drop us a line at <a href="mailto:support@stackstorm.com">support@stackstorm.com</a> and let us know!</p>
 
     <label for="check-chatops"><input id="check-chatops" type="checkbox" name="check-chatops" value="1" checked="checked">Enable ChatOps</label>
 
@@ -114,11 +116,27 @@
       </li>
       <li id="tab-irc">
         <p>Connect to a room or multiple rooms of an IRC server.</p>
+        <label for="text-irc-nick" class="required">IRC Nickname</label>
+        <input type="text" id="text-irc-nick" name="irc-nick">
         <label for="text-irc-server" class="required">Server</label>
         <input type="text" id="text-irc-server" name="irc-server">
         <label for="text-irc-rooms" class="required">Rooms</label>
         <input type="text" id="text-irc-rooms" name="irc-rooms">
         <p class="hint">A comma-separated list.</p>
+        <label for="text-irc-password">Password</label>
+        <input type="text" id="text-irc-password" name="irc-password">
+        <label for="text-irc-port">Port</label>
+        <input type="text" id="text-irc-port" name="irc-port">
+        <label for="text-irc-nickserv-username">NICKSERV username</label>
+        <input type="text" id="text-irc-nicserv-username" name="irc-nickserv-username">
+        <label for="text-irc-nickserv-password">NICKSERV password</label>
+        <input type="text" id="text-irc-nicserv-password" name="irc-nickserv-password">
+        <label for="text-irc-usessl">Connect using SSL</label>
+        <input type="checkbox" id="checkbox-irc-usessl" name="irc-usessl">
+        <label for="text-irc-server-fake-ssl">Ignore insecure SSL certificates?</label>
+        <input type="checkbox" id="checkbox-irc-server-fake-ssl" name="irc-server-fake-ssl">
+        <label for="text-irc-unflood">Enable IRC Flood Protection</label>
+        <input type="checkbox" id="checkbox-irc-undflood" name="irc-unflood">
       </li>
       <li id="tab-flowdock">
         <p>Integration with an existing <a href="https://www.flowdock.com" target="_blank">Flowdock</a> team.</p>

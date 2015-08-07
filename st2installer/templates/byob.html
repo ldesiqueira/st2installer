@@ -28,11 +28,13 @@
   ST2_AUTH_USERNAME=chatops_bot
   ST2_AUTH_PASSWORD=${password}
   ST2_AUTH_URL=https://${hostname}:9100
+  EXPRESS_PORT=8081
 
-  export ST2_API ST2_WEBUI_URL ST2_AUTH_USERNAME ST2_AUTH_PASSWORD ST2_AUTH_URL</pre>
+  export ST2_API ST2_WEBUI_URL ST2_AUTH_USERNAME ST2_AUTH_PASSWORD ST2_AUTH_URL EXPRESS_PORT</pre>
 
   <p>Heroku (from your <span>hubot</span> project directory):</p>
   <pre>
+  heroku config:set EXPRESS_PORT=8081
   heroku config:set ST2_API=https://${hostname}:9101
   heroku config:set ST2_WEBUI_URL=https://${hostname}
   heroku config:set ST2_AUTH_USERNAME=chatops_bot
