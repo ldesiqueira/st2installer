@@ -7,7 +7,7 @@ import random, string, os, yaml
 class RootController(object):
 
   proc = None
-  command = '/usr/bin/sudo nocolor=1 /usr/bin/puprun'
+  command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
   output = '/tmp/st2installer.log'
   keypair = KeypairController()
   path = "/opt/puppet/hieradata/"
