@@ -7,7 +7,7 @@ import random, string, os, yaml
 class RootController(object):
 
   proc = None
-  command = '/usr/bin/sudo nocolor=1 /usr/bin/puprun'
+  command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
   output = '/tmp/st2installer.log'
   keypair = KeypairController()
   path = "/opt/puppet/hieradata/"
@@ -17,9 +17,13 @@ class RootController(object):
   hostname = ""
   password = ""
 
+  # Note, any command added here needs to be added to the workroom sudoers entry.
+  # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
   cleanup_chain = [
-    "/bin/rm %s%s" % (path, configname),
-    "/usr/bin/sudo /usr/bin/st2 run st2.send_anonymous_install_data"
+    "/usr/bin/sudo /bin/rm %s%s" % (path, configname),
+    "/usr/bin/sudo /usr/sbin/service nginx restart",
+    "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
+    "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
   ]
 
   def lock(self):
@@ -32,7 +36,7 @@ class RootController(object):
     for command in self.cleanup_chain:
       Popen(command, shell=True)
     return "done"
- 
+
   @expose(content_type='text/plain')
   def puppet(self, line):
     if not self.proc:
@@ -57,7 +61,7 @@ class RootController(object):
 
   @expose(generic=True, template='index.html')
   def index(self):
-    
+
     if self.is_locked():
       redirect('/install', internal=True)
 
@@ -106,6 +110,9 @@ class RootController(object):
         },
         "st2::collect_anonymous_data": {
           "value": collect_anonymous_data
+        },
+        "st2::user_data": {
+          "value": "{}"
         }
       }
     }
@@ -132,7 +139,8 @@ class RootController(object):
           "ST2_API": "https://%s:9101" % kwargs['hostname'],
           "ST2_WEBUI_URL": "https://%s" % kwargs['hostname'],
           "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname'],
-          "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+          "NODE_TLS_REJECT_UNAUTHORIZED": "0",
+          "EXPRESS_PORT": "8081"
         },
         "hubot::external_scripts": ["hubot-stackstorm"],
         "hubot::dependencies": {
@@ -148,7 +156,6 @@ class RootController(object):
           "HUBOT_IRC_SERVER":   "localhost",
           "HUBOT_IRC_ROOMS":    "#stackstorm",
           "HUBOT_IRC_NICK":     kwargs['username'],
-          "HUBOT_IRC_UNFLOOD":  True
         })
         config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
       elif kwargs["chatops"] == "irc":
@@ -156,9 +163,25 @@ class RootController(object):
         config["hubot::env_export"].update({
           "HUBOT_IRC_SERVER":   kwargs["irc-server"],
           "HUBOT_IRC_ROOMS":    kwargs["irc-rooms"],
-          "HUBOT_IRC_NICK":     kwargs['username'],
-          "HUBOT_IRC_UNFLOOD":  True
+          "HUBOT_IRC_NICK":     kwargs['irc-nick'],
         })
+
+        # Optional arguments
+        if kwargs["irc-port"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_PORT"] = kwargs["irc-port"]
+        if kwargs["irc-password"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_PASSWORD"] = kwargs["irc-password"]
+        if kwargs["irc-nickserv-password"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_NICKSERV_PASSWORD"] = kwargs["irc-nickserv-password"]
+        if kwargs["irc-nickserv-username"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_NICKSERV_USERNAME"] = kwargs["irc-nickserv-username"]
+        if "irc-server-fake-ssl" in kwargs:
+          config["hubot::env_export"]["HUBOT_IRC_SERVER_FAKE_SSL"] = kwargs["irc-server-fake-ssl"]
+        if "irc-usessl" in kwargs:
+          config["hubot::env_export"]["HUBOT_IRC_USESSL"] = kwargs["irc-usessl"]
+        if "irc-unflood" in kwargs:
+          config["hubot::env_export"]["HUBOT_IRC_UNFLOOD"] = kwargs["irc-unflood"]
+
         config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
       elif kwargs["chatops"] == "flowdock":
         config["hubot::adapter"] = "flowdock"
