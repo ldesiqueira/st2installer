@@ -24,7 +24,6 @@ class RootController(object):
     "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
     "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
     "/usr/bin/sudo /usr/sbin/service hubot restart",
-    "/usr/bin/sudo /usr/sbin/service nginx restart"
   ]
 
   def lock(self):
