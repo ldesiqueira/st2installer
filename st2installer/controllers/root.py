@@ -75,6 +75,8 @@ class RootController(object):
     if self.is_locked():
       redirect('/install', internal=True)
 
+    self.hostname = kwargs['hostname']
+
     password = kwargs['hubot-password']
     collect_anonymous_data = True if kwargs["anon-data"] else False
     uuid = str(uuid1())
