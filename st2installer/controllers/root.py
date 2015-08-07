@@ -21,9 +21,9 @@ class RootController(object):
   # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
   cleanup_chain = [
     "/bin/rm %s%s" % (path, configname),
-    "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
-    "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
     "/usr/bin/sudo /usr/sbin/service nginx restart",
+    "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
+    "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
   ]
 
   def lock(self):
