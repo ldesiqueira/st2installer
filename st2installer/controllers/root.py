@@ -13,7 +13,7 @@ class RootController(object):
   path = "/opt/puppet/hieradata/"
   configname = "workroom.yaml"
   password_length = 32
-  password_chars = string.ascii_letters + string.digits + '!@#$%^&*()'
+  password_chars = string.ascii_letters + string.digits
   hostname = ""
   password = ""
 
