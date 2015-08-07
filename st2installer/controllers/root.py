@@ -167,6 +167,21 @@ class RootController(object):
           "HUBOT_IRC_NICK":     kwargs['username'],
           "HUBOT_IRC_UNFLOOD":  True
         })
+
+        # Optional arguments
+        if kwargs["irc-port"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_PORT"] = kwargs["irc-port"]
+        if kwargs["irc-password"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_PASSWORD"] = kwargs["irc-password"]
+        if kwargs["irc-nickserv-password"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_NICKSERV_PASSWORD"] = kwargs["irc-nickserv-password"]
+        if kwargs["irc-nickserv-username"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_NICKSERV_USERNAME"] = kwargs["irc-nickserv-username"]
+        if kwargs["irc-server-fake-ssl"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_SERVER_FAKE_SSL"] = kwargs["irc-server-fake-ssl"]
+        if kwargs["irc-usessl"] != "":
+          config["hubot::env_export"]["HUBOT_IRC_USESSL"] = kwargs["irc-usessl"]
+
         config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
       elif kwargs["chatops"] == "flowdock":
         config["hubot::adapter"] = "flowdock"
