@@ -23,6 +23,7 @@ class RootController(object):
     "/bin/rm %s%s" % (path, configname),
     "/usr/bin/sudo /usr/sbin/service nginx restart",
     "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
+    "sleep 5",
     "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
   ]
 
