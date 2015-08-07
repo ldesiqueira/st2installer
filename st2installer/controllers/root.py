@@ -164,7 +164,7 @@ class RootController(object):
         config["hubot::env_export"].update({
           "HUBOT_IRC_SERVER":   kwargs["irc-server"],
           "HUBOT_IRC_ROOMS":    kwargs["irc-rooms"],
-          "HUBOT_IRC_NICK":     kwargs['username'],
+          "HUBOT_IRC_NICK":     kwargs['irc-nick'],
           "HUBOT_IRC_UNFLOOD":  True
         })
 
