@@ -78,7 +78,7 @@ class RootController(object):
     self.hostname = kwargs['hostname']
 
     password = kwargs['hubot-password']
-    collect_anonymous_data = True if kwargs["anon-data"] else False
+    collect_anonymous_data = True if 'anon-data' in kwargs else False
     uuid = str(uuid1())
 
     config = {
