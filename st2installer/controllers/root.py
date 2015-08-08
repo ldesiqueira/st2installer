@@ -17,9 +17,6 @@ class RootController(object):
   hostname = ""
   password = ""
 
-  # Do not collect data by default, unless explicitly allowed
-  collect_anonymous_data = False
-
   # Note, any command added here needs to be added to the workroom sudoers entry.
   # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
   cleanup_chain = [
@@ -81,8 +78,11 @@ class RootController(object):
     self.hostname = kwargs['hostname']
 
     password = kwargs['hubot-password']
+
     if "anon-data" in kwargs:
         collect_anonymous_data = True
+    else
+        collect_anonymous_data = False
 
     uuid = str(uuid1())
 
