@@ -81,7 +81,7 @@ class RootController(object):
 
     if "anon-data" in kwargs:
         collect_anonymous_data = True
-    else
+    else:
         collect_anonymous_data = False
 
     uuid = str(uuid1())
