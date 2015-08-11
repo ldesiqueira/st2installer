@@ -346,7 +346,8 @@ var installer = {
 
     } else if (installer.page == 2) {
 
-      switch(installer.chatops) {
+      if ($('#check-chatops').is(':checked')) {
+        switch(installer.chatops) {
         case 0:
           if ($('#text-slack-token').val().trim().length==0) {
             installer.append_error($('#tab-slack p:first-child'), i18n.slack);
@@ -378,6 +379,7 @@ var installer = {
             installer.append_error($('#tab-flowdock p:first-child'), i18n.flowdock);
           }
           break;
+        }
       }
 
     }
