@@ -95,7 +95,7 @@ class RootController(object):
       "st2::cli_auth_url":              "https://%s:9100" % kwargs['hostname'],
       "st2::stanley::username":         kwargs['username'],
       "users": {
-        "admin": {
+        kwargs['admin-username']: {
           "password": kwargs['password-1'],
           "admin": True,
         },
