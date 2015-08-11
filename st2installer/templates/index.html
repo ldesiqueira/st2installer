@@ -3,12 +3,13 @@
 <form id="installer" method="POST" action="." enctype="multipart/form-data">
   <div class="page" id="page-hostname">
     <h1>Configure Hostname and SSL</h1>
-
-    <input type="hidden" name="hubot-password" id="hubot-password" value="${hubotpassword}" />
-
-    <label for="text-hostname" class="required">Hostname</label>
-    <input type="text" id="text-hostname" name="hostname" />
-    <p class="hint">FQDN of host.</p>
+    <p>Please enter the hostname you would like this server to be called below. Ensure this hostname is reachable via DNS</p>
+    <fieldset>
+      <label for="text-hostname" class="required">Hostname</label>
+      <input type="hidden" name="hubot-password" id="hubot-password" value="${hubotpassword}" />
+      <input type="text" id="text-hostname" name="hostname" />
+      <p class="hint">FQDN of host.</p>
+    </fieldset>
 
     <label for="check-anon-data"><input id="check-anon-data" type="checkbox" name="anon-data" value="1" checked="checked">Allow sending anonymous usage reports</label>
     <p class="hint">Sending usage data from your instance will help StackStorm grow into a better product. All reports are fully anonymous and conform to our strict <a href="http://stackstorm.com/privacy-policy/" target="_blank">privacy policy</a>.</p>
