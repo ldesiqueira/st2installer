@@ -34,8 +34,10 @@
   <div class="page" id="page-accounts">
     <h1>Setup user accounts</h1>
     <h2>Setup admin account</h2>
-    <p>This installer will create a new user, admin, to be used as the Administrator account. This account will be used to remotely log in via SSH, and to log in via the WebUI. Enter a password below for this account.</p>
+    <p>This installer will your first user account to be used as the Administrator account for StackStorm. This account can be used to remotely log into the StackStorm server via SSH, and to view the StackStorm WebUI. Enter a username and password below for this account.</p>
     <fieldset>
+      <label for="text-admin-username" class="required">Username</label>
+      <input type="text" id="text-admin-username" name="admin-username" value="admin" />
       <label for="text-password-1" class="required">Password</label>
       <input type="password" id="text-password-1" name="password-1" />
       <p class="hint">8+ alphanumeric characters, at least one digit and one letter is required.</p>
