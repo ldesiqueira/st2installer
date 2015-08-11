@@ -121,7 +121,7 @@ class RootController(object):
       config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
       config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
 
-    if kwargs["check-chatops"] == "1":
+    if "check-chatops" in kwargs and kwargs["check-chatops"] == "1":
 
       config.update({
         "hubot::chat_alias": "!",
