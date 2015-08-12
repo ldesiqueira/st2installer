@@ -243,4 +243,4 @@ class RootController(object):
 
   @expose(generic=True, template='byob.html')
   def byob(self):
-    return {"hostname": (self.hostname or request['SERVER_NAME']), "password": self.password or "&lt;password&gt;"}
+    return {"hostname": (self.hostname or request.host.split(':')[0]), "password": self.password or "&lt;password&gt;"}
