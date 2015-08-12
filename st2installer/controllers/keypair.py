@@ -1,4 +1,4 @@
-from pecan import expose, request, Response, redirect, abort
+from pecan import expose, request, response, redirect, abort
 from subprocess import call
 import random, string, os
 from Crypto.PublicKey import RSA
@@ -10,6 +10,8 @@ class KeypairController(object):
   diff_output = '/tmp/keycompare.log'
   ssh_diff = '/etc/st2installer/keycompare'
   ssl_diff = '/etc/st2installer/sslcompare'
+  gen_private = RSA.generate(1024, os.urandom)
+  gen_public = gen_private.publickey()
 
   @expose(generic=True, content_type='text/plain')
   def index(self):
@@ -38,8 +40,18 @@ class KeypairController(object):
 
   @expose('json')
   def keygen(self):
-    private = RSA.generate(1024, os.urandom)
     return {
-      'private': private.exportKey('PEM'),
-      'public': private.publickey().exportKey('OpenSSH')[8:]
+      'private': self.gen_private.exportKey('PEM'),
+      'public': self.gen_public.exportKey('OpenSSH')[8:]
     }
+
+  @expose(content_type='application/octet-stream')
+  def private(self):
+    response.headers['Content-Disposition'] = 'attachment; filename="st2-ssh.key"'
+    return self.gen_private.exportKey('PEM')
+
+  @expose(content_type='application/octet-stream')
+  def public(self):
+    response.headers['Content-Disposition'] = 'attachment; filename="st2-ssh.pub"'
+    return self.gen_public.exportKey('OpenSSH')
+  

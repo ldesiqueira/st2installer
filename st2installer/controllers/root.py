@@ -1,4 +1,4 @@
-from pecan import expose, request, Response, redirect, abort
+from pecan import expose, request, Response, redirect, abort, route
 from subprocess import Popen, PIPE, call
 from keypair import KeypairController
 from uuid import uuid1
