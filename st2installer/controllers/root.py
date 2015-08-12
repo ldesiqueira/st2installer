@@ -14,8 +14,8 @@ class RootController(object):
   configname = "answers.yaml"
   password_length = 32
   password_chars = string.ascii_letters + string.digits
-  hostname = ""
-  password = ""
+  hostname = ''
+  password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
 
   # Note, any command added here needs to be added to the workroom sudoers entry.
   # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
@@ -65,9 +65,9 @@ class RootController(object):
     if self.is_locked():
       redirect('/install', internal=True)
 
-    password = ''.join([random.choice(self.password_chars) for n in xrange(self.password_length)])
+    self.hostname = request.host.split(':')[0]
 
-    return { "hubotpassword": password }
+    return { "hubotpassword": self.password, "hostname": self.hostname }
 
   @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
@@ -243,4 +243,4 @@ class RootController(object):
 
   @expose(generic=True, template='byob.html')
   def byob(self):
-    return {"hostname": (self.hostname or "&lt;hostname&gt;"), "password": self.password or "&lt;password&gt;"}
+    return {"hostname": (self.hostname or request['SERVER_NAME']), "password": self.password or "&lt;password&gt;"}
