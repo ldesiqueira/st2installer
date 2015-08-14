@@ -6,25 +6,27 @@ import random, string, os, yaml
 
 class RootController(object):
 
-  proc = None
-  command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
-  output = '/tmp/st2installer.log'
-  keypair = KeypairController()
-  path = "/opt/puppet/hieradata/"
-  configname = "answers.yaml"
-  password_length = 32
-  password_chars = string.ascii_letters + string.digits
-  hostname = ''
-  password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
+  def __init__(self):
+    self.proc = None
+    self.command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
+    self.output = '/tmp/st2installer.log'
+    self.keypair = KeypairController()
+    self.path = "/opt/puppet/hieradata/"
+    self.configname = "answers.yaml"
+    self.hostname = ''
 
-  # Note, any command added here needs to be added to the workroom sudoers entry.
-  # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
-  cleanup_chain = [
-    "/usr/bin/sudo /bin/rm %s%s" % (path, configname),
-    "/usr/bin/sudo /usr/sbin/service nginx restart",
-    "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
-    "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
-  ]
+    password_length = 32
+    password_chars = string.ascii_letters + string.digits
+    self.password = ''.join([random.choice(password_chars) for n in xrange(password_length)])
+
+    # Note, any command added here needs to be added to the workroom sudoers entry.
+    # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
+    self.cleanup_chain = [
+      "/usr/bin/sudo /bin/rm %s%s" % (self.path, self.configname),
+      "/usr/bin/sudo /usr/sbin/service nginx restart",
+      "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
+      "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
+    ]
 
   def lock(self):
     open('/tmp/st2installer_lock', 'w').close()
@@ -67,7 +69,7 @@ class RootController(object):
 
     self.hostname = request.host.split(':')[0]
 
-    return { "hubotpassword": self.password, "hostname": self.hostname }
+    return { "hubotpassword": self.password, "hostname": (self.hostname or "") }
 
   @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
