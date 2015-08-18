@@ -10,6 +10,7 @@ class RootController(object):
     self.proc = None
     self.command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
     self.output = '/tmp/st2installer.log'
+    self.lockfile = '/tmp/st2installer_lock'
     self.keypair = KeypairController()
     self.path = "/opt/puppet/hieradata/"
     self.configname = "answers.yaml"
@@ -29,9 +30,9 @@ class RootController(object):
     ]
 
   def lock(self):
-    open('/tmp/st2installer_lock', 'w').close()
+    open(self.lockfile, 'w').close()
   def is_locked(self):
-    return os.path.isfile('/tmp/st2installer_lock')
+    return os.path.isfile(self.lockfile)
 
   @expose(content_type='text/plain')
   def cleanup(self):
