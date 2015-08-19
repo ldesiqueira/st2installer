@@ -234,10 +234,10 @@ var installer = {
         '<div id="keypair">' +
           '<label for="keypair-public">Your public key</label>' +
           '<textarea id="keypair-public"></textarea>' +
-          '<a href="/keypair/public">Download</a>' +
+          '<a href="keypair/public">Download</a>' +
           '<label for="keypair-private">Your private key</label>' +
           '<textarea id="keypair-private"></textarea>' +
-          '<a href="/keypair/private">Download</a>' +
+          '<a href="keypair/private">Download</a>' +
         '</div>' +
         '<div id="modal-buttons">' +
         '</div>' +
@@ -391,8 +391,6 @@ var installer = {
         framewait = false;
         $('#keypair-frame').off('load');
         $('#keypair-frame').on('load', function() {
-          console.log($('#keypair-frame').contents().text().trim())
-          console.log($('#keypair-frame').contents().text().trim().length)
           if ($('#keypair-frame').contents().text().trim() != "0") {
             installer.errors += 1;
             installer.raise_modal($('#hidden-comparison').val());
