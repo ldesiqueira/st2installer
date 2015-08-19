@@ -391,6 +391,8 @@ var installer = {
         framewait = false;
         $('#keypair-frame').off('load');
         $('#keypair-frame').on('load', function() {
+          console.log($('#keypair-frame').contents().text().trim())
+          console.log($('#keypair-frame').contents().text().trim().length)
           if ($('#keypair-frame').contents().text().trim() != "0") {
             installer.errors += 1;
             installer.raise_modal($('#hidden-comparison').val());

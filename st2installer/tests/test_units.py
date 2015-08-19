@@ -28,8 +28,8 @@ class MainUnits(TestCase):
   def test_temp_files_are_writable(self):
     temp_dir = '/tmp'
     temp_files = [
-      self.keypair_controller.private,
-      self.keypair_controller.public,
+      self.keypair_controller.privatefile,
+      self.keypair_controller.publicfile,
       self.keypair_controller.diff_output,
       self.root_controller.output,
       self.root_controller.lockfile

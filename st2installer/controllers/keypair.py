@@ -6,8 +6,8 @@ from Crypto.PublicKey import RSA
 class KeypairController(object):
 
   def __init__(self):
-    self.private = '/tmp/testkey'
-    self.public = '/tmp/testkey-pub'
+    self.privatefile = '/tmp/testkey'
+    self.publicfile = '/tmp/testkey-pub'
     self.diff_output = '/tmp/keycompare.log'
     self.ssh_diff = '/etc/st2installer/keycompare'
     self.ssl_diff = '/etc/st2installer/sslcompare'
@@ -15,9 +15,9 @@ class KeypairController(object):
     self.gen_public = self.gen_private.publickey()
 
   def compare(self, diff, private, public):
-    with open(self.private, 'w') as temp_private:
+    with open(self.privatefile, 'w') as temp_private:
       temp_private.write(private)
-    with open(self.public, 'w') as temp_public:
+    with open(self.publicfile, 'w') as temp_public:
       temp_public.write(public)
     call("%s > %s" % (diff, self.diff_output), shell=True)
     with open(self.diff_output, 'r') as output:
