@@ -256,7 +256,7 @@ var installer = {
     }
     if (template == 'keypair') {
       modal.find('#keypair').show();
-      modal.find('#keypair-public').val($('#gen-public').val());
+      modal.find('#keypair-public').val('ssh-rsa '+$('#gen-public').val());
       modal.find('#keypair-private').val($('#gen-private').val());
     }
     modal.appendTo('#installer').show();
