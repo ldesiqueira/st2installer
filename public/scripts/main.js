@@ -234,10 +234,10 @@ var installer = {
         '<div id="keypair">' +
           '<label for="keypair-public">Your public key</label>' +
           '<textarea id="keypair-public"></textarea>' +
-          '<a href="/keypair/public">Download</a>' +
+          '<a href="keypair/public">Download</a>' +
           '<label for="keypair-private">Your private key</label>' +
           '<textarea id="keypair-private"></textarea>' +
-          '<a href="/keypair/private">Download</a>' +
+          '<a href="keypair/private">Download</a>' +
         '</div>' +
         '<div id="modal-buttons">' +
         '</div>' +
@@ -256,7 +256,7 @@ var installer = {
     }
     if (template == 'keypair') {
       modal.find('#keypair').show();
-      modal.find('#keypair-public').val($('#gen-public').val());
+      modal.find('#keypair-public').val('ssh-rsa '+$('#gen-public').val());
       modal.find('#keypair-private').val($('#gen-private').val());
     }
     modal.appendTo('#installer').show();

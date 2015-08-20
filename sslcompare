@@ -1,6 +1,10 @@
 #!/bin/bash
 PRIVKEY=/tmp/testkey
 TESTKEY=/tmp/testkey-pub
+
+chmod 600 "$PRIVKEY"
+chmod 600 "$TESTKEY"
+
 PRIVTEST=$(openssl rsa -passin pass: -noout -modulus -in "$PRIVKEY")
 PRIVTEST_CODE=$?
 PUBTEST=$(openssl x509 -passin pass: -noout -modulus -in "$TESTKEY")
@@ -12,10 +16,9 @@ then
   exit
 fi
 
-chmod 600 "$PRIVKEY"
-chmod 600 "$TESTKEY"
-diff -q <( "$PRIVTEST" ) <( "$PUBTEST")
+diff -q <(openssl rsa -passin pass: -noout -modulus -in "$PRIVKEY") <(openssl x509 -passin pass: -noout -modulus -in "$TESTKEY")
 STATUS=$?
 rm -f "$PRIVKEY"
 rm -f "$TESTKEY"
 echo "$STATUS"
+

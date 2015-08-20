@@ -5,13 +5,23 @@ from Crypto.PublicKey import RSA
 
 class KeypairController(object):
 
-  private = '/tmp/testkey'
-  public = '/tmp/testkey-pub'
-  diff_output = '/tmp/keycompare.log'
-  ssh_diff = '/etc/st2installer/keycompare'
-  ssl_diff = '/etc/st2installer/sslcompare'
-  gen_private = RSA.generate(1024, os.urandom)
-  gen_public = gen_private.publickey()
+  def __init__(self):
+    self.privatefile = '/tmp/testkey'
+    self.publicfile = '/tmp/testkey-pub'
+    self.diff_output = '/tmp/keycompare.log'
+    self.ssh_diff = '/etc/st2installer/keycompare'
+    self.ssl_diff = '/etc/st2installer/sslcompare'
+    self.gen_private = RSA.generate(1024, os.urandom)
+    self.gen_public = self.gen_private.publickey()
+
+  def compare(self, diff, private, public):
+    with open(self.privatefile, 'w') as temp_private:
+      temp_private.write(private)
+    with open(self.publicfile, 'w') as temp_public:
+      temp_public.write(public)
+    call("%s > %s" % (diff, self.diff_output), shell=True)
+    with open(self.diff_output, 'r') as output:
+      return output.read()
 
   @expose(generic=True, content_type='text/plain')
   def index(self):
@@ -29,14 +39,7 @@ class KeypairController(object):
       diff = self.ssl_diff
     upload_private = request.POST[private_field]
     upload_public = request.POST[public_field]
-    with open(self.private, 'w') as temp_private:
-      temp_private.write(upload_private.file.read())
-    with open(self.public, 'w') as temp_public:
-      temp_public.write(upload_public.file.read())
-    call("%s > %s" % (diff, self.diff_output), shell=True)
-    with open(self.diff_output, 'r') as output:
-      data = output.read()
-    return data
+    return self.compare(diff, upload_private.file.read(), upload_public.file.read())
 
   @expose('json')
   def keygen(self):

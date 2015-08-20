@@ -10,10 +10,12 @@ class RootController(object):
     self.proc = None
     self.command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
     self.output = '/tmp/st2installer.log'
+    self.lockfile = '/tmp/st2installer_lock'
     self.keypair = KeypairController()
     self.path = "/opt/puppet/hieradata/"
     self.configname = "answers.yaml"
     self.hostname = ''
+    self.config_written = False
 
     password_length = 32
     password_chars = string.ascii_letters + string.digits
@@ -29,9 +31,9 @@ class RootController(object):
     ]
 
   def lock(self):
-    open('/tmp/st2installer_lock', 'w').close()
+    open(self.lockfile, 'w').close()
   def is_locked(self):
-    return os.path.isfile('/tmp/st2installer_lock')
+    return os.path.isfile(self.lockfile)
 
   @expose(content_type='text/plain')
   def cleanup(self):
@@ -67,9 +69,9 @@ class RootController(object):
     if self.is_locked():
       redirect('/install', internal=True)
 
-    self.hostname = request.host.split(':')[0]
+    self.hostname = self.hostname or request.host.split(':')[0]
 
-    return { "hubotpassword": self.password, "hostname": (self.hostname or "") }
+    return { "hubotpassword": self.password, "hostname": self.hostname }
 
   @index.when(method='POST', template='progress.html')
   def index_post(self, **kwargs):
@@ -232,6 +234,7 @@ class RootController(object):
     with open(self.path+self.configname, 'w') as workroom:
       workroom.write(yaml.dump(config))
 
+    self.config_written = True
     redirect('/install', internal=True)
 
   @expose(generic=True)
@@ -241,8 +244,11 @@ class RootController(object):
 
   @expose(generic=True, template='progress.html')
   def install(self):
-    return {"hostname": self.hostname}
+    if self.config_written:
+      return {"hostname": self.hostname}
+    else:
+      redirect('/', internal=True)
 
   @expose(generic=True, template='byob.html')
   def byob(self):
-    return {"hostname": (self.hostname or request.host.split(':')[0]), "password": self.password or "&lt;password&gt;"}
+    return {"hostname": (self.hostname or request.host.split(':')[0]), "password": self.password}
