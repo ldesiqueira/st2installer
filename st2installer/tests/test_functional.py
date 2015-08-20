@@ -38,6 +38,10 @@ class FunctionalTest(TestCase):
         }
         self.removeLock()
 
+        ssh_keys = self.keypair_controller.keygen()
+        self.default_post['gen-public'] = ssh_keys['public'] 
+        self.default_post['gen-private'] = ssh_keys['private']
+
     def setLock(self):
         self.root_controller.lock()
 
@@ -145,9 +149,6 @@ class FunctionalTest(TestCase):
 
     def test_root_post(self):
         params = copy(self.default_post)
-        ssh_keys = self.keypair_controller.keygen()
-        params['gen-public'] = ssh_keys['public'] 
-        params['gen-private'] = ssh_keys['private']
         response = self.app.post('/', params)
         self.assertEqual(response.status_int, 200)
         self.assertIn('POST /install ', str(response.request))
@@ -156,6 +157,8 @@ class FunctionalTest(TestCase):
         params = copy(self.default_post)
         params['selfsigned'] = '0'
         params['sshgen'] = '0'
+        params.pop("gen-public", None)
+        params.pop("gen-private", None)
         files = [
             ('file-privatekey', self.get_key_filename('ssl', 'private', False)),
             ('file-publickey', self.get_key_filename('ssl', 'public', False)),
@@ -168,12 +171,38 @@ class FunctionalTest(TestCase):
 
     def test_root_post_no_chatops(self):
         params = copy(self.default_post)
-        ssh_keys = self.keypair_controller.keygen()
-        params['gen-public'] = ssh_keys['public'] 
-        params['gen-private'] = ssh_keys['private']
         params.pop("check-chatops", None)
         params.pop("chatops", None)
         params.pop("slack-token", None)
         response = self.app.post('/', params)
         self.assertEqual(response.status_int, 200)
         self.assertIn('POST /install ', str(response.request))
+
+    def test_root_post_no_reports(self):
+        params = copy(self.default_post)
+        params.pop("anon-data", None)
+        response = self.app.post('/', params)
+        self.assertEqual(response.status_int, 200)
+        self.assertIn('POST /install ', str(response.request))
+
+    def test_root_post_no_hostname(self):
+        params = copy(self.default_post)
+        params.pop("hostname", None)
+        response = self.app.post('/', params, expect_errors=True)
+        self.assertNotEqual(response.status_int, 200)
+        self.assertNotIn('POST /install ', str(response.request))
+
+    def test_root_post_no_username(self):
+        params = copy(self.default_post)
+        params.pop("hostname", None)
+        response = self.app.post('/', params, expect_errors=True)
+        self.assertNotEqual(response.status_int, 200)
+        self.assertNotIn('POST /install ', str(response.request))
+
+    def test_root_post_no_password(self):
+        params = copy(self.default_post)
+        params.pop("password-1", None)
+        params.pop("password-2", None)
+        response = self.app.post('/', params, expect_errors=True)
+        self.assertNotEqual(response.status_int, 200)
+        self.assertNotIn('POST /install ', str(response.request))
