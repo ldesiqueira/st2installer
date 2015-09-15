@@ -40,15 +40,15 @@ var i18n = {
   }
 };
 var puppet = {
-  warning: [ 
+  warning: [
     /warn/i
   ],
-  error: [ 
+  error: [
     /error/i,
     /fail/i
   ],
   important: [
-    
+
   ],
   checkpoints: [
     [/apply hostname.*executed successfully/, 15],
@@ -94,8 +94,8 @@ var puppet = {
   },
   read: function() {
     var stream = $.ajax({
-      url: puppet.url, 
-      data: {line: puppet.line}, 
+      url: puppet.url,
+      data: {line: puppet.line},
       timeout: 500,
       complete: function(data, status) {
         data = String(data.responseText);
@@ -139,7 +139,7 @@ var puppet = {
               if (scroll) {
                 $('#output')[0].scrollTop = $('#output')[0].scrollHeight;
                 puppet.scroll_disabled = 0;
-              };
+              }
             }
           }
         }
@@ -151,7 +151,7 @@ var puppet = {
   },
   complete: function() {
     $('#page-puppet').removeClass('progress');
-    $('#puppet-done').show(); 
+    $('#puppet-done').show();
     $.get(puppet.cleanup);
   },
   init: function() {
@@ -170,9 +170,9 @@ var puppet = {
     puppet.read();
   }
 
-}
+};
 var installer = {
-  page: 0, 
+  page: 0,
   chatops: 0,
   errors: 0,
   key_validator: 'keypair/',
@@ -197,12 +197,12 @@ var installer = {
       } else {
         $('#step-next').text(i18n.next);
       }
-      if (page == 0) {
+      if (page === 0) {
         $('#step-back').hide();
       } else {
         $('#step-back').show();
       }
-    }
+    };
     if (page <= installer.page) {
       perform_switch();
     } else {
@@ -245,7 +245,7 @@ var installer = {
     '</div>'
   ),
   raise_modal: function(template) {
-    
+
     $('#modal-overflow').remove();
     modal = installer.modal;
     modal.find('h3').text(i18n[template].header);
@@ -269,10 +269,10 @@ var installer = {
   },
   modal_generate: function () {
     $('#modal-overflow').remove();
-    if (installer.page == 0) {
+    if (installer.page === 0) {
       $('#radio-selfsigned-true').click();
       installer.switch_page(1);
-    } else if (installer.page == 1) {
+    } else if (installer.page === 1) {
       $('#radio-sshgen-true').click();
       installer.switch_page(2);
     }
@@ -284,22 +284,22 @@ var installer = {
     installer.errors = 0;
     $('p.error').remove();
 
-    if (installer.page == 0) {
+    if (installer.page === 0) {
 
       var hostname = $('#text-hostname');
-      if (hostname.val().trim().length == 0) {
+      if (hostname.val().trim().length === 0) {
         installer.append_error(hostname, i18n.required);
       } else if (!/^[0-9a-z\.\-]+$/.test(hostname.val())) {
         installer.append_error(hostname, i18n.fqdn);
       }
 
-      if ($('#radio-selfsigned-false').is(':checked') && 
-          ($('#file-publickey').val().trim().length==0 ||
-           $('#file-privatekey').val().trim().length==0)) {
+      if ($('#radio-selfsigned-false').is(':checked') &&
+          ($('#file-publickey').val().trim().length === 0 ||
+           $('#file-privatekey').val().trim().length === 0)) {
         installer.append_error($('#ssl'), i18n.ssl_required);
       }
 
-      if (installer.errors == 0) {
+      if (installer.errors === 0) {
         $.get("data_save", { hostname: hostname.val(), password: $('#hubot-password').val() });
         if ($('#radio-selfsigned-false').is(':checked')) {
           $('#hidden-comparison').val('ssl');
@@ -310,12 +310,14 @@ var installer = {
         }
       }
 
-    } else if (installer.page == 1) {
+    } else if (installer.page === 1) {
 
       var password = $('#text-password-1');
-      if (password.val().trim().length == 0) {
+      if (password.val().trim().length === 0) {
         installer.append_error(password, i18n.required);
-      } else if (!/^(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9!=@#\$%\\\^&\*\(\)_\'\"]{8,})$/.test(password.val())) {
+      } else if (!(password.val().match(/[a-zA-Z]/) &&
+                   password.val().match(/[0-9]/) &&
+                   password.val().length >= 8)) {
         installer.append_error(password, i18n.complexity);
       }
 
@@ -325,18 +327,18 @@ var installer = {
       }
 
       var username = $('#text-username');
-      if (username.val().trim().length==0) {
+      if (username.val().trim().length === 0) {
         installer.append_error(username, i18n.required);
       }
 
-      if ($('#radio-sshgen-false').is(':checked') && 
-          ($('#file-ssh-publickey').val().trim().length==0 ||
-           $('#file-ssh-privatekey').val().trim().length==0)) {
-        installer.append_error($('#ssh'), i18n.ssl_required);  
+      if ($('#radio-sshgen-false').is(':checked') &&
+          ($('#file-ssh-publickey').val().trim().length === 0 ||
+           $('#file-ssh-privatekey').val().trim().length === 0)) {
+        installer.append_error($('#ssh'), i18n.ssl_required);
       }
 
       if ($('#radio-sshgen-false').is(':checked') &&
-          installer.errors == 0) {
+          installer.errors === 0) {
 
         $('#hidden-comparison').val('ssh');
         $('#installer').attr("target", "keypair-frame");
@@ -351,33 +353,33 @@ var installer = {
       if ($('#check-chatops').is(':checked')) {
         switch(installer.chatops) {
         case 0:
-          if ($('#text-slack-token').val().trim().length==0) {
+          if ($('#text-slack-token').val().trim().length === 0) {
             installer.append_error($('#tab-slack p:first-child'), i18n.slack);
           }
           break;
         case 1:
-          if ($('#text-hipchat-jid').val().trim().length==0 ||
-              $('#text-hipchat-password').val().trim().length==0) {
+          if ($('#text-hipchat-jid').val().trim().length === 0 ||
+              $('#text-hipchat-password').val().trim().length === 0) {
             installer.append_error($('#tab-hipchat p:first-child'), i18n.hipchat);
           }
           break;
         case 2:
-          if ($('#text-xmpp-rooms').val().trim().length==0 ||
-              $('#text-xmpp-username').val().trim().length==0 ||
-              $('#text-xmpp-password').val().trim().length==0) {
+          if ($('#text-xmpp-rooms').val().trim().length === 0 ||
+              $('#text-xmpp-username').val().trim().length === 0 ||
+              $('#text-xmpp-password').val().trim().length === 0) {
             installer.append_error($('#tab-xmpp p:first-child'), i18n.xmpp);
           }
           break;
         case 3:
-          if ($('#text-irc-server').val().trim().length==0 ||
-              $('#text-irc-rooms').val().trim().length==0) {
+          if ($('#text-irc-server').val().trim().length === 0 ||
+              $('#text-irc-rooms').val().trim().length === 0) {
             installer.append_error($('#tab-irc p:first-child'), i18n.irc);
           }
           break;
         case 4:
-          if ($('#text-flowdock-token').val().trim().length==0 ||
-              $('#text-flowdock-email').val().trim().length==0 ||
-              $('#text-flowdock-password').val().trim().length==0) {
+          if ($('#text-flowdock-token').val().trim().length === 0 ||
+              $('#text-flowdock-email').val().trim().length === 0 ||
+              $('#text-flowdock-password').val().trim().length === 0) {
             installer.append_error($('#tab-flowdock p:first-child'), i18n.flowdock);
           }
           break;
@@ -386,7 +388,7 @@ var installer = {
 
     }
 
-    if (installer.errors == 0) {
+    if (installer.errors === 0) {
       if (framewait) {
         framewait = false;
         $('#keypair-frame').off('load');
@@ -399,8 +401,8 @@ var installer = {
           }
         });
       } else if (installer.page == 1 &&
-                 $('#radio-sshgen-true').is(':checked') && 
-                 $('#gen-private').val() == '') {
+                 $('#radio-sshgen-true').is(':checked') &&
+                 $('#gen-private').val() === '') {
         $.get(installer.key_generator).always(function(keypair) {
           $('#gen-private').val(keypair.private);
           $('#gen-public').val(keypair.public);
@@ -450,19 +452,19 @@ var installer = {
     $('#total-steps').text($('.page').length);
 
     $('#radio-selfsigned-false').on('change', function() {
-      $('#ssl').show()
+      $('#ssl').show();
     });
 
     $('#radio-selfsigned-true').on('change', function() {
-      $('#ssl').hide()
+      $('#ssl').hide();
     });
 
     $('#radio-sshgen-false').on('change', function() {
-      $('#ssh').show()
+      $('#ssh').show();
     });
 
     $('#radio-sshgen-true').on('change', function() {
-      $('#ssh').hide()
+      $('#ssh').hide();
     });
 
     $('#chatops-navigation li a').on('click', function() {
@@ -471,7 +473,7 @@ var installer = {
     });
 
   }
-}
+};
 
 $(function() {
   if ($('#installer').length) {
