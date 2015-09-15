@@ -153,6 +153,13 @@ var puppet = {
     $('#page-puppet').removeClass('progress');
     $('#puppet-done').show();
     $.get(puppet.cleanup);
+    $.ajax({
+      type: 'HEAD',
+      url: '/ssl/st2_root_ca.cer',
+      success: function() {
+        $('#rootca-warning').show();
+      }
+    });
   },
   init: function() {
     $('#page-puppet').addClass('progress');
