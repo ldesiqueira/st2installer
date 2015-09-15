@@ -30,6 +30,8 @@ class RootController(object):
       "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
     ]
 
+    self.grant_access = "/usr/bin/sudo /bin/chmod 755 %s%s" % (self.path, self.configname)
+
   def lock(self):
     open(self.lockfile, 'w').close()
   def is_locked(self):
@@ -231,6 +233,9 @@ class RootController(object):
     if not os.path.exists(self.path):
       os.makedirs(self.path)
 
+    if not os.access(self.path+self.configname, os.W_OK):
+      Popen(self.grant_access, shell=True).wait()
+
     with open(self.path+self.configname, 'w') as workroom:
       workroom.write(yaml.dump(config))
 
@@ -244,7 +249,7 @@ class RootController(object):
 
   @expose(generic=True, template='progress.html')
   def install(self):
-    if self.config_written:
+    if self.is_locked():
       return {"hostname": self.hostname}
     else:
       redirect('/', internal=True)
