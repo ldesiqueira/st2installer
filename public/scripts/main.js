@@ -40,15 +40,15 @@ var i18n = {
   }
 };
 var puppet = {
-  warning: [ 
+  warning: [
     /warn/i
   ],
-  error: [ 
+  error: [
     /error/i,
     /fail/i
   ],
   important: [
-    
+
   ],
   checkpoints: [
     [/apply hostname.*executed successfully/, 15],
@@ -94,8 +94,8 @@ var puppet = {
   },
   read: function() {
     var stream = $.ajax({
-      url: puppet.url, 
-      data: {line: puppet.line}, 
+      url: puppet.url,
+      data: {line: puppet.line},
       timeout: 500,
       complete: function(data, status) {
         data = String(data.responseText);
@@ -151,8 +151,15 @@ var puppet = {
   },
   complete: function() {
     $('#page-puppet').removeClass('progress');
-    $('#puppet-done').show(); 
+    $('#puppet-done').show();
     $.get(puppet.cleanup);
+    $.ajax({
+      type: 'HEAD',
+      url: '/ssl/st2_root_ca.cer',
+      success: function() {
+        $('#rootca-warning').show();
+      }
+    });
   },
   init: function() {
     $('#page-puppet').addClass('progress');
@@ -172,7 +179,7 @@ var puppet = {
 
 }
 var installer = {
-  page: 0, 
+  page: 0,
   chatops: 0,
   errors: 0,
   key_validator: 'keypair/',
@@ -245,7 +252,7 @@ var installer = {
     '</div>'
   ),
   raise_modal: function(template) {
-    
+
     $('#modal-overflow').remove();
     modal = installer.modal;
     modal.find('h3').text(i18n[template].header);
@@ -293,7 +300,7 @@ var installer = {
         installer.append_error(hostname, i18n.fqdn);
       }
 
-      if ($('#radio-selfsigned-false').is(':checked') && 
+      if ($('#radio-selfsigned-false').is(':checked') &&
           ($('#file-publickey').val().trim().length==0 ||
            $('#file-privatekey').val().trim().length==0)) {
         installer.append_error($('#ssl'), i18n.ssl_required);
@@ -329,10 +336,10 @@ var installer = {
         installer.append_error(username, i18n.required);
       }
 
-      if ($('#radio-sshgen-false').is(':checked') && 
+      if ($('#radio-sshgen-false').is(':checked') &&
           ($('#file-ssh-publickey').val().trim().length==0 ||
            $('#file-ssh-privatekey').val().trim().length==0)) {
-        installer.append_error($('#ssh'), i18n.ssl_required);  
+        installer.append_error($('#ssh'), i18n.ssl_required);
       }
 
       if ($('#radio-sshgen-false').is(':checked') &&
@@ -399,7 +406,7 @@ var installer = {
           }
         });
       } else if (installer.page == 1 &&
-                 $('#radio-sshgen-true').is(':checked') && 
+                 $('#radio-sshgen-true').is(':checked') &&
                  $('#gen-private').val() == '') {
         $.get(installer.key_generator).always(function(keypair) {
           $('#gen-private').val(keypair.private);

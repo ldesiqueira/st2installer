@@ -18,7 +18,7 @@
   </div>
   <div id="output">
     <div id="output-content">
-      
+
     </div>
   </div>
   <div id="puppet-done">
@@ -29,6 +29,17 @@
       <li><a href="https://www.youtube.com/channel/UCColc5CuBJ8-1SnALnkDz8Q" target="_blank">YouTube channel</a></li>
       <li><a href="http://stackstorm.com/blog" target="_blank">Blog</a></li>
     </ul>
+
+    <div id="rootca-warning">
+      <h4><i class="fa fa-exclamation-triangle"></i> StackStorm Root CA</h4>
+      <p>Because you're using a self-signed SSL certificate, you need to install StackStorm Root CA in order for UI and API to communicate:</p>
+      <ul>
+        <li><a href="/ssl/st2_root_ca.cer" target="_blank">Download your Root CA</a></li>
+        <li><a href="http://wiki.cacert.org/FAQ/ImportRootCert" target="_blank">Read the installation manual on CAcert wiki</a></li>
+      </ul>
+      <p>Safety notice: this CA was automatically generated on your server, it's not shared across different StackStorm installations nor is it accessible by anyone but you. Never share it with anyone except users of your StackStorm instance.</p>
+    </div>
+
     <div id="next-button">
       <a href="https://${hostname}" id="step-next">Open StackStorm</a>
     </div>
