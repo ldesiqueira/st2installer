@@ -131,8 +131,8 @@ class RootController(object):
       config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
 
     if kwargs["sshgen"] == "0":
-      config["st2::ssh_public_key"] = request.POST['file-publickey'].file.read()
-      config["st2::ssh_private_key"] = request.POST['file-privatekey'].file.read()
+      config["st2::ssh_public_key"] = request.POST['file-ssh-publickey'].file.read()
+      config["st2::ssh_private_key"] = request.POST['file-ssh-privatekey'].file.read()
     else:
       config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
       config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
