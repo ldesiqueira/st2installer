@@ -30,6 +30,8 @@ class RootController(object):
       "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
     ]
 
+    self.grant_access = "/usr/bin/sudo /bin/chmod 755 %s%s" % (self.path, self.configname)
+
   def lock(self):
     open(self.lockfile, 'w').close()
   def is_locked(self):
@@ -131,8 +133,8 @@ class RootController(object):
       config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
 
     if kwargs["sshgen"] == "0":
-      config["st2::ssh_public_key"] = request.POST['file-publickey'].file.read()
-      config["st2::ssh_private_key"] = request.POST['file-privatekey'].file.read()
+      config["st2::ssh_public_key"] = request.POST['file-ssh-publickey'].file.read()
+      config["st2::ssh_private_key"] = request.POST['file-ssh-privatekey'].file.read()
     else:
       config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
       config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
@@ -231,6 +233,9 @@ class RootController(object):
     if not os.path.exists(self.path):
       os.makedirs(self.path)
 
+    if not os.access(self.path+self.configname, os.W_OK):
+      Popen(self.grant_access, shell=True).wait()
+
     with open(self.path+self.configname, 'w') as workroom:
       workroom.write(yaml.dump(config))
 
@@ -244,7 +249,7 @@ class RootController(object):
 
   @expose(generic=True, template='progress.html')
   def install(self):
-    if self.config_written:
+    if self.is_locked():
       return {"hostname": self.hostname}
     else:
       redirect('/', internal=True)
