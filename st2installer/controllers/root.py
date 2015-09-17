@@ -249,7 +249,7 @@ class RootController(object):
 
   @expose(generic=True, template='progress.html')
   def install(self):
-    if self.is_locked():
+    if self.config_written:
       return {"hostname": self.hostname}
     else:
       redirect('/', internal=True)
