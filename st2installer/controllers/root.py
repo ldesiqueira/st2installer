@@ -8,7 +8,7 @@ class RootController(object):
 
   def __init__(self):
     self.proc = None
-    self.command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
+    self.command = '/usr/bin/sudo FACTER_installer_running=true ENV=current_working_directory nocolor=1 /usr/bin/puprun'
     self.output = '/tmp/st2installer.log'
     self.lockfile = '/tmp/st2installer_lock'
     self.keypair = KeypairController()
