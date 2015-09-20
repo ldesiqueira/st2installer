@@ -9,6 +9,7 @@ class RootController(object):
   def __init__(self):
     self.proc = None
     self.command = '/usr/bin/sudo FACTER_installer_running=true ENV=current_working_directory NOCOLOR=true /usr/bin/puprun'
+    self.st2stop = '/usr/bin/sudo /usr/bin/st2ctl stop'
     self.output = '/tmp/st2installer.log'
     self.lockfile = '/tmp/st2installer_lock'
     self.keypair = KeypairController()
@@ -47,6 +48,7 @@ class RootController(object):
   def puppet(self, line):
     if not self.proc:
       open(self.output, 'w').close()
+      self.p    = Popen("%s > %s 2>&1" % (self.st2stop, self.output), shell=True)
       self.proc = Popen("%s > %s 2>&1" % (self.command, self.output), shell=True)
       self.lock()
 
