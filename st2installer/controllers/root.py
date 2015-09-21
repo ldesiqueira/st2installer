@@ -1,3 +1,4 @@
+from IPy import IP
 from pecan import expose, request, Response, redirect, abort, route
 from subprocess import Popen, PIPE, call
 from keypair import KeypairController
@@ -83,6 +84,20 @@ class RootController(object):
     if self.is_locked():
       redirect('/install', internal=True)
 
+    # special handling for system hostname incase it is an IP.
+    system_hostname = kwargs['hostname']
+
+    try:
+      ip = IP(system_hostname)
+      # checking for len == 1 enables us to skip an hostname value of the
+      # kind 127.0.0.0/30. Arguably this is a bogus value anyway.
+      if len(ip) == 1 and ip.version() == 4:
+        system_hostname = system_hostname.replace('.', '-')
+      if len(ip) == 1 and ip.version() == 6:
+        system_hostname = system_hostname.strip(':').replace(':', '-')
+    except:
+      pass
+
     self.hostname = kwargs['hostname']
 
     password = kwargs['hubot-password']
@@ -95,7 +110,7 @@ class RootController(object):
     uuid = str(uuid1())
 
     config = {
-      "system::hostname":               kwargs['hostname'],
+      "system::hostname":               system_hostname,
       "st2::installer_run":             True,
       "st2::api_url":                   "https://%s:9101" % kwargs['hostname'],
       "st2::auth_url":                  "https://%s:9100" % kwargs['hostname'],
