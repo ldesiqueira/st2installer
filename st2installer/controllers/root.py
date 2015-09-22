@@ -3,7 +3,7 @@ from pecan import expose, request, Response, redirect, abort, route
 from subprocess import Popen, PIPE, call
 from keypair import KeypairController
 from uuid import uuid1
-import random, string, os, yaml
+import random, string, os, json
 
 class RootController(object):
 
@@ -15,7 +15,7 @@ class RootController(object):
     self.lockfile = '/tmp/st2installer_lock'
     self.keypair = KeypairController()
     self.path = "/opt/puppet/hieradata/"
-    self.configname = "answers.yaml"
+    self.configname = "answers.json"
     self.hostname = ''
     self.config_written = False
 
@@ -254,7 +254,7 @@ class RootController(object):
       Popen(self.grant_access, shell=True).wait()
 
     with open(self.path+self.configname, 'w') as workroom:
-      workroom.write(yaml.safe_dump(config))
+      workroom.write(json.dumps(config))
 
     self.config_written = True
     redirect('/install', internal=True)
