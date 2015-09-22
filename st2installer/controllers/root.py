@@ -92,9 +92,9 @@ class RootController(object):
       # checking for len == 1 enables us to skip an hostname value of the
       # kind 127.0.0.0/30. Arguably this is a bogus value anyway.
       if len(ip) == 1 and ip.version() == 4:
-        system_hostname = system_hostname.replace('.', '-')
+        system_hostname = 'ip-%s' % system_hostname.replace('.', '-')
       if len(ip) == 1 and ip.version() == 6:
-        system_hostname = system_hostname.strip(':').replace(':', '-')
+        system_hostname = 'ip-%s' % system_hostname.strip(':').replace(':', '-')
     except:
       pass
 
