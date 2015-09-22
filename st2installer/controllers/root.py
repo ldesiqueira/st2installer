@@ -254,7 +254,7 @@ class RootController(object):
       Popen(self.grant_access, shell=True).wait()
 
     with open(self.path+self.configname, 'w') as workroom:
-      workroom.write(json.dump(config))
+      workroom.write(json.dumps(config))
 
     self.config_written = True
     redirect('/install', internal=True)
