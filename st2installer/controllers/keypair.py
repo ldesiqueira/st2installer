@@ -1,5 +1,7 @@
+import tempfile
+import subprocess
+from six.moves import shlex_quote
 from pecan import expose, request, response, redirect, abort
-from subprocess import call
 import random, string, os
 from Crypto.PublicKey import RSA
 
@@ -8,8 +10,8 @@ DEFAULT_RSA_KEY_SIZE = 2048
 class KeypairController(object):
 
   def __init__(self):
-    self.privatefile = '/tmp/testkey'
-    self.publicfile = '/tmp/testkey-pub'
+    _, self.privatefile = tempfile.mkstemp(suffix='private')
+    _, self.publicfile = tempfile.mkstemp(suffix='public')
     self.diff_output = '/tmp/keycompare.log'
     self.ssh_diff = '/etc/st2installer/keycompare'
     self.ssl_diff = '/etc/st2installer/sslcompare'
@@ -21,9 +23,11 @@ class KeypairController(object):
       temp_private.write(private)
     with open(self.publicfile, 'w') as temp_public:
       temp_public.write(public)
-    call("%s > %s" % (diff, self.diff_output), shell=True)
-    with open(self.diff_output, 'r') as output:
-      return output.read()
+
+    args = [diff, self.privatefile, self.publicfile]
+    process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    return stdout
 
   @expose(generic=True, content_type='text/plain')
   def index(self):
@@ -59,4 +63,3 @@ class KeypairController(object):
   def public(self):
     response.headers['Content-Disposition'] = 'attachment; filename="st2-ssh.pub"'
     return self.gen_public.exportKey('OpenSSH')
-  

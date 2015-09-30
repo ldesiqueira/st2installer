@@ -1,6 +1,6 @@
-#!/bin/bash
-PRIVKEY=/tmp/testkey
-TESTKEY=/tmp/testkey-pub
+#!/usr/bin/env bash
+PRIVKEY=$1
+TESTKEY=$2
 
 chmod 600 "$PRIVKEY"
 chmod 600 "$TESTKEY"
@@ -10,7 +10,7 @@ PRIVTEST_CODE=$?
 PUBTEST=$(ssh-keygen -y -e -f "$TESTKEY" -P "")
 PUBTEST_CODE=$?
 
-if test ! -r /tmp/testkey-pub || test ! -r /tmp/testkey || [ "$PRIVTEST_CODE" -ne "0" ] || [ "$PUBTEST_CODE" -ne "0" ]
+if test ! -r ${TESTKEY} || test ! -r ${PRIVKEY} || [ "$PRIVTEST_CODE" -ne "0" ] || [ "$PUBTEST_CODE" -ne "0" ]
 then
   echo "1"
   exit
