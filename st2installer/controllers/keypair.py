@@ -3,6 +3,8 @@ from subprocess import call
 import random, string, os
 from Crypto.PublicKey import RSA
 
+DEFAULT_RSA_KEY_SIZE = 1024
+
 class KeypairController(object):
 
   def __init__(self):
@@ -11,7 +13,7 @@ class KeypairController(object):
     self.diff_output = '/tmp/keycompare.log'
     self.ssh_diff = '/etc/st2installer/keycompare'
     self.ssl_diff = '/etc/st2installer/sslcompare'
-    self.gen_private = RSA.generate(1024, os.urandom)
+    self.gen_private = RSA.generate(DEFAULT_RSA_KEY_SIZE, os.urandom)
     self.gen_public = self.gen_private.publickey()
 
   def compare(self, diff, private, public):
