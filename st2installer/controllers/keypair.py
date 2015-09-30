@@ -3,7 +3,7 @@ from subprocess import call
 import random, string, os
 from Crypto.PublicKey import RSA
 
-DEFAULT_RSA_KEY_SIZE = 1024
+DEFAULT_RSA_KEY_SIZE = 2048
 
 class KeypairController(object):
 
