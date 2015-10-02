@@ -8,6 +8,7 @@ import random, string, os
 from pecan import expose, request, response, abort
 from Crypto.PublicKey import RSA
 import os
+from st2installer.controllers.base import BaseController
 
 
 PARENT = os.path.dirname
@@ -17,7 +18,7 @@ ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../../'))
 DEFAULT_RSA_KEY_SIZE = 2048
 
 
-class KeypairController(object):
+class KeypairController(BaseController):
 
     def __init__(self):
         _, self.privatefile = tempfile.mkstemp(suffix='private')
@@ -86,39 +87,3 @@ class KeypairController(object):
     def public(self):
         response.headers['Content-Disposition'] = 'attachment; filename="st2-ssh.pub"'
         return self.gen_public.exportKey('OpenSSH')
-
-    def _parse_query_params(self, request):
-        """
-        Parse query string for the provided request.
-
-        :rtype: ``dict``
-        """
-        query_string = request.query_string
-        query_params = dict(urlparse.parse_qsl(query_string))
-
-        return query_params
-
-    def _get_query_param_value(self, request, param_name, param_type, default_value=None):
-        """
-        Return a value for the provided query param and optionally cast it for boolean types.
-
-        If the requested query parameter is not provided, default value is returned instead.
-
-        :param request: Request object.
-
-        :param param_name: Name of the param to retrieve the value for.
-        :type param_name: ``str``
-
-        :param param_type: Type of the query param (e.g. "bool").
-        :type param_type: ``str``
-
-        :param default_value: Value to return if query param is not provided.
-        :type default_value: ``object``
-        """
-        query_params = self._parse_query_params(request=request)
-        value = query_params.get(param_name, default_value)
-
-        if param_type == 'bool' and isinstance(value, six.string_types):
-            value = value.lower() in ['1', 'true']
-
-        return value

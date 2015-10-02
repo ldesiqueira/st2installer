@@ -7,9 +7,10 @@ import random
 import string
 import os
 import json
+from st2installer.controllers.base import BaseController
 
 
-class RootController(object):
+class RootController(BaseController):
 
     def __init__(self, config=None):
 
@@ -55,6 +56,7 @@ class RootController(object):
         return os.path.isfile(self.lockfile)
 
     def redirect_check(self):
+        return
         if self.is_locked():
             redirect('/install', internal=True)
         elif Popen(self.puppet_check, shell=True).wait() == 0:
