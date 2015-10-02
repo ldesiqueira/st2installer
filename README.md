@@ -1,5 +1,7 @@
 # StackStorm installer
 
+[![Build Status](https://api.travis-ci.org/StackStorm/st2installer.svg?branch=master)](https://travis-ci.org/StackStorm/st2installer)
+
 An installer UI for StackStorm initial setup. This is a part of [st2workroom](https://github.com/StackStorm/st2workroom) environment and shouldn't normally be run or cloned separately unless you want to develop on the installer itself.
 
 ## Installation

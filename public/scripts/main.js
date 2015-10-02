@@ -14,7 +14,7 @@ var i18n = {
   flowdock: "All fields are required for Flowdock integration.",
   ssh: {
     'header': "Whoa. The keys do not match!",
-    'text': "It appears you've uploaded a key pair that either does not match or isn't really a key pair at all! \
+    'text': "It appears you've uploaded a key pair that either does not match, is password protected or isn't really a key pair at all! \
               You can upload another set of keys or we can just generate a new key pair for you, no problem.",
     'buttons': [
       ['Generate', '#generate'],
