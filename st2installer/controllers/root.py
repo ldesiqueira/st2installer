@@ -21,6 +21,7 @@ class RootController(object):
         self.configname = "answers.json"
         self.hostname = ''
         self.config_written = False
+        self.puppet_check = 'pgrep puprun'
 
         config = config or conf.to_dict()
         if 'puppet' in config and 'command' in config['puppet']:
@@ -52,6 +53,12 @@ class RootController(object):
 
     def is_locked(self):
         return os.path.isfile(self.lockfile)
+
+    def redirect_check(self):
+        if self.is_locked():
+            redirect('/install', internal=True)
+        elif Popen(self.puppet_check, shell=True).wait() == 0:
+            redirect('/wait', internal=True)
 
     @expose(content_type='text/plain')
     def cleanup(self):
@@ -85,18 +92,20 @@ class RootController(object):
     @expose(generic=True, template='index.html')
     def index(self):
 
-        if self.is_locked():
-            redirect('/install', internal=True)
+        self.redirect_check()
 
         self.hostname = self.hostname or request.host.split(':')[0]
 
         return {"hubotpassword": self.password, "hostname": self.hostname}
 
+    @expose(generic=True, template='wait.html')
+    def wait(self):
+        return {}
+
     @index.when(method='POST', template='progress.html')
     def index_post(self, **kwargs):
 
-        if self.is_locked():
-            redirect('/install', internal=True)
+        self.redirect_check()
 
         # special handling for system hostname incase it is an IP.
         system_hostname = kwargs['hostname']
