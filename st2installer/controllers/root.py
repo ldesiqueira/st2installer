@@ -21,7 +21,7 @@ class RootController(object):
         self.configname = "answers.json"
         self.hostname = ''
         self.config_written = False
-        self.puppet_check = 'pgrep -f puppet-apply'
+        self.puppet_check_command = 'pgrep -f puppet-apply'
 
         config = config or conf.to_dict()
         if 'puppet' in config and 'command' in config['puppet']:
@@ -54,10 +54,13 @@ class RootController(object):
     def is_locked(self):
         return os.path.isfile(self.lockfile)
 
+    def puppet_check(self):
+        return Popen(self.puppet_check_command, shell=True).wait() == 0
+
     def redirect_check(self):
         if self.is_locked():
             redirect('/install', internal=True)
-        elif Popen(self.puppet_check, shell=True).wait() == 0:
+        elif self.puppet_check():
             redirect('/wait', internal=True)
 
     @expose(content_type='text/plain')
