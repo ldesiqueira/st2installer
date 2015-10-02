@@ -1,19 +1,21 @@
+from IPy import IP
 from pecan import expose, request, Response, redirect, abort, route
 from subprocess import Popen, PIPE, call
 from keypair import KeypairController
 from uuid import uuid1
-import random, string, os, yaml
+import random, string, os, json
 
 class RootController(object):
 
   def __init__(self):
     self.proc = None
-    self.command = '/usr/bin/sudo FACTER_installer_running=true nocolor=1 /usr/bin/puprun'
+    self.command = '/usr/bin/sudo FACTER_installer_running=true ENV=current_working_directory NOCOLOR=true /usr/bin/puprun'
+    self.st2stop = '/usr/bin/sudo /usr/bin/st2ctl stop'
     self.output = '/tmp/st2installer.log'
     self.lockfile = '/tmp/st2installer_lock'
     self.keypair = KeypairController()
     self.path = "/opt/puppet/hieradata/"
-    self.configname = "answers.yaml"
+    self.configname = "answers.json"
     self.hostname = ''
     self.config_written = False
 
@@ -24,7 +26,7 @@ class RootController(object):
     # Note, any command added here needs to be added to the workroom sudoers entry.
     # File can be found at https://github.com/StackStorm/st2workroom/blob/master/modules/profile/manifests/st2server.pp#L513
     self.cleanup_chain = [
-      "/usr/bin/sudo /bin/rm %s%s" % (self.path, self.configname),
+      "/usr/bin/sudo /bin/chmod 660 %s%s" % (self.path, self.configname),
       "/usr/bin/sudo /usr/sbin/service nginx restart",
       "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
       "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
@@ -47,6 +49,7 @@ class RootController(object):
   def puppet(self, line):
     if not self.proc:
       open(self.output, 'w').close()
+      self.p    = Popen("%s > %s 2>&1" % (self.st2stop, self.output), shell=True)
       self.proc = Popen("%s > %s 2>&1" % (self.command, self.output), shell=True)
       self.lock()
 
@@ -81,6 +84,20 @@ class RootController(object):
     if self.is_locked():
       redirect('/install', internal=True)
 
+    # special handling for system hostname incase it is an IP.
+    system_hostname = kwargs['hostname']
+
+    try:
+      ip = IP(system_hostname)
+      # checking for len == 1 enables us to skip an hostname value of the
+      # kind 127.0.0.0/30. Arguably this is a bogus value anyway.
+      if len(ip) == 1 and ip.version() == 4:
+        system_hostname = 'ip-%s' % system_hostname.replace('.', '-')
+      if len(ip) == 1 and ip.version() == 6:
+        system_hostname = 'ip-%s' % system_hostname.strip(':').replace(':', '-')
+    except:
+      pass
+
     self.hostname = kwargs['hostname']
 
     password = kwargs['hubot-password']
@@ -93,7 +110,7 @@ class RootController(object):
     uuid = str(uuid1())
 
     config = {
-      "system::hostname":               kwargs['hostname'],
+      "system::hostname":               system_hostname,
       "st2::installer_run":             True,
       "st2::api_url":                   "https://%s:9101" % kwargs['hostname'],
       "st2::auth_url":                  "https://%s:9100" % kwargs['hostname'],
@@ -237,7 +254,7 @@ class RootController(object):
       Popen(self.grant_access, shell=True).wait()
 
     with open(self.path+self.configname, 'w') as workroom:
-      workroom.write(yaml.dump(config))
+      workroom.write(json.dumps(config))
 
     self.config_written = True
     redirect('/install', internal=True)
