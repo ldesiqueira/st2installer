@@ -5,7 +5,10 @@ from six.moves import shlex_quote
 from six.moves.urllib import parse as urlparse
 from pecan import expose, request, response, redirect, abort
 import random, string, os
+from pecan import expose, request, response, abort
 from Crypto.PublicKey import RSA
+import os
+
 
 DEFAULT_RSA_KEY_SIZE = 2048
 
