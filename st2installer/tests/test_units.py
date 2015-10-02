@@ -1,22 +1,10 @@
 import os
-from unittest import TestCase
 from st2installer.controllers.root import RootController
 
+from st2installer.tests.base import BaseTestCase
 
-class MainUnits(TestCase):
 
-    def setUp(self):
-        self.root_controller = RootController({'puppet': {
-            'hieradata': 'tmp/hieradata/',
-            'command': '/bin/echo testing'
-        }})
-        self.keypair_controller = self.root_controller.keypair
-        self.was_locked = os.path.isfile(self.root_controller.lockfile)
-
-    def tearDown(self):
-        if not self.was_locked and os.path.isfile(self.root_controller.lockfile):
-            os.remove(self.root_controller.lockfile)
-
+class MainUnits(BaseTestCase):
     def get_keypair(self, type, valid):
         path = os.path.dirname(__file__)
         valid_string = ('good' if valid else 'bad')
