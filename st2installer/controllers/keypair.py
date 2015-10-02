@@ -1,22 +1,34 @@
+import tempfile
+import subprocess
+import six
+from six.moves import shlex_quote
+from six.moves.urllib import parse as urlparse
+from pecan import expose, request, response, redirect, abort
+import random, string, os
 from pecan import expose, request, response, abort
-from subprocess import call
 from Crypto.PublicKey import RSA
 import os
+from st2installer.controllers.base import BaseController
 
 
-class KeypairController(object):
+PARENT = os.path.dirname
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../../'))
+
+DEFAULT_RSA_KEY_SIZE = 2048
+
+
+class KeypairController(BaseController):
 
     def __init__(self):
-        parent = os.path.dirname
-        rootdir = parent(parent(parent(os.path.realpath(__file__))))
+        _, self.privatefile = tempfile.mkstemp(suffix='private')
+        _, self.publicfile = tempfile.mkstemp(suffix='public')
 
-        self.privatefile = '/tmp/testkey'
-        self.publicfile = '/tmp/testkey-pub'
         self.diff_output = '/tmp/keycompare.log'
+        self.ssh_diff = os.path.join(ROOT_DIR, 'keycompare')
+        self.ssl_diff = os.path.join(ROOT_DIR, 'sslcompare')
 
-        self.ssh_diff = '%s/keycompare' % rootdir
-        self.ssl_diff = '%s/sslcompare' % rootdir
-        self.gen_private = RSA.generate(1024, os.urandom)
+        self.gen_private = RSA.generate(DEFAULT_RSA_KEY_SIZE, os.urandom)
         self.gen_public = self.gen_private.publickey()
 
     def compare(self, diff, private, public):
@@ -24,9 +36,11 @@ class KeypairController(object):
             temp_private.write(private)
         with open(self.publicfile, 'w') as temp_public:
             temp_public.write(public)
-        call("%s > %s" % (diff, self.diff_output), shell=True)
-        with open(self.diff_output, 'r') as output:
-            return output.read()
+
+        args = [diff, self.privatefile, self.publicfile]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        return stdout
 
     @expose(generic=True, content_type='text/plain')
     def index(self):
@@ -42,9 +56,20 @@ class KeypairController(object):
             private_field = 'file-privatekey'
             public_field = 'file-publickey'
             diff = self.ssl_diff
+
         private = request.POST[private_field]
         public = request.POST[public_field]
-        return self.compare(diff, private.file.read(), public.file.read())
+
+        skip_key_check = self._get_query_param_value(request=request,
+                                                     param_name='skip_key_check',
+                                                     param_type='bool',
+                                                     default_value=False)
+
+        if skip_key_check:
+            return 0
+        else:
+            return self.compare(diff, private.file.read(),
+                                public.file.read())
 
     @expose('json')
     def keygen(self):
@@ -62,4 +87,3 @@ class KeypairController(object):
     def public(self):
         response.headers['Content-Disposition'] = 'attachment; filename="st2-ssh.pub"'
         return self.gen_public.exportKey('OpenSSH')
-

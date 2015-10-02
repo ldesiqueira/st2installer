@@ -7,9 +7,10 @@ import random
 import string
 import os
 import json
+from st2installer.controllers.base import BaseController
 
 
-class RootController(object):
+class RootController(BaseController):
 
     def __init__(self, config=None):
 
@@ -94,11 +95,15 @@ class RootController(object):
 
     @expose(generic=True, template='index.html')
     def index(self):
+        skip_lock_check = self._get_query_param_value(request=request,
+                                                      param_name='skip_lock_check',
+                                                      param_type='bool',
+                                                      default_value=False)
 
-        self.redirect_check()
+        if not skip_lock_check:
+            self.redirect_check()
 
         self.hostname = self.hostname or request.host.split(':')[0]
-
         return {"hubotpassword": self.password, "hostname": self.hostname}
 
     @expose(generic=True, template='wait.html')
@@ -107,8 +112,13 @@ class RootController(object):
 
     @index.when(method='POST', template='progress.html')
     def index_post(self, **kwargs):
+        skip_lock_check = self._get_query_param_value(request=request,
+                                                      param_name='skip_lock_check',
+                                                      param_type='bool',
+                                                      default_value=False)
 
-        self.redirect_check()
+        if not skip_lock_check:
+            self.redirect_check()
 
         # special handling for system hostname incase it is an IP.
         system_hostname = kwargs['hostname']
