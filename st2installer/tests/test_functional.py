@@ -40,6 +40,10 @@ class FunctionalTest(TestCase):
         self.default_post['gen-public'] = ssh_keys['public']
         self.default_post['gen-private'] = ssh_keys['private']
 
+        # Travis fix
+        self.root_controller.path = 'tmp/hieradata/'
+        self.root_controller.command = '/bin/echo testing'
+
     def setLock(self):
         self.root_controller.lock()
 
