@@ -55,8 +55,9 @@ class KeypairController(object):
             private_field = 'file-privatekey'
             public_field = 'file-publickey'
             diff = self.ssl_diff
-            upload_private = request.POST[private_field]
-            upload_public = request.POST[public_field]
+
+        private = request.POST[private_field]
+        public = request.POST[public_field]
 
         skip_key_check = self._get_query_param_value(request=request,
                                                      param_name='skip_key_check',
@@ -66,8 +67,8 @@ class KeypairController(object):
         if skip_key_check:
             return 0
         else:
-            return self.compare(diff, upload_private.file.read(),
-                                upload_public.file.read())
+            return self.compare(diff, private.file.read(),
+                                public.file.read())
 
     @expose('json')
     def keygen(self):
