@@ -17,6 +17,11 @@ app = {
     }
 }
 
+puppet = {
+    'hieradata': 'tmp/hieradata/',
+    'command': '/bin/echo testing'
+}
+
 # Custom Configurations must be in Python dictionary format::
 #
 # foo = {'bar':'baz'}

@@ -1,11 +1,8 @@
 from unittest import TestCase
-from webtest import TestApp
 from st2installer.controllers.root import RootController
-from st2installer.controllers.keypair import KeypairController
 from pecan import set_config
 from pecan.testing import load_test_app
 from copy import copy
-import json
 import os
 import re
 
@@ -17,30 +14,34 @@ class FunctionalTest(TestCase):
             os.path.dirname(__file__),
             'config.py'
         ))
-        self.keypair_controller = KeypairController()
         self.root_controller = RootController()
+        self.keypair_controller = self.root_controller.keypair
         self.public_regex = re.compile("^ssh-rsa AAAA[0-9A-Za-z+/]+[=]{0,3}( ([^@]+@[^@]+))?$")
         self.private_regex = re.compile("^-----BEGIN RSA PRIVATE KEY-----.*-----END RSA PRIVATE KEY-----$", re.DOTALL)
         self.was_locked = os.path.isfile(self.root_controller.lockfile)
         self.default_post = {
-            'hostname': 'localhost-test', 
+            'hostname': 'localhost-test',
             'check-chatops': '1',
             'hubot-password': 'aF8l5rddf8sBKe6aWYTAZNwo4V4R8vCK',
             'admin-username': 'admin',
             'password-1': 'adminpass1',
-            'password-2': 'adminpass1', 
+            'password-2': 'adminpass1',
             'username': 'stanley',
-            'anon-data': '1', 
-            'chatops': 'slack', 
-            'selfsigned': '1', 
+            'anon-data': '1',
+            'chatops': 'slack',
+            'selfsigned': '1',
             'sshgen': '1',
             'slack-token': 'slackapi'
         }
         self.removeLock()
 
         ssh_keys = self.keypair_controller.keygen()
-        self.default_post['gen-public'] = ssh_keys['public'] 
+        self.default_post['gen-public'] = ssh_keys['public']
         self.default_post['gen-private'] = ssh_keys['private']
+
+        # Travis fix
+        self.root_controller.path = 'tmp/hieradata/'
+        self.root_controller.command = '/bin/echo testing'
 
     def setLock(self):
         self.root_controller.lock()
