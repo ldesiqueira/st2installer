@@ -1,6 +1,5 @@
 from unittest import TestCase
 from st2installer.controllers.root import RootController
-from st2installer.controllers.keypair import KeypairController
 from pecan import set_config
 from pecan.testing import load_test_app
 from copy import copy
@@ -15,8 +14,8 @@ class FunctionalTest(TestCase):
             os.path.dirname(__file__),
             'config.py'
         ))
-        self.keypair_controller = KeypairController()
         self.root_controller = RootController()
+        self.keypair_controller = self.root_controller.keypair
         self.public_regex = re.compile("^ssh-rsa AAAA[0-9A-Za-z+/]+[=]{0,3}( ([^@]+@[^@]+))?$")
         self.private_regex = re.compile("^-----BEGIN RSA PRIVATE KEY-----.*-----END RSA PRIVATE KEY-----$", re.DOTALL)
         self.was_locked = os.path.isfile(self.root_controller.lockfile)

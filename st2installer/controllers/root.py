@@ -1,5 +1,5 @@
 from IPy import IP
-from pecan import expose, request, redirect
+from pecan import expose, request, redirect, conf
 from subprocess import Popen
 from keypair import KeypairController
 from uuid import uuid1
@@ -11,17 +11,26 @@ import json
 
 class RootController(object):
 
-    def __init__(self):
+    def __init__(self, config=None):
+
         self.proc = None
-        self.command = '/usr/bin/sudo FACTER_installer_running=true ENV=current_working_directory NOCOLOR=true /usr/bin/puprun'
         self.st2stop = '/usr/bin/sudo /usr/bin/st2ctl stop'
         self.output = '/tmp/st2installer.log'
         self.lockfile = '/tmp/st2installer_lock'
         self.keypair = KeypairController()
-        self.path = "/opt/puppet/hieradata/"
         self.configname = "answers.json"
         self.hostname = ''
         self.config_written = False
+
+        config = config or conf.to_dict()
+        if 'puppet' in config and 'command' in config['puppet']:
+            self.command = config['puppet']['command']
+        else:
+            self.command = '/usr/bin/sudo FACTER_installer_running=true ENV=current_working_directory NOCOLOR=true /usr/bin/puprun'
+        if 'puppet' in config and 'hieradata' in config['puppet']:
+            self.path = config['puppet']['hieradata']
+        else:
+            self.path = "/opt/puppet/hieradata/"
 
         password_length = 32
         password_chars = string.ascii_letters + string.digits

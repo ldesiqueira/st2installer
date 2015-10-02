@@ -1,14 +1,16 @@
 import os
 from unittest import TestCase
 from st2installer.controllers.root import RootController
-from st2installer.controllers.keypair import KeypairController
 
 
 class MainUnits(TestCase):
 
     def setUp(self):
-        self.keypair_controller = KeypairController()
-        self.root_controller = RootController()
+        self.root_controller = RootController({'puppet': {
+            'hieradata': 'tmp/hieradata/',
+            'command': '/bin/echo testing'
+        }})
+        self.keypair_controller = self.root_controller.keypair
         self.was_locked = os.path.isfile(self.root_controller.lockfile)
 
     def tearDown(self):
