@@ -10,6 +10,10 @@ from Crypto.PublicKey import RSA
 import os
 
 
+PARENT = os.path.dirname
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../../'))
+
 DEFAULT_RSA_KEY_SIZE = 2048
 
 
@@ -18,9 +22,11 @@ class KeypairController(object):
     def __init__(self):
         _, self.privatefile = tempfile.mkstemp(suffix='private')
         _, self.publicfile = tempfile.mkstemp(suffix='public')
+
         self.diff_output = '/tmp/keycompare.log'
-        self.ssh_diff = '/etc/st2installer/keycompare'
-        self.ssl_diff = '/etc/st2installer/sslcompare'
+        self.ssh_diff = os.path.join(ROOT_DIR, 'keycompare')
+        self.ssl_diff = os.path.join(ROOT_DIR, 'sslcompare')
+
         self.gen_private = RSA.generate(DEFAULT_RSA_KEY_SIZE, os.urandom)
         self.gen_public = self.gen_private.publickey()
 
