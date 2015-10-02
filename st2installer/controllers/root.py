@@ -21,7 +21,7 @@ class RootController(object):
         self.configname = "answers.json"
         self.hostname = ''
         self.config_written = False
-        self.puppet_check = 'pgrep puprun'
+        self.puppet_check = 'pgrep -f puppet-apply'
 
         config = config or conf.to_dict()
         if 'puppet' in config and 'command' in config['puppet']:
