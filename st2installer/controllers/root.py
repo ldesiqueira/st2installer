@@ -56,7 +56,9 @@ class RootController(BaseController):
         return os.path.isfile(self.lockfile)
 
     def puppet_check(self):
-        return Popen(self.puppet_check_command, shell=True).wait() == 0
+        p = Popen(self.puppet_check_command, shell=True)
+        p.communicate()
+        return p.returncode == 0
 
     def redirect_check(self):
         if self.is_locked():
