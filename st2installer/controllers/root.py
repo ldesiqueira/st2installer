@@ -22,7 +22,7 @@ class RootController(BaseController):
         self.configname = "answers.json"
         self.hostname = ''
         self.config_written = False
-        self.puppet_check_command = 'pgrep -f puppet-apply'
+        self.puppet_check_command = 'ps aux | grep "[p]uppet-apply"'
 
         config = config or conf.to_dict()
         if 'puppet' in config and 'command' in config['puppet']:
