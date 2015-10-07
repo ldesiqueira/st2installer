@@ -103,8 +103,20 @@ var puppet = {
           lines = data.split('\n');
           for (var i = 0; i < lines.length; i++) {
             line = lines[i];
-            if (i == lines.length-1 && line == '--terminate--') {
+            if (i == lines.length-1 && line.slice(0, 13) == '--terminate--') {
               puppet.set_progress(100);
+              runtime = parseInt(line.slice(13));
+              if (ga && runtime) {
+                var metrics = {
+                  'metric2': parseInt($('#errors').text()),
+                  'metric3': parseInt($('#warnings').text()),
+                  'dimension1': $('#ga-chatops').val(),
+                  'dimension2': $('#ga-ssh').val(),
+                  'dimention2': $('#ga-ssl').val(),
+                };
+                ga('send', 'event', 'installer', 'complete', metrics);
+                ga('send', 'timing', 'Puppet', 'runtime', runtime);
+              }
             } else if (line.trim()) {
               puppet.line += 1;
               p_class = 'message';
@@ -208,6 +220,9 @@ var installer = {
         $('#step-back').hide();
       } else {
         $('#step-back').show();
+      }
+      if (ga) {
+        ga('send', 'pageview', '/step'+page);
       }
     };
     if (page <= installer.page) {
