@@ -3,6 +3,7 @@ from pecan import expose, request, redirect, conf
 from subprocess import Popen
 from keypair import KeypairController
 from uuid import uuid1
+import time
 import random
 import string
 import os
@@ -22,7 +23,12 @@ class RootController(BaseController):
         self.configname = "answers.json"
         self.hostname = ''
         self.config_written = False
+        self.config = None
+        self.start_time = None
+        self.runtime = None
         self.puppet_check_command = 'ps aux | grep "[p]uppet-apply"'
+        self.gen_ssl = 'Self-signed'
+        self.gen_ssh = 'Generated'
 
         config = config or conf.to_dict()
         if 'puppet' in config and 'command' in config['puppet']:
@@ -79,6 +85,7 @@ class RootController(BaseController):
             self.p = Popen("%s > %s 2>&1" % (self.st2stop, self.output), shell=True)
             self.proc = Popen("%s > %s 2>&1" % (self.command, self.output), shell=True)
             self.lock()
+            self.start_time = time.time()
 
         data = ''
         logfile = open(self.output, 'r')
@@ -89,7 +96,9 @@ class RootController(BaseController):
 
         if self.proc.poll() is not None:
             data += '--terminate--'
-
+            if not self.runtime:
+                self.runtime = (time.time() - self.start_time)*1000
+                data += str(self.runtime)
         if not data:
             return '--idle--'
 
@@ -186,10 +195,12 @@ class RootController(BaseController):
         if kwargs["selfsigned"] == "0":
             config["st2::ssl_public_key"] = request.POST['file-publickey'].file.read()
             config["st2::ssl_private_key"] = request.POST['file-privatekey'].file.read()
+            self.gen_ssl = 'Provided'
 
         if kwargs["sshgen"] == "0":
             config["st2::ssh_public_key"] = request.POST['file-ssh-publickey'].file.read()
             config["st2::ssh_private_key"] = request.POST['file-ssh-privatekey'].file.read()
+            self.gen_ssh = 'Provided'
         else:
             config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
             config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
@@ -295,6 +306,7 @@ class RootController(BaseController):
             workroom.write(json.dumps(config))
 
         self.config_written = True
+        self.config = config
         redirect('/install', internal=True)
 
     @expose(generic=True)
@@ -305,7 +317,11 @@ class RootController(BaseController):
     @expose(generic=True, template='progress.html')
     def install(self):
         if self.config_written:
-            return {"hostname": self.hostname}
+            return {"hostname": self.hostname,
+                    "config": self.config,
+                    "gen_ssl": self.gen_ssl,
+                    "gen_ssh": self.gen_ssh,
+                    "chatops": (self.config["hubot::adapter"] if "hubot::adapter" in self.config else "Disabled")}
         else:
             redirect('/', internal=True)
 
