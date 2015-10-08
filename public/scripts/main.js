@@ -256,10 +256,10 @@ var installer = {
         '<div id="keypair">' +
           '<label for="keypair-public">Your public key</label>' +
           '<textarea id="keypair-public"></textarea>' +
-          '<a id="download-public-key">Download</a>' +
+          '<a data-key-type="public" data-key-filename="st2-ssh.pub" class="download-ssh-key">Download</a>' +
           '<label for="keypair-private">Your private key</label>' +
           '<textarea id="keypair-private"></textarea>' +
-          '<a id="download-private-key">Download</a>' +
+          '<a data-key-type="private" data-key-filename="st2-ssh.key" class="download-ssh-key">Download</a>' +
         '</div>' +
         '<div id="modal-buttons">' +
         '</div>' +
@@ -505,20 +505,15 @@ $(function() {
     puppet.init();
   }
 
-  $(document).on('click', 'a#download-public-key', function() {
-    var filename, data;
-    filename = 'st2-ssh.pub';
-    data = $('#keypair-public').val();
-    elem = download_as_file(filename, data);
-    $('body').append(elem);
-    elem.click();
-  });
+  $(document).on('click', '.download-ssh-key', function(e) {
+    var key_type, key_filename, data;
 
-  $(document).on('click', 'a#download-private-key', function() {
-    var filename, data;
-    filename = 'st2-ssh.key';
-    data = $('#keypair-private').val();
-    elem = download_as_file(filename, data);
+    key_type = $(this).attr('data-key-type');
+    key_filename = $(this).attr('data-key-filename');
+
+    id = $(this).attr('id');
+    data = $('#keypair-' + key_type).val();
+    elem = download_as_file(key_filename, data);
     $('body').append(elem);
     elem.click();
   });
