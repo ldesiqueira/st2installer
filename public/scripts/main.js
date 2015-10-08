@@ -256,10 +256,10 @@ var installer = {
         '<div id="keypair">' +
           '<label for="keypair-public">Your public key</label>' +
           '<textarea id="keypair-public"></textarea>' +
-          '<a href="keypair/public">Download</a>' +
+          '<a id="download-public-key">Download</a>' +
           '<label for="keypair-private">Your private key</label>' +
           '<textarea id="keypair-private"></textarea>' +
-          '<a href="keypair/private">Download</a>' +
+          '<a id="download-private-key">Download</a>' +
         '</div>' +
         '<div id="modal-buttons">' +
         '</div>' +
@@ -503,5 +503,34 @@ $(function() {
   }
   if ($('#page-puppet').length) {
     puppet.init();
+  }
+
+  $(document).on('click', 'a#download-public-key', function() {
+    var filename, data;
+    filename = 'st2-ssh.pub';
+    data = $('#keypair-public').val();
+    elem = download_as_file(filename, data);
+    $('body').append(elem);
+    elem.click();
+  });
+
+  $(document).on('click', 'a#download-private-key', function() {
+    var filename, data;
+    filename = 'st2-ssh.key';
+    data = $('#keypair-private').val();
+    elem = download_as_file(filename, data);
+    $('body').append(elem);
+    elem.click();
+  });
+
+  function download_as_file(filename, data) {
+    var elem, encoded_data;
+
+    encoded_data = window.btoa(unescape(encodeURIComponent(data)));
+    elem = document.createElement('a');
+    elem.download = filename;
+    elem.textContent = filename;
+    elem.href = 'data:application/octet-stream;base64,' + encoded_data;
+    return elem;
   }
 });
