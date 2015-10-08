@@ -106,18 +106,6 @@ class FunctionalTest(BaseTestCase):
         self.assertTrue(self.public_regex.match('ssh-rsa '+body['public']))
         self.assertTrue(self.private_regex.match(body['private']))
 
-    def test_keypair_private(self):
-        response = self.app.get('/keypair/private')
-        self.assertEqual(response.status_int, 200)
-        self.assertEqual(response.content_disposition, 'attachment; filename="st2-ssh.key"')
-        self.assertTrue(self.private_regex.match(response.body))
-
-    def test_keypair_public(self):
-        response = self.app.get('/keypair/public')
-        self.assertEqual(response.status_int, 200)
-        self.assertEqual(response.content_disposition, 'attachment; filename="st2-ssh.pub"')
-        self.assertTrue(self.public_regex.match(response.body))
-
     def test_root_datasave(self):
         response = self.app.get('/data_save', params={'hostname': 'new-hostname-test', 'password': 'new-password-test'})
         self.assertEqual(response.status_int, 204)
