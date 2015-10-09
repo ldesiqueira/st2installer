@@ -106,6 +106,19 @@ class FunctionalTest(BaseTestCase):
         self.assertTrue(self.public_regex.match('ssh-rsa '+body['public']))
         self.assertTrue(self.private_regex.match(body['private']))
 
+    def test_keypair_gen_key_pair_is_generated_on_demand(self):
+        # Make sure new key pair is generated for each request
+        seen_private_keys = []
+        for index in range(0, 3):
+            response = self.app.get('/keypair/keygen')
+            body = response.json
+            self.assertEqual(response.status_int, 200)
+            self.assertTrue(self.public_regex.match('ssh-rsa '+body['public']))
+            self.assertTrue(self.private_regex.match(body['private']))
+
+            self.assertTrue(body['private'] not in seen_private_keys)
+            seen_private_keys.append(body['private'])
+
     def test_root_datasave(self):
         response = self.app.get('/data_save', params={'hostname': 'new-hostname-test', 'password': 'new-password-test'})
         self.assertEqual(response.status_int, 204)
