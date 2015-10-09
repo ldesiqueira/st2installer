@@ -118,6 +118,7 @@ class FunctionalTest(BaseTestCase):
 
             self.assertTrue(body['private'] not in seen_private_keys)
             seen_private_keys.append(body['private'])
+        self.assertEqual(len(seen_private_keys), 3)
 
     def test_root_datasave(self):
         response = self.app.get('/data_save', params={'hostname': 'new-hostname-test', 'password': 'new-password-test'})
