@@ -382,7 +382,7 @@ label.required:after {
   border-radius: 0 0 5px 5px;
   height: 300px;
   overflow-x: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
   margin-bottom: 30px;
   background: #252525;
   padding: 10px;
@@ -496,12 +496,12 @@ label.required:after {
 #puppet-done ul {
   margin-left: 20px;
 }
-#puppet-done #next-button,
+#page-puppet #next-button,
 #page-static #next-button {
   text-align: center;
   margin-bottom: 20px;
 }
-#puppet-done #next-button a,
+#page-puppet #next-button a,
 #page-static #next-button a {
   float: none;
   margin: 0 auto;
@@ -614,10 +614,10 @@ label[for="check-chatops"] {
   background-color: #252525;
   padding: 15px 20px;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   clear: both;
   position: relative;
-  margin-top: 40px;
+  margin-top: 30px;
   padding-bottom: 15px;
 }
 #rootca-warning h4 {
@@ -629,6 +629,7 @@ label[for="check-chatops"] {
 #rootca-warning ul {
   margin-top: 5px;
   margin-bottom: 20px;
+  margin-left: 20px;
 }
 #rootca-warning i {
   color: white;
@@ -638,4 +639,78 @@ label[for="check-chatops"] {
 #rootca-warning p {
   padding: 0;
   margin: 0;
+}
+
+
+label[for="check-enterprise"] {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.page.progress .done {
+  display: none;
+}
+.page.done .progress {
+  display: none;
+}
+.page.done .done {
+  display: block;
+}
+.page.progress .progress {
+  display: block;
+}
+p.signature {
+  padding: 20px;
+  margin-bottom: 40px;
+}
+p.signature em {
+  display: block;
+  text-align: right;
+  margin-right: 10px;
+}
+
+#page-puppet #next-button {
+  margin-bottom: 25px;
+}
+
+#puppet-done {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  margin-bottom: 20px;
+}
+#puppet-done ul {
+  margin: 0;
+}
+#puppet-done li {
+  display: inline-block;
+  list-style: none;
+  margin: 0 10px;
+  vertical-align: top;
+}
+#puppet-done li a {
+  margin-top: 2px;
+  height: 42px;
+  text-decoration: none;
+  line-height: 24px;
+  display: block;
+  padding: 7px 15px 5px;
+  box-sizing: border-box;
+  background: #252525;
+  border-radius: 5px;
+  border: 1px solid #994F00;
+  border-bottom: 2px solid #ff8300;
+  border-right: 2px solid #ff8300;
+}
+#puppet-done li a:hover {
+  background: #333;
+}
+#puppet-done li i {
+  font-size: 24px;
+  vertical-align: top;
+  margin-right: 5px;
+}
+#warning-count {
+  margin-top: 30px;
 }
