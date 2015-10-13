@@ -1,6 +1,4 @@
 import os
-from st2installer.controllers.root import RootController
-
 from st2installer.tests.base import BaseTestCase
 
 
@@ -9,10 +7,10 @@ class MainUnits(BaseTestCase):
         path = os.path.dirname(__file__)
         valid_string = ('good' if valid else 'bad')
         public_extension = ('pub' if type is 'ssh' else 'crt')
-        with open(path+('/%s-%s.key') % (type, valid_string), 'r') as private_file:
-            private = private_file.read()
-        with open(path+('/%s-%s.%s') % (type, valid_string, public_extension), 'r') as public_file:
-            public = public_file.read()
+        with open(path + ('/%s-%s.key') % (type, valid_string), 'r') as private_f:
+            private = private_f.read()
+        with open(path + ('/%s-%s.%s') % (type, valid_string, public_extension), 'r') as public_f:
+            public = public_f.read()
         return (private, public)
 
     def test_temp_files_are_writable(self):
@@ -61,7 +59,6 @@ class MainUnits(BaseTestCase):
                                                         private,
                                                         public)
         self.assertEqual('0\n', keypair_valid)
-
 
     def test_bad_ssh_keys_fail(self):
         (private, public) = self.get_keypair('ssh', False)
