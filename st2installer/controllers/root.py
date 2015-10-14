@@ -76,10 +76,6 @@ class RootController(BaseController):
         elif self.puppet_check():
             redirect('/wait', internal=True)
 
-    def get_enterprise_token(self):
-        # Hardcoded for now
-        return "token"
-
     @expose(content_type='text/plain')
     def cleanup(self):
         for command in self.cleanup_chain:
@@ -157,7 +153,6 @@ class RootController(BaseController):
         password = kwargs['hubot-password']
 
         collect_anonymous_data = True if "anon-data" in kwargs else False
-        token = self.get_enterprise_token if "enterprise" in kwargs else ""
 
         uuid = str(uuid1())
 
@@ -172,7 +167,7 @@ class RootController(BaseController):
             "st2::cli_auth_url": "https://%s:9100" % kwargs['hostname'],
 
             "st2::stanley::username": kwargs['username'],
-            "st2enterprise::token": token,
+
             "users": {
                 kwargs['admin-username']: {
                     "password": kwargs['password-1'],
@@ -213,6 +208,9 @@ class RootController(BaseController):
         else:
             config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
             config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
+
+        if kwargs["enterprise"] != "":
+            config["st2enterprise::token"] = kwargs["enterprise"]
 
         if "check-chatops" in kwargs and kwargs["check-chatops"] == "1":
 

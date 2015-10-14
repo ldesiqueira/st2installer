@@ -32,8 +32,12 @@
     </fieldset>
 
     <h2>StackStorm Enterprise</h2>
-    <p>Try <a href="http://stackstorm.com/product/#enterprise" target="_blank">StackStorm Enterprise Edition</a> for 30 days, featuring LDAP integration, role-based access control, visual workflow editor and more. No payment or credit card necessary, no strings attached. After the trial expires StackStorm will revert to Community Edition automatically.</p>
-    <label for="check-enterprise"><input id="check-enterprise" type="checkbox" name="enterprise" value="1" checked="checked">Enable 30 days StackStorm Enterprise trial</label>
+    <p class="enter-pi">StackStorm Enterprise features LDAP integration, role-based access control, a visual workflow editor, and more. Enter your license key to activate Enterprise Edition, or <a href="http://stackstorm.com/product/#enterprise" target="_blank">request a 30 day free trial</a>.</p>
+    <label for="ch-enterprise"><input id="ch-enterprise" type="checkbox" name="ch-enterprise" value="1" checked="checked">Enable enterprise features</label>
+    <div id="license-key">
+      <label for="check-enterprise">License key</label>
+      <input id="check-enterprise" type="text" name="enterprise" value="" />
+    </div>
 
   </div>
   <div class="page" id="page-accounts">

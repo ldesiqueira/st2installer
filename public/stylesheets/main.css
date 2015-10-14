@@ -714,3 +714,18 @@ p.signature em {
 #warning-count {
   margin-top: 30px;
 }
+
+.enter-pi {
+  margin-top: 15px;
+}
+
+input[type=text]:disabled {
+  background-image: linear-gradient(
+    to right top,
+    transparent 33%,
+    black 33%,
+    black 66%,
+    transparent 66%
+  );
+  background-size: 3px 3px;
+}
