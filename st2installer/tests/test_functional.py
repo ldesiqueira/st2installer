@@ -106,17 +106,19 @@ class FunctionalTest(BaseTestCase):
         self.assertTrue(self.public_regex.match('ssh-rsa '+body['public']))
         self.assertTrue(self.private_regex.match(body['private']))
 
-    def test_keypair_private(self):
-        response = self.app.get('/keypair/private')
-        self.assertEqual(response.status_int, 200)
-        self.assertEqual(response.content_disposition, 'attachment; filename="st2-ssh.key"')
-        self.assertTrue(self.private_regex.match(response.body))
+    def test_keypair_gen_key_pair_is_generated_on_demand(self):
+        # Make sure new key pair is generated for each request
+        seen_private_keys = []
+        for index in range(0, 3):
+            response = self.app.get('/keypair/keygen')
+            body = response.json
+            self.assertEqual(response.status_int, 200)
+            self.assertTrue(self.public_regex.match('ssh-rsa '+body['public']))
+            self.assertTrue(self.private_regex.match(body['private']))
 
-    def test_keypair_public(self):
-        response = self.app.get('/keypair/public')
-        self.assertEqual(response.status_int, 200)
-        self.assertEqual(response.content_disposition, 'attachment; filename="st2-ssh.pub"')
-        self.assertTrue(self.public_regex.match(response.body))
+            self.assertTrue(body['private'] not in seen_private_keys)
+            seen_private_keys.append(body['private'])
+        self.assertEqual(len(seen_private_keys), 3)
 
     def test_root_datasave(self):
         response = self.app.get('/data_save', params={'hostname': 'new-hostname-test', 'password': 'new-password-test'})

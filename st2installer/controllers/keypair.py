@@ -28,9 +28,6 @@ class KeypairController(BaseController):
         self.ssh_diff = os.path.join(ROOT_DIR, 'keycompare')
         self.ssl_diff = os.path.join(ROOT_DIR, 'sslcompare')
 
-        self.gen_private = RSA.generate(DEFAULT_RSA_KEY_SIZE, os.urandom)
-        self.gen_public = self.gen_private.publickey()
-
     def compare(self, diff, private, public):
         with open(self.privatefile, 'w') as temp_private:
             temp_private.write(private)
@@ -73,17 +70,10 @@ class KeypairController(BaseController):
 
     @expose('json')
     def keygen(self):
+        private_key = RSA.generate(DEFAULT_RSA_KEY_SIZE, os.urandom)
+        public_key = private_key.publickey()
+
         return {
-            'private': self.gen_private.exportKey('PEM'),
-            'public': self.gen_public.exportKey('OpenSSH')[8:]
+            'private': private_key.exportKey('PEM'),
+            'public': public_key.exportKey('OpenSSH')[8:]
         }
-
-    @expose(content_type='application/octet-stream')
-    def private(self):
-        response.headers['Content-Disposition'] = 'attachment; filename="st2-ssh.key"'
-        return self.gen_private.exportKey('PEM')
-
-    @expose(content_type='application/octet-stream')
-    def public(self):
-        response.headers['Content-Disposition'] = 'attachment; filename="st2-ssh.pub"'
-        return self.gen_public.exportKey('OpenSSH')
