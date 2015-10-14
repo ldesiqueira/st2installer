@@ -209,7 +209,7 @@ class RootController(BaseController):
             config["st2::stanley::ssh_private_key"] = kwargs['gen-private']
             config["st2::stanley::ssh_public_key"] = kwargs['gen-public']
 
-        if kwargs["enterprise"] != "":
+        if "enterprise" in kwargs and kwargs["enterprise"] != "":
             config["st2enterprise::token"] = kwargs["enterprise"]
 
         if "check-chatops" in kwargs and kwargs["check-chatops"] == "1":
