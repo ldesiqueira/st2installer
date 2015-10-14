@@ -107,15 +107,8 @@ var puppet = {
               puppet.set_progress(100);
               runtime = parseInt(line.slice(13));
               if (ga && runtime) {
-                var metrics = {
-                  'metric2': parseInt($('#errors').text()),
-                  'metric3': parseInt($('#warnings').text()),
-                  'dimension1': $('#ga-chatops').val(),
-                  'dimension2': $('#ga-ssh').val(),
-                  'dimention2': $('#ga-ssl').val(),
-                };
-                ga('send', 'event', 'installer', 'complete', metrics);
-                ga('send', 'timing', 'Puppet', 'runtime', runtime);
+                ga('set', 'metric1', runtime);
+                ga('send', 'pageview', '/done');
               }
             } else if (line.trim()) {
               puppet.line += 1;
@@ -174,6 +167,14 @@ var puppet = {
     });
   },
   init: function() {
+    if (ga) {
+      ga('set', 'metric2', parseInt($('#errors').text()));
+      ga('set', 'metric3', parseInt($('#warnings').text()));
+      ga('set', 'dimension1', $('#ga-chatops').val());
+      ga('set', 'dimension2', $('#ga-ssh').val());
+      ga('set', 'dimention3', $('#ga-ssl').val());
+      ga('send', 'pageview', '/install');
+    }
     $('#page-puppet').addClass('progress');
     $('#progress-bar').addClass('started');
     $('#filtering input').on("change", function() {
@@ -222,7 +223,7 @@ var installer = {
         $('#step-back').show();
       }
       if (ga) {
-        ga('send', 'pageview', '/step'+page);
+        ga('send', 'pageview', '/step'+page+1);
       }
     };
     if (page <= installer.page) {
@@ -462,6 +463,17 @@ var installer = {
       }
       return false;
     });
+
+    var check_key_state = function () {
+      if (!!($('#ch-enterprise:checked').get(0))) {
+        $('#license-key input').removeAttr('disabled');
+      } else {
+        $('#license-key input').attr('disabled', 'disabled');
+      }
+    };
+
+    check_key_state();
+    $('#ch-enterprise').change(check_key_state);
 
     $('#installer').on('click', '#modal a[href=#back]', installer.modal_back);
     $('#installer').on('click', '#modal a[href=#generate]', installer.modal_generate);
