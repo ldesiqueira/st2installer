@@ -168,7 +168,6 @@ var puppet = {
   },
   init: function() {
     if (ga) {
-      ga('send', 'pageview', '/install');
       ga('set', 'metric2', parseInt($('#errors').text()));
       ga('set', 'metric3', parseInt($('#warnings').text()));
       ga('set', 'dimension1', $('#ga-chatops').val());
