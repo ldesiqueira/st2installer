@@ -105,9 +105,11 @@ var puppet = {
             line = lines[i];
             if (i == lines.length-1 && line.slice(0, 13) == '--terminate--') {
               puppet.set_progress(100);
-              runtime = parseInt(line.slice(13));
+              runtime = Math.ceil(parseFloat(line.slice(13)));
               if (ga && runtime) {
                 ga('set', 'metric1', runtime);
+                ga('set', 'metric2', parseInt($('#errors').text()));
+                ga('set', 'metric3', parseInt($('#warnings').text()));
                 ga('send', 'pageview', '/done');
               }
             } else if (line.trim()) {
@@ -167,13 +169,53 @@ var puppet = {
     });
   },
   init: function() {
-    if (ga) {
-      ga('set', 'metric2', parseInt($('#errors').text()));
-      ga('set', 'metric3', parseInt($('#warnings').text()));
+    if (ga && $('#sent').val() == 'False') {
+      ga('set', 'metric4', 1);
       ga('set', 'dimension1', $('#ga-chatops').val());
+      switch($('#ga-chatops').val()) {
+        case 'Disabled':
+          ga('set', 'metric5', 1);
+          break;
+        case 'slack':
+          ga('set', 'metric6', 1);
+          break;
+        case 'flowdock':
+          ga('set', 'metric7', 1);
+          break;
+        case 'hipchat':
+          ga('set', 'metric8', 1);
+          break;
+        case 'irc':
+          ga('set', 'metric9', 1);
+          break;
+        case 'example':
+          ga('set', 'metric10', 1);
+          break;
+        case 'xmpp':
+          ga('set', 'metric11', 1);
+          break;
+      }
       ga('set', 'dimension2', $('#ga-ssh').val());
+      switch($('#ga-ssh').val()) {
+        case 'Generated':
+          ga('set', 'metric12', 1);
+          break;
+        case 'Provided':
+          ga('set', 'metric13', 1);
+          break;
+      }
       ga('set', 'dimention3', $('#ga-ssl').val());
+      switch($('#ga-ssl').val()) {
+        case 'Self-signed':
+          ga('set', 'metric14', 1);
+          break;
+        case 'Provided':
+          ga('set', 'metric15', 1);
+          break;
+      }
       ga('send', 'pageview', '/install');
+    } else if (ga && $('#sent').val() == 'True') {
+      ga('send', 'pageview', '/install-refresh');
     }
     $('#page-puppet').addClass('progress');
     $('#progress-bar').addClass('started');
@@ -223,7 +265,7 @@ var installer = {
         $('#step-back').show();
       }
       if (ga) {
-        ga('send', 'pageview', '/step'+page+1);
+        ga('send', 'pageview', '/step'+(page+1));
       }
     };
     if (page <= installer.page) {
