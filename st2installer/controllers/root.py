@@ -26,6 +26,7 @@ class RootController(BaseController):
         self.config = None
         self.start_time = None
         self.runtime = None
+        self.analytics_sent = False
         self.puppet_check_command = 'ps aux | grep "[p]uppet-apply"'
         self.gen_ssl = 'Self-signed'
         self.gen_ssh = 'Generated'
@@ -97,7 +98,7 @@ class RootController(BaseController):
         if self.proc.poll() is not None:
             data += '--terminate--'
             if not self.runtime:
-                self.runtime = (time.time() - self.start_time)*1000
+                self.runtime = (time.time() - self.start_time)
                 data += str(self.runtime)
         if not data:
             return '--idle--'
@@ -317,10 +318,13 @@ class RootController(BaseController):
     @expose(generic=True, template='progress.html')
     def install(self):
         if self.config_written:
+            sent = self.analytics_sent
+            self.analytics_sent = True
             return {"hostname": self.hostname,
                     "config": self.config,
                     "gen_ssl": self.gen_ssl,
                     "gen_ssh": self.gen_ssh,
+                    "sent": sent,
                     "chatops": (self.config["hubot::adapter"] if "hubot::adapter" in self.config else "Disabled")}
         else:
             redirect('/', internal=True)
