@@ -26,11 +26,15 @@ class RootController(BaseController):
         self.config = None
         self.start_time = None
         self.runtime = None
+        self.analytics_sent = False
         self.puppet_check_command = 'ps aux | grep "[p]uppet-apply"'
         self.gen_ssl = 'Self-signed'
         self.gen_ssh = 'Generated'
+        self.version = None
 
         config = config or conf.to_dict()
+        if 'app' in config and 'version' in config['app']:
+            self.version = config['app']['version']
         if 'puppet' in config and 'command' in config['puppet']:
             self.command = config['puppet']['command']
         else:
@@ -101,7 +105,7 @@ class RootController(BaseController):
         if self.proc.poll() is not None:
             data += '--terminate--'
             if not self.runtime:
-                self.runtime = (time.time() - self.start_time) * 1000
+                self.runtime = (time.time() - self.start_time)
                 data += str(self.runtime)
         if not data:
             return '--idle--'
@@ -119,7 +123,9 @@ class RootController(BaseController):
             self.redirect_check()
 
         self.hostname = self.hostname or request.host.split(':')[0]
-        return {"hubotpassword": self.password, "hostname": self.hostname}
+        return {"hubotpassword": self.password,
+                "hostname": self.hostname,
+                "version": self.version}
 
     @expose(generic=True, template='wait.html')
     def wait(self):
@@ -331,10 +337,13 @@ class RootController(BaseController):
                 chatops = self.config["hubot::adapter"]
             else:
                 chatops = "Disabled"
+            sent = self.analytics_sent
+            self.analytics_sent = True
             return {"hostname": self.hostname,
                     "config": self.config,
                     "gen_ssl": self.gen_ssl,
                     "gen_ssh": self.gen_ssh,
+                    "sent": sent,
                     "chatops": chatops}
         else:
             redirect('/', internal=True)

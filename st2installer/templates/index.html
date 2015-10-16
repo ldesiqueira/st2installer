@@ -1,6 +1,7 @@
 ﻿<%inherit file="layout.html"/>
 
 <form id="installer" method="POST" action="." enctype="multipart/form-data">
+  <input type="hidden" name="version" id="version" value="${version}" />
   <div class="page" id="page-hostname">
     <h1>Configure Hostname and SSL</h1>
     <p>Please enter the system hostname you would like to use to identify this installation of StackStorm.</p>

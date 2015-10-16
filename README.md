@@ -34,3 +34,7 @@ You can also launch any other WSGI server of your choosing.
 ## Development
 
 Now you can access installer at `http://localhost:9090/`. Be aware that it locks itself after one full launch so that it won't run twice; if you want to launch it more than once you should manually remove `/tmp/st2installer_lock`.
+
+## Versioning
+
+The installer is versioned in `config.py` as `X.Y.Z`. Z needs to be incremented with a backend change or a bugfix, Y needs to be incremented with any UI/UX changes, X is incremented with a major release. Point of versioning is to provide sectioned analytics.
