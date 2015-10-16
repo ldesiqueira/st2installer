@@ -265,6 +265,9 @@ var installer = {
         $('#step-back').show();
       }
       if (ga) {
+        if (page === 0 && $('#version').val().length) {
+          ga('set', 'dimension4', $('#version').val());
+        }
         ga('send', 'pageview', '/step'+(page+1));
       }
     };

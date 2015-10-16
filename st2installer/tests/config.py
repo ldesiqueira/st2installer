@@ -14,7 +14,8 @@ app = {
     'errors': {
         '404': '/error/404',
         '__force_dict__': True
-    }
+    },
+    'version': '0.0.1'
 }
 
 puppet = {
