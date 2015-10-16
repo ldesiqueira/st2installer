@@ -30,8 +30,11 @@ class RootController(BaseController):
         self.puppet_check_command = 'ps aux | grep "[p]uppet-apply"'
         self.gen_ssl = 'Self-signed'
         self.gen_ssh = 'Generated'
+        self.version = None
 
         config = config or conf.to_dict()
+        if 'app' in config and 'version' in config['app']:
+            self.version = config['app']['version']
         if 'puppet' in config and 'command' in config['puppet']:
             self.command = config['puppet']['command']
         else:
@@ -116,7 +119,9 @@ class RootController(BaseController):
             self.redirect_check()
 
         self.hostname = self.hostname or request.host.split(':')[0]
-        return {"hubotpassword": self.password, "hostname": self.hostname}
+        return {"hubotpassword": self.password,
+                "hostname": self.hostname,
+                "version": self.version}
 
     @expose(generic=True, template='wait.html')
     def wait(self):
