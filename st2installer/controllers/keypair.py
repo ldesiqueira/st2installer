@@ -1,13 +1,8 @@
 import tempfile
 import subprocess
-import six
-from six.moves import shlex_quote
-from six.moves.urllib import parse as urlparse
-from pecan import expose, request, response, redirect, abort
-import random, string, os
-from pecan import expose, request, response, abort
-from Crypto.PublicKey import RSA
 import os
+from pecan import expose, request, abort
+from Crypto.PublicKey import RSA
 from st2installer.controllers.base import BaseController
 
 

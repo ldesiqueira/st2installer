@@ -14,8 +14,8 @@ var i18n = {
   flowdock: "All fields are required for Flowdock integration.",
   ssh: {
     'header': "Whoa. The keys do not match!",
-    'text': "It appears you've uploaded a key pair that either does not match, is password protected or isn't really a key pair at all! \
-              You can upload another set of keys or we can just generate a new key pair for you, no problem.",
+    'text': "It appears you've uploaded a key pair that either does not match, is password protected or isn't really a key pair at all! " +
+            "You can upload another set of keys or we can just generate a new key pair for you, no problem.",
     'buttons': [
       ['Generate', '#generate'],
       ['Re-upload', '#back']
@@ -23,9 +23,9 @@ var i18n = {
   },
   ssl: {
     'header': "Certificate error",
-    'text': "It appears you've uploaded a certificate and a private key that either do not match or aren't in the right format! \
-              You need to upload a PEM certificate and a private key without a passphrase. \
-              You can upload another certificate or we can just generate a self-signed one for you, no problem.",
+    'text': "It appears you've uploaded a certificate and a private key that either do not match or aren't in the right format! " +
+              "You need to upload a PEM certificate and a private key without a passphrase. " +
+              "You can upload another certificate or we can just generate a self-signed one for you, no problem.",
     'buttons': [
       ['Generate', '#generate'],
       ['Re-upload', '#back']
@@ -116,24 +116,25 @@ var puppet = {
               puppet.line += 1;
               p_class = 'message';
 
-              for (var ii = 0; ii < puppet.important.length; ii++) {
+              var ii;
+              for (ii = 0; ii < puppet.important.length; ii++) {
                 if (puppet.important[ii].test(line)) {
                   p_class = 'output-important';
                 }
               }
-              for (var ii = 0; ii < puppet.warning.length; ii++) {
+              for (ii = 0; ii < puppet.warning.length; ii++) {
                 if (puppet.warning[ii].test(line)) {
                   p_class = 'output-warning';
                   puppet.add_warning();
                 }
               }
-              for (var ii = 0; ii < puppet.error.length; ii++) {
+              for (ii = 0; ii < puppet.error.length; ii++) {
                 if (puppet.error[ii].test(line)) {
                   p_class = 'output-error';
                   puppet.add_error();
                 }
               }
-              for (var ii = 0; ii < puppet.checkpoints.length; ii++) {
+              for (ii = 0; ii < puppet.checkpoints.length; ii++) {
                 if (puppet.checkpoints[ii][0].test(line)) {
                   p_class = 'output-important';
                   puppet.set_progress(puppet.checkpoints[ii][1]);
@@ -157,7 +158,9 @@ var puppet = {
     });
   },
   complete: function() {
-    $('#page-puppet').removeClass('progress');
+    $('#page-puppet')
+      .removeClass('progress')
+      .addClass('done');
     $('#puppet-done').show();
     $.get(puppet.cleanup);
     $.ajax({

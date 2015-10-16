@@ -1,9 +1,8 @@
-from pecan.testing import load_test_app
-from copy import copy
 import os
 import re
-
 from st2installer.tests.base import BaseTestCase
+from pecan.testing import load_test_app
+from copy import copy
 
 
 class FunctionalTest(BaseTestCase):
@@ -16,7 +15,10 @@ class FunctionalTest(BaseTestCase):
         ))
 
         self.public_regex = re.compile("^ssh-rsa AAAA[0-9A-Za-z+/]+[=]{0,3}( ([^@]+@[^@]+))?$")
-        self.private_regex = re.compile("^-----BEGIN RSA PRIVATE KEY-----.*-----END RSA PRIVATE KEY-----$", re.DOTALL)
+        self.private_regex = re.compile(
+            "^-----BEGIN RSA PRIVATE KEY-----.*-----END RSA PRIVATE KEY-----$",
+            re.DOTALL
+        )
         self.default_post = {
             'hostname': 'localhost-test',
             'check-chatops': '1',
@@ -41,9 +43,9 @@ class FunctionalTest(BaseTestCase):
         valid_string = ('good' if valid else 'bad')
         public_extension = ('pub' if type is 'ssh' else 'crt')
         if key == 'private':
-            return path+('/%s-%s.key') % (type, valid_string)
+            return path + ('/%s-%s.key') % (type, valid_string)
         if key == 'public':
-            return path+('/%s-%s.%s') % (type, valid_string, public_extension)
+            return path + ('/%s-%s.%s') % (type, valid_string, public_extension)
 
     def test_main_page(self):
         response = self.app.get('/')
@@ -103,7 +105,7 @@ class FunctionalTest(BaseTestCase):
         response = self.app.get('/keypair/keygen')
         body = response.json
         self.assertEqual(response.status_int, 200)
-        self.assertTrue(self.public_regex.match('ssh-rsa '+body['public']))
+        self.assertTrue(self.public_regex.match('ssh-rsa ' + body['public']))
         self.assertTrue(self.private_regex.match(body['private']))
 
     def test_keypair_gen_key_pair_is_generated_on_demand(self):
@@ -113,7 +115,7 @@ class FunctionalTest(BaseTestCase):
             response = self.app.get('/keypair/keygen')
             body = response.json
             self.assertEqual(response.status_int, 200)
-            self.assertTrue(self.public_regex.match('ssh-rsa '+body['public']))
+            self.assertTrue(self.public_regex.match('ssh-rsa ' + body['public']))
             self.assertTrue(self.private_regex.match(body['private']))
 
             self.assertTrue(body['private'] not in seen_private_keys)
@@ -121,7 +123,8 @@ class FunctionalTest(BaseTestCase):
         self.assertEqual(len(seen_private_keys), 3)
 
     def test_root_datasave(self):
-        response = self.app.get('/data_save', params={'hostname': 'new-hostname-test', 'password': 'new-password-test'})
+        response = self.app.get('/data_save', params={'hostname': 'new-hostname-test',
+                                                      'password': 'new-password-test'})
         self.assertEqual(response.status_int, 204)
         main_page = self.app.get('/')
         self.assertIn('new-hostname-test', main_page.body)

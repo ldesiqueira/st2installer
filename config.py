@@ -32,14 +32,14 @@ logging = {
             'format': ('%(asctime)s %(levelname)-5.5s [%(name)s]'
                        '[%(threadName)s] %(message)s')
         },
-	'messageonly': {
-	    'format': '%(message)s'
-	},
+        'messageonly': {
+            'format': '%(message)s'
+        },
         'color': {
             '()': 'pecan.log.ColorFormatter',
             'format': ('%(asctime)s [%(padded_color_levelname)s] [%(name)s]'
                        '[%(threadName)s] %(message)s'),
-        '__force_dict__': True
+            '__force_dict__': True
         }
     }
 }

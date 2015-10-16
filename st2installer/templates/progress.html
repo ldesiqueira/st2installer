@@ -1,4 +1,4 @@
-<%inherit file="layout.html"/>
+﻿<%inherit file="layout.html"/>
 
 <%block name="stepcount"/>
 
@@ -7,9 +7,12 @@
 <input type="hidden" id="ga-ssl" name="ga-ssl" value="${gen_ssl}" />
 <input type="hidden" id="sent" name="sent" value="${sent}" />
 
-<div class="page" id="page-puppet">
+<div class="page progress" id="page-puppet">
   <h1>Installation</h1>
-  <p>StackStorm is preparing for the first launch! Installation will take a few more minutes.</p>
+
+  <p class="progress">StackStorm is preparing for the first launch! Installation will take a few more minutes.</p>
+  <p class="done">Congratulations, StackStorm installation is completed! You can review the full log below.</p>
+
   <div id="warning-count">
     <span id="warnings">0</span> warning<span id="warnings-plural">s</span>, <span id="errors">0</span> error<span id="errors-plural">s</span>.
     <div id="filtering">
@@ -26,27 +29,40 @@
 
     </div>
   </div>
-  <div id="puppet-done">
-    <p>Installation completed; StackStorm is ready to launch! Review the documentation before you start:</p>
+  <div id="rootca-warning">
+    <h4><i class="fa fa-exclamation-triangle"></i> StackStorm Root CA</h4>
+    <p>Because you're using a self-signed SSL certificate, you need to install StackStorm Root CA in order for UI and API to communicate:</p>
     <ul>
-      <li><a href="http://stackstorm.com" target="_blank">Main website</a></li>
-      <li><a href="https://github.com/StackStorm" target="_blank">Github</a></li>
-      <li><a href="https://www.youtube.com/channel/UCColc5CuBJ8-1SnALnkDz8Q" target="_blank">YouTube channel</a></li>
-      <li><a href="http://stackstorm.com/blog" target="_blank">Blog</a></li>
+      <li><a href="/ssl/st2_root_ca.cer" target="_blank">Download your Root CA</a></li>
+      <li><a href="http://wiki.cacert.org/FAQ/ImportRootCert" target="_blank">Read the installation manual on CAcert wiki</a></li>
     </ul>
+    <p>Safety notice: this CA was automatically generated on your server, it's not shared across different StackStorm installations nor is it accessible by anyone but you. Remember never to share your private keys with anyone!</p>
+  </div>
 
-    <div id="rootca-warning">
-      <h4><i class="fa fa-exclamation-triangle"></i> StackStorm Root CA</h4>
-      <p>Because you're using a self-signed SSL certificate, you need to install StackStorm Root CA in order for UI and API to communicate:</p>
-      <ul>
-        <li><a href="/ssl/st2_root_ca.cer" target="_blank">Download your Root CA</a></li>
-        <li><a href="http://wiki.cacert.org/FAQ/ImportRootCert" target="_blank">Read the installation manual on CAcert wiki</a></li>
-      </ul>
-      <p>Safety notice: this CA was automatically generated on your server, it's not shared across different StackStorm installations nor is it accessible by anyone but you. Never share it with anyone except users of your StackStorm instance.</p>
-    </div>
+  <p class="done">Lastly, before you begin, here are some useful links to get you started with StackStorm and its amazing community:</p>
 
-    <div id="next-button">
-      <a href="https://${hostname}" id="step-next">Open StackStorm</a>
-    </div>
+  <div class="done" id="puppet-done">
+    <ul>
+      <li><a href="http://docs.stackstorm.com" target="_blank">
+        <i class="fa fa-folder-open"></i> Documentation</a>
+      </li>
+      <li><a href="https://stackstorm.com/community-signup" target="_blank">
+        <i class="fa fa-slack"></i> Slack community</a>
+      </li>
+      <li><a href="https://stackstorm.com/video-gallery/" target="_blank">
+        <i class="fa fa-play-circle"></i> Video gallery</a>
+      </li>
+      <li><a href="https://stackstorm.com/blog" target="_blank">
+        <i class="fa fa-rss"></i> StackStorm blog</a>
+      </li>
+    </ul>
+  </div>
+
+  <p class="signature done">Time to launch your newly-configured instance now! We hope you have a great time using it, and we're always ready to help should you have any questions.
+    <em>— StackStorm team</em>
+  </p>
+
+  <div class="done" id="next-button">
+    <a href="https://${hostname}" id="step-next">Open StackStorm</a>
   </div>
 </div>
