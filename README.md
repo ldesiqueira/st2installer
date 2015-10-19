@@ -37,4 +37,4 @@ Now you can access installer at `http://localhost:9090/`. Be aware that it locks
 
 ## Versioning
 
-The installer is versioned in `config.py` as `X.Y.Z`. Z needs to be incremented with a backend change or a bugfix, Y needs to be incremented with any UI/UX changes, X is incremented with a major release. Point of versioning is to provide sectioned analytics.
+The installer is versioned in `config.py` as `X.Y.Z`. It's loosely based on Semantic Versioning, with the notable exception that every UI change—no matter how small—never should be a "patch" (`Z`) increment, minor (or major) only. In every other case follow SemVer and use your best judgement; St2Installer is a critical dependency for most St2 installations, so a proper way of reflecting backwards-incompatible changes is necessary.
