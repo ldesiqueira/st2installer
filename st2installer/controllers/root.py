@@ -217,6 +217,7 @@ class RootController(BaseController):
 
         if "enterprise" in kwargs and kwargs["enterprise"] != "":
             config["st2enterprise::token"] = kwargs["enterprise"]
+            config["st2::ldap"] = True
 
         if "check-chatops" in kwargs and kwargs["check-chatops"] == "1":
 
