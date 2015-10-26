@@ -97,7 +97,7 @@ var puppet = {
       url: puppet.url,
       data: {line: puppet.line},
       timeout: 500,
-      complete: function(data, status) {
+      success: function(data, status) {
         data = String(data.responseText);
         if (data != '--idle--' && status != 'timeout') {
           lines = data.split('\n');
