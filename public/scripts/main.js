@@ -151,6 +151,8 @@ var puppet = {
             }
           }
         }
+      },
+      complete: function(data, status) {
         if (puppet.progress < 100) {
           setTimeout(puppet.read, puppet.interval);
         }
