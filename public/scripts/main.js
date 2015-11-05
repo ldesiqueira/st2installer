@@ -12,6 +12,7 @@ var i18n = {
   xmpp: "Username, password and at least one room are required for XMPP integration.",
   irc: "Server and at least one room are required for IRC integration.",
   flowdock: "All fields are required for Flowdock integration.",
+  generating_keys: "Our best engineers are forging your SSH keys...",
   ssh: {
     'header': "Whoa. The keys do not match!",
     'text': "It appears you've uploaded a key pair that either does not match, is password protected or isn't really a key pair at all! " +
@@ -301,28 +302,31 @@ var installer = {
     installer.errors += 1;
     el.after('<p class="error">'+error+'</p>');
   },
+  overlay: $('<div id="overlay">').appendTo('#installer'),
+  wait_message: $('<p id="wait-message">'),
   modal: $(
-    '<div id="modal-overflow">' +
-      '<div id="modal">' +
-        '<h3></h3>' +
-        '<p></p>' +
-        '<div id="keypair">' +
-          '<label for="keypair-public">Your public key</label>' +
-          '<textarea id="keypair-public"></textarea>' +
-          '<a data-key-type="public" data-key-filename="st2-ssh.pub" class="download-ssh-key">Download</a>' +
-          '<label for="keypair-private">Your private key</label>' +
-          '<textarea id="keypair-private"></textarea>' +
-          '<a data-key-type="private" data-key-filename="st2-ssh.key" class="download-ssh-key">Download</a>' +
-        '</div>' +
-        '<div id="modal-buttons">' +
-        '</div>' +
+    '<div id="modal">' +
+      '<h3></h3>' +
+      '<p></p>' +
+      '<div id="keypair">' +
+        '<label for="keypair-public">Your public key</label>' +
+        '<textarea id="keypair-public"></textarea>' +
+        '<a data-key-type="public" data-key-filename="st2-ssh.pub" class="download-ssh-key">Download</a>' +
+        '<label for="keypair-private">Your private key</label>' +
+        '<textarea id="keypair-private"></textarea>' +
+        '<a data-key-type="private" data-key-filename="st2-ssh.key" class="download-ssh-key">Download</a>' +
+      '</div>' +
+      '<div id="modal-buttons">' +
       '</div>' +
     '</div>'
   ),
+  show_wait_message: function(text) {
+    installer.wait_message.text(text);
+    installer.overlay.empty().append(installer.wait_message).show();
+  },
   raise_modal: function(template) {
 
-    $('#modal-overflow').remove();
-    modal = installer.modal;
+    var modal = installer.modal;
     modal.find('h3').text(i18n[template].header);
     modal.find('p').text(i18n[template].text);
     modal.find('#modal-buttons').empty();
@@ -334,16 +338,15 @@ var installer = {
       modal.find('#keypair-public').val('ssh-rsa '+$('#gen-public').val());
       modal.find('#keypair-private').val($('#gen-private').val());
     }
-    modal.appendTo('#installer').show();
-    modal.find('#modal').css('margin-top', -modal.find('#modal').height()/2);
+    installer.overlay.empty().append(modal).show();
 
   },
   modal_back: function () {
-    $('#modal-overflow').remove();
+    installer.overlay.hide();
     return false;
   },
   modal_generate: function () {
-    $('#modal-overflow').remove();
+    installer.overlay.hide();
     if (installer.page === 0) {
       $('#radio-selfsigned-true').click();
       installer.switch_page(1);
@@ -478,6 +481,7 @@ var installer = {
       } else if (installer.page == 1 &&
                  $('#radio-sshgen-true').is(':checked') &&
                  $('#gen-private').val() === '') {
+        installer.show_wait_message(i18n.generating_keys);
         $.get(installer.key_generator).always(function(keypair) {
           $('#gen-private').val(keypair.private);
           $('#gen-public').val(keypair.public);
@@ -541,7 +545,7 @@ var installer = {
     $('#installer').on('click', '#modal a[href=#generate]', installer.modal_generate);
     $('#installer').on('click', '#modal a[href=#next]', function() {
       installer.switch_page(installer.page+1);
-      $('#modal-overflow').remove();
+      installer.overlay.hide();
       return false;
     });
 

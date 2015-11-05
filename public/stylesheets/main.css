@@ -512,7 +512,7 @@ label.required:after {
   margin: 0 auto;
 }
 
-#modal-overflow {
+#overlay {
   position: fixed;
   left: 0;
   top: 0;
@@ -523,15 +523,22 @@ label.required:after {
   background: rgba(0,0,0,0.8);
   display: none;
 }
+#wait-message,
 #modal {
   width: 470px;
+  text-align: center;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -235px;
+  transform: translateY(-50%);
+}
+#modal {
   padding: 20px;
-  margin: 0 auto;
+  text-align: left;
   background: #1e1e1e;
   border-radius: 5px;
-  top: 50%;
-  position: absolute;
-  left: 50%;
   margin-left: -255px;
 }
 #modal #keypair {
