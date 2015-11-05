@@ -122,7 +122,8 @@ h1, h2, h3, h4, h5, h6 {
   background: url(../images/crumb-end.png);
 }
 .page {
-  width: 960px;
+  max-width: 960px;
+  padding: 0 20px;
   margin: auto;
 }
 .page h1,
@@ -263,7 +264,8 @@ textarea {
 }
 #next-button {
   height: 50px;
-  width: 960px;
+  max-width: 960px;
+  padding: 0 20px;
   margin: 20px auto;
 }
 #next-button p {
