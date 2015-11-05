@@ -252,6 +252,11 @@ textarea {
 .page.active {display:block;}
 #chatops-tabs li.active {display:block;}
 
+#step-back.disabled,
+#step-next.disabled {
+  cursor: default;
+  opacity: 0.5;
+}
 #step-back {
   margin-right: 15px;
   display: none;

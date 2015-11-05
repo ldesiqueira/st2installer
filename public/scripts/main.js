@@ -275,10 +275,12 @@ var installer = {
         }
         ga('send', 'pageview', '/step'+(page+1));
       }
+      $('#step-back, #step-next').removeClass('disabled');
     };
     if (page <= installer.page) {
       perform_switch();
     } else {
+      $('#step-back, #step-next').addClass('disabled');
       installer.validate(installer.page, perform_switch);
     }
     return false;
@@ -484,6 +486,8 @@ var installer = {
       } else {
         callback();
       }
+    } else {
+      $('#step-back, #step-next').removeClass('disabled');
     }
 
   },
@@ -502,10 +506,18 @@ var installer = {
     installer.switch_page(0);
     installer.switch_chatops(0);
     $('#step-back').click(function() {
+      if ($(this).hasClass('disabled')) {
+        return false;
+      }
+
       installer.switch_page(installer.page-1);
       return false;
     });
     $('#step-next').click(function() {
+      if ($(this).hasClass('disabled')) {
+        return false;
+      }
+
       if (installer.page == $('.page').length-1) {
         installer.submit();
       } else {
