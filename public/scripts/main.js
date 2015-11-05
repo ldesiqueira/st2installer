@@ -247,6 +247,7 @@ var installer = {
   key_generator: 'keypair/keygen',
   switch_page: function(page) {
     var perform_switch = function() {
+      $(window).scrollTop(0);
       installer.page = page;
       $('.page')
         .removeClass('active')
