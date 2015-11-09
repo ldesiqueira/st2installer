@@ -52,14 +52,14 @@ var puppet = {
 
   ],
   checkpoints: [
-    [/apply hostname.*executed successfully/, 15],
-    [/pip_install_python-mistralclient.*executed successfully/, 25],
-    [/Download st2client requirements.*executed successfully/, 35],
-    [/pip_install_uwsgi.*executed successfully/, 45],
-    [/Download st2server requirements.*executed successfully/, 55],
-    [/wget-st2web.*executed successfully/, 65],
-    [/npm_proxy.*executed successfully/, 75],
-    [/st2api.conf.*executed successfully/, 85],
+    [/remove empty hubot env settings.*executed successfully/, 25],
+    [/st2sensorcontainer\.log/, 45],
+    [/Setting root_cli password.*executed successfully/, 57],
+    [/Service\[mistral\].*'running'/, 66],
+    [/Service\[st2rulesengine\].*'running'/, 75],
+    [/Service\[hubot\]: Triggered 'refresh'/, 82],
+    [/Service\[nginx\]: Triggered 'refresh'/, 89],
+    [/set-st2-key-st2::server_uuid.*executed successfully/, 95]
   ],
   progress: 0,
   errors: 0,
