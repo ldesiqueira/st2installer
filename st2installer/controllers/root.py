@@ -233,11 +233,7 @@ class RootController(BaseController):
                     "EXPRESS_PORT": "8081"
                 },
                 "hubot::external_scripts": ["hubot-stackstorm"],
-                "hubot::dependencies": {
-                    "hubot": ">= 2.6.0 < 3.0.0",
-                    "hubot-scripts": ">= 2.5.0 < 3.0.0",
-                    "hubot-stackstorm": ">= 0.2.2 < 0.3.0"
-                },
+                "hubot::dependencies": {},
             })
 
             if kwargs["chatops"] == "example":
@@ -247,7 +243,6 @@ class RootController(BaseController):
                     "HUBOT_IRC_ROOMS": "#stackstorm",
                     "HUBOT_IRC_NICK": kwargs['username'],
                 })
-                config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
             elif kwargs["chatops"] == "irc":
                 config["hubot::adapter"] = "irc"
                 config["hubot::env_export"].update({
@@ -275,7 +270,6 @@ class RootController(BaseController):
                 if "irc-unflood" in kwargs:
                     config["hubot::env_export"]["HUBOT_IRC_UNFLOOD"] = kwargs["irc-unflood"]
 
-                config["hubot::dependencies"]["hubot-irc"] = ">=0.2.7 < 1.0.0"
             elif kwargs["chatops"] == "flowdock":
                 config["hubot::adapter"] = "flowdock"
                 config["hubot::env_export"].update({
@@ -283,13 +277,11 @@ class RootController(BaseController):
                     "HUBOT_FLOWDOCK_LOGIN_EMAIL": kwargs["flowdock-email"],
                     "HUBOT_FLOWDOCK_LOGIN_PASSWORD": kwargs['flowdock-password']
                 })
-                config["hubot::dependencies"]["hubot-flowdock"] = ">=0.7.6 < 1.0.0"
             elif kwargs["chatops"] == "slack":
                 config["hubot::adapter"] = "slack"
                 config["hubot::env_export"].update({
                     "HUBOT_SLACK_TOKEN": kwargs["slack-token"]
                 })
-                config["hubot::dependencies"]["hubot-slack"] = ">=3.3.0 < 4.0.0"
             elif kwargs["chatops"] == "hipchat":
                 config["hubot::adapter"] = "hipchat"
                 config["hubot::env_export"].update({
@@ -298,7 +290,6 @@ class RootController(BaseController):
                 })
                 if kwargs["text-hipchat-domain"] != "":
                     config["hubot::env_export"]["HUBOT_XMPP_DOMAIN"] = kwargs["text-hipchat-domain"]
-                config["hubot::dependencies"]["hubot-hipchat"] = ">=2.12.0 < 3.0.0"
             elif kwargs["chatops"] == "xmpp":
                 config["hubot::adapter"] = "xmpp"
                 config["hubot::env_export"].update({
@@ -310,7 +301,6 @@ class RootController(BaseController):
                     config["hubot::env_export"]["HUBOT_XMPP_HOST"] = kwargs["xmpp-host"]
                 if kwargs["xmpp-port"] != "":
                     config["hubot::env_export"]["HUBOT_XMPP_PORT"] = kwargs["xmpp-port"]
-                config["hubot::dependencies"]["hubot-xmpp"] = ">=0.1.16 < 1.0.0"
 
         if not os.path.exists(self.path):
             os.makedirs(self.path)
