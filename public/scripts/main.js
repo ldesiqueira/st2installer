@@ -12,6 +12,7 @@ var i18n = {
   xmpp: "Username, password and at least one room are required for XMPP integration.",
   irc: "Server and at least one room are required for IRC integration.",
   flowdock: "All fields are required for Flowdock integration.",
+  generating_keys: "Our best engineers are forging your SSH keys...",
   ssh: {
     'header': "Whoa. The keys do not match!",
     'text': "It appears you've uploaded a key pair that either does not match, is password protected or isn't really a key pair at all! " +
@@ -51,14 +52,14 @@ var puppet = {
 
   ],
   checkpoints: [
-    [/apply hostname.*executed successfully/, 15],
-    [/pip_install_python-mistralclient.*executed successfully/, 25],
-    [/Download st2client requirements.*executed successfully/, 35],
-    [/pip_install_uwsgi.*executed successfully/, 45],
-    [/Download st2server requirements.*executed successfully/, 55],
-    [/wget-st2web.*executed successfully/, 65],
-    [/npm_proxy.*executed successfully/, 75],
-    [/st2api.conf.*executed successfully/, 85],
+    [/remove empty hubot env settings.*executed successfully/, 25],
+    [/st2sensorcontainer\.log/, 45],
+    [/Setting root_cli password.*executed successfully/, 57],
+    [/Service\[mistral\].*'running'/, 66],
+    [/Service\[st2rulesengine\].*'running'/, 75],
+    [/Service\[hubot\]: Triggered 'refresh'/, 82],
+    [/Service\[nginx\]: Triggered 'refresh'/, 89],
+    [/set-st2-key-st2::server_uuid.*executed successfully/, 95]
   ],
   progress: 0,
   errors: 0,
@@ -246,6 +247,7 @@ var installer = {
   key_generator: 'keypair/keygen',
   switch_page: function(page) {
     var perform_switch = function() {
+      $(window).scrollTop(0);
       installer.page = page;
       $('.page')
         .removeClass('active')
@@ -275,10 +277,12 @@ var installer = {
         }
         ga('send', 'pageview', '/step'+(page+1));
       }
+      $('#step-back, #step-next').removeClass('disabled');
     };
     if (page <= installer.page) {
       perform_switch();
     } else {
+      $('#step-back, #step-next').addClass('disabled');
       installer.validate(installer.page, perform_switch);
     }
     return false;
@@ -299,28 +303,31 @@ var installer = {
     installer.errors += 1;
     el.after('<p class="error">'+error+'</p>');
   },
+  overlay: $('<div id="overlay">').appendTo('#installer'),
+  wait_message: $('<p id="wait-message">'),
   modal: $(
-    '<div id="modal-overflow">' +
-      '<div id="modal">' +
-        '<h3></h3>' +
-        '<p></p>' +
-        '<div id="keypair">' +
-          '<label for="keypair-public">Your public key</label>' +
-          '<textarea id="keypair-public"></textarea>' +
-          '<a data-key-type="public" data-key-filename="st2-ssh.pub" class="download-ssh-key">Download</a>' +
-          '<label for="keypair-private">Your private key</label>' +
-          '<textarea id="keypair-private"></textarea>' +
-          '<a data-key-type="private" data-key-filename="st2-ssh.key" class="download-ssh-key">Download</a>' +
-        '</div>' +
-        '<div id="modal-buttons">' +
-        '</div>' +
+    '<div id="modal">' +
+      '<h3></h3>' +
+      '<p></p>' +
+      '<div id="keypair">' +
+        '<label for="keypair-public">Your public key</label>' +
+        '<textarea id="keypair-public"></textarea>' +
+        '<a data-key-type="public" data-key-filename="st2-ssh.pub" class="download-ssh-key">Download</a>' +
+        '<label for="keypair-private">Your private key</label>' +
+        '<textarea id="keypair-private"></textarea>' +
+        '<a data-key-type="private" data-key-filename="st2-ssh.key" class="download-ssh-key">Download</a>' +
+      '</div>' +
+      '<div id="modal-buttons">' +
       '</div>' +
     '</div>'
   ),
+  show_wait_message: function(text) {
+    installer.wait_message.text(text);
+    installer.overlay.empty().append(installer.wait_message).show();
+  },
   raise_modal: function(template) {
 
-    $('#modal-overflow').remove();
-    modal = installer.modal;
+    var modal = installer.modal;
     modal.find('h3').text(i18n[template].header);
     modal.find('p').text(i18n[template].text);
     modal.find('#modal-buttons').empty();
@@ -332,16 +339,15 @@ var installer = {
       modal.find('#keypair-public').val('ssh-rsa '+$('#gen-public').val());
       modal.find('#keypair-private').val($('#gen-private').val());
     }
-    modal.appendTo('#installer').show();
-    modal.find('#modal').css('margin-top', -modal.find('#modal').height()/2);
+    installer.overlay.empty().append(modal).show();
 
   },
   modal_back: function () {
-    $('#modal-overflow').remove();
+    installer.overlay.hide();
     return false;
   },
   modal_generate: function () {
-    $('#modal-overflow').remove();
+    installer.overlay.hide();
     if (installer.page === 0) {
       $('#radio-selfsigned-true').click();
       installer.switch_page(1);
@@ -476,6 +482,7 @@ var installer = {
       } else if (installer.page == 1 &&
                  $('#radio-sshgen-true').is(':checked') &&
                  $('#gen-private').val() === '') {
+        installer.show_wait_message(i18n.generating_keys);
         $.get(installer.key_generator).always(function(keypair) {
           $('#gen-private').val(keypair.private);
           $('#gen-public').val(keypair.public);
@@ -484,6 +491,8 @@ var installer = {
       } else {
         callback();
       }
+    } else {
+      $('#step-back, #step-next').removeClass('disabled');
     }
 
   },
@@ -502,10 +511,18 @@ var installer = {
     installer.switch_page(0);
     installer.switch_chatops(0);
     $('#step-back').click(function() {
+      if ($(this).hasClass('disabled')) {
+        return false;
+      }
+
       installer.switch_page(installer.page-1);
       return false;
     });
     $('#step-next').click(function() {
+      if ($(this).hasClass('disabled')) {
+        return false;
+      }
+
       if (installer.page == $('.page').length-1) {
         installer.submit();
       } else {
@@ -529,7 +546,7 @@ var installer = {
     $('#installer').on('click', '#modal a[href=#generate]', installer.modal_generate);
     $('#installer').on('click', '#modal a[href=#next]', function() {
       installer.switch_page(installer.page+1);
-      $('#modal-overflow').remove();
+      installer.overlay.hide();
       return false;
     });
 

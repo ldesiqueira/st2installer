@@ -122,7 +122,8 @@ h1, h2, h3, h4, h5, h6 {
   background: url(../images/crumb-end.png);
 }
 .page {
-  width: 960px;
+  max-width: 960px;
+  padding: 0 20px;
   margin: auto;
 }
 .page h1,
@@ -252,13 +253,19 @@ textarea {
 .page.active {display:block;}
 #chatops-tabs li.active {display:block;}
 
+#step-back.disabled,
+#step-next.disabled {
+  cursor: default;
+  opacity: 0.5;
+}
 #step-back {
   margin-right: 15px;
   display: none;
 }
 #next-button {
   height: 50px;
-  width: 960px;
+  max-width: 960px;
+  padding: 0 20px;
   margin: 20px auto;
 }
 #next-button p {
@@ -507,7 +514,7 @@ label.required:after {
   margin: 0 auto;
 }
 
-#modal-overflow {
+#overlay {
   position: fixed;
   left: 0;
   top: 0;
@@ -518,15 +525,22 @@ label.required:after {
   background: rgba(0,0,0,0.8);
   display: none;
 }
+#wait-message,
 #modal {
   width: 470px;
+  text-align: center;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -235px;
+  transform: translateY(-50%);
+}
+#modal {
   padding: 20px;
-  margin: 0 auto;
+  text-align: left;
   background: #1e1e1e;
   border-radius: 5px;
-  top: 50%;
-  position: absolute;
-  left: 50%;
   margin-left: -255px;
 }
 #modal #keypair {
@@ -601,6 +615,7 @@ label[for="check-chatops"] {
   background-color: #ff8300;
   margin-bottom: 5px;
   text-decoration: none;
+  cursor: pointer;
 }
 #keypair label {
   clear: both;
