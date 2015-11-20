@@ -4,7 +4,7 @@ app = {
     'modules': ['st2installer'],
     'static_root': '%(confdir)s/public',
     'template_path': '%(confdir)s/st2installer/templates',
-    'debug': True,
+    'debug': False,
     'errors': {
         404: '/error/404',
         '__force_dict__': True
