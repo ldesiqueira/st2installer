@@ -221,6 +221,7 @@ class RootController(BaseController):
         if "check-chatops" in kwargs and kwargs["check-chatops"] == "1":
 
             config.update({
+                "hubot::docker": True,
                 "hubot::chat_alias": "!",
                 "hubot::env_export": {
                     "HUBOT_LOG_LEVEL": "debug",
