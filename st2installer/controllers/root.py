@@ -113,6 +113,7 @@ class RootController(BaseController):
                 self.runtime = (time.time() - self.start_time)
                 data += '--terminate--'
                 data += str(self.runtime)
+
         if not data:
             return '--idle--'
 
