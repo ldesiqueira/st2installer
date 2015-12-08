@@ -1,6 +1,6 @@
 from IPy import IP
 from pecan import expose, request, redirect, conf
-from subprocess import Popen
+from subprocess import Popen, CalledProcessError
 from keypair import KeypairController
 from uuid import uuid1
 import time
@@ -82,9 +82,13 @@ class RootController(BaseController):
             redirect('/wait', internal=True)
 
     def cleanup(self):
+        errors = []
         for command in self.cleanup_chain:
-            Popen(command, shell=True).wait()
-        return "done"
+            try:
+                Popen(command, shell=True).wait()
+            except CalledProcessError as e:
+                errors.append(e)
+        return errors if errors else True
 
     @expose(content_type='text/plain')
     def puppet(self, line):
@@ -106,10 +110,10 @@ class RootController(BaseController):
             if self.runtime:
                 data += '--terminate--'
             else:
-                try:
-                    self.cleanup()
-                except:
+                cleanup = self.cleanup()
+                if cleanup is not True:
                     data += 'ERROR: Cleanup failure!'
+                    data += ''.join(cleanup)
                 self.runtime = (time.time() - self.start_time)
                 data += '--terminate--'
                 data += str(self.runtime)
