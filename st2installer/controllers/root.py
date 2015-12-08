@@ -58,6 +58,7 @@ class RootController(BaseController):
             "/usr/bin/sudo /bin/chmod 660 %s%s" % (self.path, self.configname),
             "/usr/bin/sudo /usr/sbin/service nginx restart",
             "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
+            "/usr/bin/sudo /usr/sbin/service docker-hubot restart",
             "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
         ]
 
@@ -80,10 +81,9 @@ class RootController(BaseController):
         elif self.puppet_check():
             redirect('/wait', internal=True)
 
-    @expose(content_type='text/plain')
     def cleanup(self):
         for command in self.cleanup_chain:
-            Popen(command, shell=True)
+            Popen(command, shell=True).wait()
         return "done"
 
     @expose(content_type='text/plain')
@@ -103,9 +103,15 @@ class RootController(BaseController):
         logfile.close()
 
         if self.proc.poll() is not None:
-            data += '--terminate--'
-            if not self.runtime:
+            if self.runtime:
+                data += '--terminate--'
+            else:
+                try:
+                    self.cleanup()
+                except:
+                    data += 'ERROR: Cleanup failure!'
                 self.runtime = (time.time() - self.start_time)
+                data += '--terminate--'
                 data += str(self.runtime)
         if not data:
             return '--idle--'
