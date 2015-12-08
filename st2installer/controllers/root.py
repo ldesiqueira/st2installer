@@ -112,10 +112,10 @@ class RootController(BaseController):
             else:
                 cleanup = self.cleanup()
                 if cleanup is not True:
-                    data += 'ERROR: Cleanup failure!'
-                    data += ''.join(cleanup)
+                    data += 'ERROR: Cleanup failure!' + '\n'
+                    data += '\n'.join(cleanup)
                 self.runtime = (time.time() - self.start_time)
-                data += '--terminate--'
+                data += '\n--terminate--'
                 data += str(self.runtime)
 
         if not data:
