@@ -88,7 +88,7 @@ class RootController(BaseController):
                 Popen(command, shell=True).wait()
             except CalledProcessError as e:
                 errors.append(e)
-        return errors if errors else True
+        return errors or True
 
     @expose(content_type='text/plain')
     def puppet(self, line):
