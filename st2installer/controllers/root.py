@@ -1,6 +1,6 @@
 from IPy import IP
 from pecan import expose, request, redirect, conf
-from subprocess import Popen
+from subprocess import Popen, CalledProcessError
 from keypair import KeypairController
 from uuid import uuid1
 import time
@@ -58,6 +58,7 @@ class RootController(BaseController):
             "/usr/bin/sudo /bin/chmod 660 %s%s" % (self.path, self.configname),
             "/usr/bin/sudo /usr/sbin/service nginx restart",
             "/usr/bin/sudo /usr/bin/st2ctl reload --register-all",
+            "/usr/bin/sudo /usr/sbin/service docker-hubot restart",
             "/usr/bin/sudo /usr/bin/st2 run st2.call_home",
         ]
 
@@ -80,11 +81,14 @@ class RootController(BaseController):
         elif self.puppet_check():
             redirect('/wait', internal=True)
 
-    @expose(content_type='text/plain')
     def cleanup(self):
+        errors = []
         for command in self.cleanup_chain:
-            Popen(command, shell=True)
-        return "done"
+            try:
+                Popen(command, shell=True).wait()
+            except CalledProcessError as e:
+                errors.append(e)
+        return errors or True
 
     @expose(content_type='text/plain')
     def puppet(self, line):
@@ -103,10 +107,17 @@ class RootController(BaseController):
         logfile.close()
 
         if self.proc.poll() is not None:
-            data += '--terminate--'
-            if not self.runtime:
+            if self.runtime:
+                data += '--terminate--'
+            else:
+                cleanup = self.cleanup()
+                if cleanup is not True:
+                    data += 'ERROR: Cleanup failure!' + '\n'
+                    data += '\n'.join(cleanup)
                 self.runtime = (time.time() - self.start_time)
+                data += '\n--terminate--'
                 data += str(self.runtime)
+
         if not data:
             return '--idle--'
 

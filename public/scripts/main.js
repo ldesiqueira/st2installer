@@ -67,7 +67,6 @@ var puppet = {
   line: 0,
   interval: 700,
   url: 'puppet',
-  cleanup: 'cleanup',
   set_progress: function(p) {
     puppet.progress = p;
     $('#progressbar>span').width(p+'%');
@@ -165,7 +164,6 @@ var puppet = {
       .removeClass('progress')
       .addClass('done');
     $('#puppet-done').show();
-    $.get(puppet.cleanup);
     $.ajax({
       type: 'HEAD',
       url: '/ssl/st2_root_ca.cer',
