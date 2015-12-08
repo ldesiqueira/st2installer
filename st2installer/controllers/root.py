@@ -166,11 +166,11 @@ class RootController(BaseController):
             "system::hostname": system_hostname,
             "st2::installer_run": True,
 
-            "st2::api_url": "https://%s:9101" % kwargs['hostname'],
-            "st2::auth_url": "https://%s:9100" % kwargs['hostname'],
+            "st2::api_url": "https://%s/api" % kwargs['hostname'],
+            "st2::auth_url": "https://%s/auth" % kwargs['hostname'],
 
-            "st2::cli_api_url": "https://%s:9101" % kwargs['hostname'],
-            "st2::cli_auth_url": "https://%s:9100" % kwargs['hostname'],
+            "st2::cli_api_url": "https://%s/api" % kwargs['hostname'],
+            "st2::cli_auth_url": "https://%s/auth" % kwargs['hostname'],
 
             "st2::stanley::username": kwargs['username'],
 
@@ -227,9 +227,9 @@ class RootController(BaseController):
                     "HUBOT_LOG_LEVEL": "debug",
                     "ST2_AUTH_USERNAME": "chatops_bot",
                     "ST2_AUTH_PASSWORD": password,
-                    "ST2_API": "https://%s:9101" % kwargs['hostname'],
+                    "ST2_API": "https://%s:443/api" % kwargs['hostname'],
                     "ST2_WEBUI_URL": "https://%s" % kwargs['hostname'],
-                    "ST2_AUTH_URL": "https://%s:9100" % kwargs['hostname'],
+                    "ST2_AUTH_URL": "https://%s:443/auth" % kwargs['hostname'],
                     "NODE_TLS_REJECT_UNAUTHORIZED": "0",
                     "EXPRESS_PORT": "8081"
                 },

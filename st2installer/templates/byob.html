@@ -5,7 +5,7 @@
 <div class="page page-byob" id="page-static">
 
   <h1>Bring your own bot</h1>
-  
+
   <p>Normally, StackStorm configures a Hubot instance for you. If you want to use your existing Hubot with StackStorm, you'll have to install a <span>hubot-stackstorm</span> package from NPM:</p>
 
   <pre>
@@ -23,11 +23,11 @@
 
   <p>Bash:</p>
   <pre>
-  ST2_API=https://${hostname}:9101
+  ST2_API=https://${hostname}:443/api
   ST2_WEBUI_URL=https://${hostname}
   ST2_AUTH_USERNAME=chatops_bot
   ST2_AUTH_PASSWORD=${password}
-  ST2_AUTH_URL=https://${hostname}:9100
+  ST2_AUTH_URL=https://${hostname}:443/auth
   EXPRESS_PORT=8081
 
   export ST2_API ST2_WEBUI_URL ST2_AUTH_USERNAME ST2_AUTH_PASSWORD ST2_AUTH_URL EXPRESS_PORT</pre>
@@ -35,12 +35,12 @@
   <p>Heroku (from your <span>hubot</span> project directory):</p>
   <pre>
   heroku config:set EXPRESS_PORT=8081
-  heroku config:set ST2_API=https://${hostname}:9101
+  heroku config:set ST2_API=https://${hostname}:443/api
   heroku config:set ST2_WEBUI_URL=https://${hostname}
   heroku config:set ST2_AUTH_USERNAME=chatops_bot
   heroku config:set ST2_AUTH_PASSWORD=${password}
-  heroku config:set ST2_AUTH_URL=https://${hostname}:9100</pre>
+  heroku config:set ST2_AUTH_URL=https://${hostname}:443/auth</pre>
 
   <p>You're all set! If you have any trouble, take a look at the full <a href="https://github.com/stackstorm/hubot-stackstorm#installing-and-configuring-the-plugin">hubot-stackstorm manual</a>.</p>
-  
+
 </div>
