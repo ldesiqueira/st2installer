@@ -22,7 +22,6 @@ class RootController(BaseController):
         self.keypair = KeypairController()
         self.configname = "answers.json"
         self.hostname = ''
-        self.config_written = False
         self.config = None
         self.start_time = None
         self.runtime = None
@@ -70,6 +69,12 @@ class RootController(BaseController):
     def is_locked(self):
         return os.path.isfile(self.lockfile)
 
+    def log_is_empty(self):
+        return not os.path.isfile(self.output) or os.stat(self.output).st_size == 0
+
+    def config_written(self):
+        return os.path.isfile(self.path + self.configname)
+
     def puppet_check(self):
         p = Popen(self.puppet_check_command, shell=True)
         p.communicate()
@@ -92,7 +97,7 @@ class RootController(BaseController):
 
     @expose(content_type='text/plain')
     def puppet(self, line):
-        if not self.proc:
+        if not self.proc and self.log_is_empty():
             open(self.output, 'w').close()
             self.p = Popen("%s > %s 2>&1" % (self.st2stop, self.output), shell=True)
             self.proc = Popen("%s > %s 2>&1" % (self.command, self.output), shell=True)
@@ -106,7 +111,10 @@ class RootController(BaseController):
                 data += logline.strip() + '\n'
         logfile.close()
 
-        if self.proc.poll() is not None:
+        if not self.proc and not self.log_is_empty():
+            data += '--terminate--'
+
+        elif self.proc.poll() is not None:
             if self.runtime:
                 data += '--terminate--'
             else:
@@ -323,7 +331,6 @@ class RootController(BaseController):
         with open(self.path + self.configname, 'w') as workroom:
             workroom.write(json.dumps(config))
 
-        self.config_written = True
         self.config = config
         redirect('/install', internal=True)
 
@@ -334,19 +341,23 @@ class RootController(BaseController):
 
     @expose(generic=True, template='progress.html')
     def install(self):
-        if self.config_written:
-            if "hubot::adapter" in self.config:
-                chatops = self.config["hubot::adapter"]
+        if self.config_written():
+            if self.config:
+                if "hubot::adapter" in self.config:
+                    chatops = self.config["hubot::adapter"]
+                else:
+                    chatops = "Disabled"
+                sent = self.analytics_sent
+                self.analytics_sent = True
+                return {"hostname": self.hostname,
+                        "config": self.config,
+                        "gen_ssl": self.gen_ssl,
+                        "gen_ssh": self.gen_ssh,
+                        "sent": sent,
+                        "chatops": chatops}
             else:
-                chatops = "Disabled"
-            sent = self.analytics_sent
-            self.analytics_sent = True
-            return {"hostname": self.hostname,
-                    "config": self.config,
-                    "gen_ssl": self.gen_ssl,
-                    "gen_ssh": self.gen_ssh,
-                    "sent": sent,
-                    "chatops": chatops}
+                return {"hostname": self.hostname,
+                        "sent": True}
         else:
             redirect('/', internal=True)
 
