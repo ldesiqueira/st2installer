@@ -192,9 +192,6 @@ var puppet = {
         case 'irc':
           ga('set', 'metric9', 1);
           break;
-        case 'example':
-          ga('set', 'metric10', 1);
-          break;
         case 'xmpp':
           ga('set', 'metric11', 1);
           break;
