@@ -65,6 +65,7 @@ var puppet = {
   errors: 0,
   warnings: 0,
   line: 0,
+  access_errors: 0,
   interval: 700,
   url: 'puppet',
   set_progress: function(p) {
@@ -98,6 +99,7 @@ var puppet = {
       data: {line: puppet.line},
       timeout: 500,
       success: function(res, status, data) {
+        puppet.access_errors = 0;
         data = String(data.responseText);
         if (data != '--idle--' && status != 'timeout') {
           lines = data.split('\n');
@@ -150,6 +152,12 @@ var puppet = {
               }
             }
           }
+        }
+      },
+      error: function() {
+        puppet.access_errors += 1;
+        if (puppet.access_errors > 5) {
+          location.reload();
         }
       },
       complete: function(data, status) {
